@@ -112,7 +112,7 @@ export default function OrderScreen() {
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Categories Sidebar */}
-        <div className="w-1/4 bg-white border-r overflow-y-auto">
+        <div className="w-1/5 bg-white border-r overflow-y-auto">
           <h2 className="text-lg font-bold p-4 border-b">Menu Categories</h2>
           
           {isLoadingCategories ? (
@@ -132,7 +132,7 @@ export default function OrderScreen() {
         </div>
         
         {/* Menu Items */}
-        <div className="w-2/4 bg-white border-r overflow-y-auto">
+        <div className="w-3/5 bg-white border-r overflow-y-auto">
           {/* Category Header */}
           <div className="sticky top-0 bg-primary text-white p-4 flex items-center justify-between z-10">
             <h2 className="text-xl font-bold flex items-center">
@@ -190,7 +190,7 @@ export default function OrderScreen() {
         </div>
         
         {/* Order Summary */}
-        <div className="w-1/4 bg-white overflow-y-auto">
+        <div className="w-1/5 bg-white overflow-y-auto">
           <OrderSummary
             cart={cart}
             onRemoveItem={removeFromCart}

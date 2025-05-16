@@ -40,7 +40,7 @@ export default function OrderSummary({
   };
   
   return (
-    <div className="w-1/4 bg-white text-secondary border-l overflow-y-auto relative shadow-md">
+    <div className="w-full bg-white text-secondary border-l overflow-y-auto relative shadow-md">
       <div className="sticky top-0 bg-secondary text-white py-3 px-4 border-b">
         <h2 className="font-heading font-semibold flex items-center">
           <span className="material-icons mr-2">receipt</span>
