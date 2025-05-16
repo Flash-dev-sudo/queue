@@ -88,7 +88,8 @@ export default function KitchenScreen() {
     : orders.filter(order => 
         order.status === OrderStatus.NEW || 
         order.status === OrderStatus.PREPARING || 
-        order.status === OrderStatus.READY
+        order.status === OrderStatus.READY || 
+        order.status === OrderStatus.SERVED
       );
   
   // Alert staff (play notification sound)

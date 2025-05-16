@@ -92,16 +92,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const notifyKitchen = (order: any) => {
     if (!order) return;
     
+    console.log('Notifying kitchen about new order:', order.orderNumber);
+    
     const message = JSON.stringify({
       type: 'new_order',
       order
     });
     
+    let sentCount = 0;
     clients.forEach(client => {
       if (client.isKitchen && client.socket.readyState === WebSocket.OPEN) {
         client.socket.send(message);
+        sentCount++;
       }
     });
+    
+    console.log(`Sent new order notification to ${sentCount} kitchen clients`);
   };
   
   // API Routes

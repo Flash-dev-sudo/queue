@@ -19,10 +19,13 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
   const getStatusColor = (status: string) => {
     switch (status) {
       case OrderStatus.NEW:
+        return "bg-primary";
       case OrderStatus.PREPARING:
         return "bg-warning";
       case OrderStatus.READY:
         return "bg-success";
+      case OrderStatus.SERVED:
+        return "bg-secondary";
       default:
         return "bg-neutral-300";
     }
@@ -44,6 +47,7 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
           {order.status === OrderStatus.NEW && "NEW"}
           {order.status === OrderStatus.PREPARING && "PREPARING"}
           {order.status === OrderStatus.READY && "READY"}
+          {order.status === OrderStatus.SERVED && "SERVED"}
           {order.status === OrderStatus.COMPLETED && "COMPLETED"}
           {order.status === OrderStatus.CANCELLED && "CANCELLED"}
         </div>
@@ -66,28 +70,44 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
             variant="outline"
             className="text-sm"
           >
-            <span className="material-icons text-sm align-text-top">print</span> Print
+            <span className="material-icons text-sm align-text-top">receipt</span> Print
           </Button>
           
-          <Button
-            size="sm"
-            variant="default"
-            className={`text-sm ${!isButtonActive(OrderStatus.PREPARING) ? "bg-warning text-white" : "bg-warning text-white opacity-50"}`}
-            disabled={isButtonActive(OrderStatus.PREPARING) || order.status === OrderStatus.READY || order.status === OrderStatus.COMPLETED}
-            onClick={() => onUpdateStatus(order.id, OrderStatus.PREPARING)}
-          >
-            <span className="material-icons text-sm align-text-top">sync</span> Preparing
-          </Button>
-          
-          <Button
-            size="sm"
-            variant="default"
-            className={`text-sm ${!isButtonActive(OrderStatus.READY) ? "bg-success text-white" : "bg-success text-white opacity-50"}`}
-            disabled={isButtonActive(OrderStatus.READY) || order.status === OrderStatus.COMPLETED}
-            onClick={() => onUpdateStatus(order.id, OrderStatus.READY)}
-          >
-            <span className="material-icons text-sm align-text-top">done</span> Ready
-          </Button>
+          {/* Only show status buttons if the order isn't served yet */}
+          {order.status !== OrderStatus.SERVED && order.status !== OrderStatus.COMPLETED && (
+            <>
+              <Button
+                size="sm"
+                variant="default"
+                className={`text-sm ${!isButtonActive(OrderStatus.PREPARING) ? "bg-warning text-white" : "bg-warning text-white opacity-50"}`}
+                disabled={isButtonActive(OrderStatus.PREPARING) || order.status === OrderStatus.READY || order.status === OrderStatus.SERVED}
+                onClick={() => onUpdateStatus(order.id, OrderStatus.PREPARING)}
+              >
+                <span className="material-icons text-sm align-text-top">sync</span> Preparing
+              </Button>
+              
+              <Button
+                size="sm"
+                variant="default"
+                className={`text-sm ${!isButtonActive(OrderStatus.READY) ? "bg-success text-white" : "bg-success text-white opacity-50"}`}
+                disabled={isButtonActive(OrderStatus.READY) || order.status === OrderStatus.SERVED}
+                onClick={() => onUpdateStatus(order.id, OrderStatus.READY)}
+              >
+                <span className="material-icons text-sm align-text-top">done</span> Ready
+              </Button>
+              
+              {order.status === OrderStatus.READY && (
+                <Button
+                  size="sm"
+                  variant="default"
+                  className="text-sm bg-secondary text-white"
+                  onClick={() => onUpdateStatus(order.id, OrderStatus.SERVED)}
+                >
+                  <span className="material-icons text-sm align-text-top">fastfood</span> Served
+                </Button>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
