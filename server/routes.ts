@@ -241,6 +241,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         OrderStatus.NEW,
         OrderStatus.PREPARING,
         OrderStatus.READY,
+        OrderStatus.SERVED,
         OrderStatus.COMPLETED,
         OrderStatus.CANCELLED
       ]),

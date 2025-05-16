@@ -46,7 +46,7 @@ export default function KitchenScreen() {
         setTimeout(() => {
           setNewOrderId(null);
         }, 5000);
-      } else if (data.type === "active_orders") {
+      } else if (data.type === "active_orders" && Array.isArray(data.orders)) {
         // Update all active orders
         setOrders(data.orders);
       }
@@ -56,7 +56,7 @@ export default function KitchenScreen() {
   
   // Initialize orders from API data
   useEffect(() => {
-    if (activeOrders) {
+    if (activeOrders && Array.isArray(activeOrders)) {
       setOrders(activeOrders);
     }
   }, [activeOrders]);
