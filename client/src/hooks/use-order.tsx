@@ -12,6 +12,9 @@ export function useOrder() {
   
   // Add item to cart
   const addToCart = (item: MenuItem) => {
+    // Make sure price is a valid number
+    const itemPrice = typeof item.price === 'number' && !isNaN(item.price) ? item.price : 0;
+    
     setCart(prevCart => {
       const existingItem = prevCart.find(cartItem => cartItem.menuItemId === item.id);
       
@@ -23,11 +26,11 @@ export function useOrder() {
             : cartItem
         );
       } else {
-        // Add new item to cart
+        // Add new item to cart with validated price
         return [...prevCart, {
           menuItemId: item.id,
           name: item.name,
-          price: item.price,
+          price: itemPrice, // Use validated price
           quantity: 1
         }];
       }

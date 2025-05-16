@@ -1,7 +1,10 @@
 import { CartItem } from "@shared/schema";
 
 // Format price from pennies to pounds with £ symbol
-export const formatPrice = (price: number): string => {
+export const formatPrice = (price: number | undefined): string => {
+  if (typeof price !== 'number' || isNaN(price)) {
+    return '£0.00';
+  }
   return `£${(price / 100).toFixed(2)}`;
 };
 
