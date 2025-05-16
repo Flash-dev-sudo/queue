@@ -23,27 +23,32 @@ export default function OrderItem({ item, onRemove }: OrderItemProps) {
   
   return (
     <>
-      <div className="px-4 py-3 border-b border-neutral-300 border-opacity-20">
-        <div className="flex justify-between items-start mb-2">
-          <div>
-            <p className="font-medium">{item.quantity}x {item.name}</p>
-            {item.notes && <p className="text-xs text-neutral-200">{item.notes}</p>}
-            {!item.notes && <p className="text-xs text-neutral-200">No special instructions</p>}
+      <div className="py-3">
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <p className="font-medium text-secondary">
+              <span className="font-bold">{item.quantity}x</span> {item.name}
+            </p>
+            {item.notes ? (
+              <p className="text-xs text-neutral-500 italic">{item.notes}</p>
+            ) : (
+              <p className="text-xs text-neutral-400">No special instructions</p>
+            )}
           </div>
-          <p className="font-medium">{formatPrice(totalPrice)}</p>
+          <p className="font-semibold text-primary">{formatPrice(totalPrice)}</p>
         </div>
-        <div className="flex justify-end">
+        <div className="flex mt-1">
           <button 
-            className="text-xs text-neutral-200 hover:text-white mr-3"
+            className="text-xs text-neutral-500 hover:text-secondary flex items-center mr-3"
             onClick={() => setIsEditing(true)}
           >
-            <span className="material-icons text-sm align-text-top">edit</span> Edit
+            <span className="material-icons text-sm mr-1">edit</span> Notes
           </button>
           <button 
-            className="text-xs text-neutral-200 hover:text-white"
+            className="text-xs text-neutral-500 hover:text-red-500 flex items-center"
             onClick={onRemove}
           >
-            <span className="material-icons text-sm align-text-top">delete</span> Remove
+            <span className="material-icons text-sm mr-1">delete</span> Remove
           </button>
         </div>
       </div>
@@ -51,13 +56,11 @@ export default function OrderItem({ item, onRemove }: OrderItemProps) {
       <Dialog open={isEditing} onOpenChange={setIsEditing}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit {item.name}</DialogTitle>
+            <DialogTitle>Special Instructions</DialogTitle>
           </DialogHeader>
           
           <div className="py-4">
-            <label htmlFor="notes" className="block text-sm font-medium mb-2">
-              Special Instructions
-            </label>
+            <p className="mb-2 text-neutral-600">{item.quantity}x {item.name}</p>
             <Textarea
               id="notes"
               placeholder="Add any special instructions here..."
@@ -72,7 +75,7 @@ export default function OrderItem({ item, onRemove }: OrderItemProps) {
               Cancel
             </Button>
             <Button onClick={handleSaveNotes}>
-              Save Changes
+              Save
             </Button>
           </DialogFooter>
         </DialogContent>

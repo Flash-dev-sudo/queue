@@ -13,18 +13,20 @@ interface MenuItemProps {
 export default function MenuItem({ item, quantity, onAdd, onRemove }: MenuItemProps) {
   return (
     <div 
-      className={`border-b p-4 hover:bg-neutral-100 cursor-pointer transition-colors ${
-        quantity > 0 ? "bg-neutral-100" : ""
+      className={`rounded-lg border shadow-sm p-3 ${
+        quantity > 0 ? "bg-primary/5 border-primary" : "hover:border-neutral-300"
       }`} 
       data-item-id={item.id}
     >
-      <div className="flex justify-between">
-        <div>
-          <h3 className="font-medium">{item.name}</h3>
-          <p className="text-neutral-300 text-sm">{item.description || "No description available"}</p>
+      <div className="flex justify-between items-center">
+        <div className="flex-1">
+          <h3 className="font-bold text-secondary">{item.name}</h3>
+          {item.description && (
+            <p className="text-neutral-500 text-sm line-clamp-1">{item.description}</p>
+          )}
+          <p className="font-semibold text-primary mt-1">{formatPrice(item.price)}</p>
         </div>
-        <div className="text-right">
-          <p className="font-semibold">{formatPrice(item.price)}</p>
+        <div className="ml-4">
           <Counter 
             value={quantity} 
             onIncrement={onAdd} 

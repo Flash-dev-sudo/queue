@@ -40,21 +40,24 @@ export default function OrderSummary({
   };
   
   return (
-    <div className="w-1/4 bg-secondary text-white overflow-y-auto relative">
-      <div className="sticky top-0 bg-secondary py-3 px-4 border-b border-neutral-300 border-opacity-20">
-        <h2 className="font-heading font-semibold">Your Order</h2>
-        <p className="text-sm text-neutral-200">Order #{orderNumber}</p>
+    <div className="w-1/4 bg-white text-secondary border-l overflow-y-auto relative shadow-md">
+      <div className="sticky top-0 bg-secondary text-white py-3 px-4 border-b">
+        <h2 className="font-heading font-semibold flex items-center">
+          <span className="material-icons mr-2">receipt</span>
+          Order Summary
+        </h2>
+        <p className="text-sm">Order #{orderNumber}</p>
       </div>
       
       {cart.length === 0 ? (
         <div className="py-8 text-center">
-          <span className="material-icons text-3xl mb-2 text-neutral-300">shopping_cart</span>
-          <p className="text-sm text-neutral-300">Your cart is empty</p>
-          <p className="text-sm text-neutral-300 mt-1">Add items from the menu</p>
+          <span className="material-icons text-5xl mb-3 text-neutral-300">shopping_cart</span>
+          <p className="text-neutral-500">Your cart is empty</p>
+          <p className="text-neutral-400 mt-1 text-sm">Add items from the menu</p>
         </div>
       ) : (
         <>
-          <div className="mb-16">
+          <div className="px-4 pt-4 pb-32 divide-y">
             {cart.map((item) => (
               <OrderItem
                 key={item.menuItemId}
@@ -64,36 +67,47 @@ export default function OrderSummary({
             ))}
           </div>
           
-          <div className="px-4 py-6 absolute bottom-0 w-full bg-secondary">
-            <div className="flex justify-between mb-2">
-              <span>Subtotal</span>
-              <span>{formatPrice(subtotal)}</span>
+          <div className="px-4 py-4 absolute bottom-0 w-full bg-white border-t">
+            <div className="flex justify-between mb-2 text-sm">
+              <span className="text-neutral-600">Subtotal</span>
+              <span className="font-medium">{formatPrice(subtotal)}</span>
             </div>
-            <div className="flex justify-between text-neutral-200 mb-2">
-              <span>Tax</span>
-              <span>{formatPrice(tax)}</span>
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-neutral-600">Tax (20%)</span>
+              <span className="font-medium">{formatPrice(tax)}</span>
             </div>
-            <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t border-neutral-300 border-opacity-20">
+            <div className="flex justify-between font-bold text-lg mt-3 pt-3 border-t border-neutral-200">
               <span>Total</span>
-              <span>{formatPrice(total)}</span>
+              <span className="text-primary">{formatPrice(total)}</span>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-2 mt-4">
+              <Button
+                variant="outline" 
+                className="border-secondary py-3 text-secondary"
+                disabled={cart.length === 0 || isSubmitting}
+                onClick={onClearCart}
+              >
+                <span className="material-icons text-sm mr-1">cancel</span>
+                Cancel
+              </Button>
+              
+              <Button
+                className="bg-primary text-white py-3 font-semibold hover:bg-opacity-90 transition-colors"
+                disabled={cart.length === 0 || isSubmitting}
+                onClick={handleSendOrder}
+              >
+                <span className="material-icons text-sm mr-1">send</span>
+                {isSubmitting ? "Sending..." : "Send Order"}
+              </Button>
             </div>
             
             <Button
-              className="w-full py-6 mt-4 bg-primary rounded-lg text-white font-bold hover:bg-opacity-90 flex items-center justify-center"
+              className="w-full py-3 mt-2 bg-secondary text-white font-bold hover:bg-opacity-90 transition-colors"
               disabled={cart.length === 0 || isSubmitting}
-              onClick={handleSendOrder}
             >
-              <span className="material-icons mr-2">send</span>
-              {isSubmitting ? "Sending..." : "Send to Kitchen"}
-            </Button>
-            
-            <Button
-              variant="outline"
-              className="w-full py-5 mt-2 border border-neutral-200 rounded-lg text-neutral-200 hover:text-white hover:border-white"
-              disabled={cart.length === 0 || isSubmitting}
-              onClick={onClearCart}
-            >
-              Cancel Order
+              <span className="material-icons text-sm mr-1">payment</span>
+              Pay Now
             </Button>
           </div>
         </>

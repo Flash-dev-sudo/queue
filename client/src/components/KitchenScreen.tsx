@@ -88,8 +88,8 @@ export default function KitchenScreen() {
     : orders.filter(order => 
         order.status === OrderStatus.NEW || 
         order.status === OrderStatus.PREPARING || 
-        order.status === OrderStatus.READY || 
-        order.status === OrderStatus.SERVED
+        order.status === OrderStatus.READY
+        // Removed SERVED status so those orders disappear from the active view
       );
   
   // Alert staff (play notification sound)

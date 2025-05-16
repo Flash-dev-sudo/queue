@@ -1,0 +1,116 @@
+Great — let me walk you through exactly **how the order screen UI should be structured** for smooth operation at the front desk. This includes menu layout, pricing, category navigation, and the order summary. This will serve both your **cashier** and your **customer** efficiently.
+
+---
+
+## 🖥️ **Order Screen Layout (Reception/Front Counter)**
+
+The screen is usually split into two main **panes**:
+
+---
+
+### 🔹 **LEFT PANEL: Menu & Item Selector**
+
+#### 📂 **Category Tabs (Top or Sidebar)**
+
+Use tabs or buttons to divide the menu logically:
+
+```
+[ Starters ] [ Burgers ] [ Pizzas ] [ Platters ] [ Wraps ] [ Shakes & Drinks ] [ Desserts ]
+```
+
+These categories are based on your menu structure. When a tab is clicked, it updates the visible list below.
+
+#### 📋 **Menu Items Grid/List**
+
+Each category shows:
+
+* **Item name**
+* **Price**
+* **+ / -** buttons to increase quantity
+* Optional: A small image (optional but great for UX)
+
+**Example (inside Starters Tab):**
+
+| Item              | Price | Qty             |
+| ----------------- | ----- | --------------- |
+| Chips             | £2.50 | \[ - ] 1 \[ + ] |
+| Peri Peri Chips   | £3.00 | \[ - ] 0 \[ + ] |
+| Chips with Cheese | £4.00 | \[ - ] 2 \[ + ] |
+
+**Optional Features**:
+
+* **Search Bar** to quickly find items
+* **Modifiers popup** (e.g., “no mayo”, “extra cheese”)
+
+---
+
+### 🔹 **RIGHT PANEL: Order Summary + Billing**
+
+#### 📦 **Order Summary**
+
+Shows real-time updates as cashier adds items:
+
+```
+Order #114
+-------------------------
+1x Chicken Fillet Burger      £3.50
+2x Chips with Cheese          £8.00
+1x Oreo Shake                 £3.50
+
+Subtotal                      £15.00
+Tax (e.g. 10%)                £1.50
+Total                         £16.50
+```
+
+#### 💳 **Action Buttons**
+
+* **\[Tap to Pay]** – opens card/tap payment flow
+* **\[Send to Kitchen]** – sends the order instantly to KDS
+* **\[Print Receipt]** (optional)
+* **\[Cancel] / \[Clear]** buttons
+
+---
+
+### 🛠️ **How to Set Prices**
+
+* Each item has a base price
+* Toppings/modifiers can be add-ons:
+
+  * e.g., Add cheese (+£0.50), Make it a meal (+£1.80)
+
+Prices can be stored in a backend like:
+
+* Google Sheets (AppSheet)
+* Supabase/Firebase (Appsmith/custom app)
+
+The UI simply **reads and displays these values** in real-time.
+
+---
+
+### 🪄 **User Flow (Receptionist)**
+
+1. Tap `Burgers` > Select “Chicken Fillet Burger” > Add 1 qty
+2. Tap `Starters` > “Chips with Cheese” > Add 2 qty
+3. Tap `Shakes` > “Oreo” > Add 1 qty
+4. Order shows up in right panel
+5. Tap **Tap to Pay** → complete transaction
+6. Tap **Send to Kitchen**
+
+---
+
+### 🧱 UI Design Tips
+
+* Use **large touch-friendly buttons** (good for tablet)
+* Fonts: Clear, high-contrast
+* Layout: Grid layout (3-4 columns of items per category)
+* Highlight current category
+* Keep right panel sticky so cashier never loses the order view
+
+---
+
+Would you like me to:
+
+* Design the **actual UI as a wireframe**?
+* Or generate an **AppSheet/Appsmith prototype**?
+
+Let me know how hands-on you'd like to go next.
