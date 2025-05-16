@@ -1,15 +1,20 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
+import { createClient } from '@libsql/client';
+import { drizzle } from 'drizzle-orm/libsql';
 import * as schema from "@shared/schema";
+import { eq, inArray } from 'drizzle-orm';
 
-neonConfig.webSocketConstructor = ws;
-
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+if (!process.env.TURSO_DB_URL || !process.env.TURSO_AUTH_TOKEN) {
+  console.warn("Turso credentials not found, using in-memory storage instead");
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+// Create the client
+const client = createClient({
+  url: process.env.TURSO_DB_URL || '',
+  authToken: process.env.TURSO_AUTH_TOKEN || '',
+});
+
+// Create the database instance
+export const db = drizzle(client, { schema });
+
+// Export drizzle operators
+export { eq, inArray };

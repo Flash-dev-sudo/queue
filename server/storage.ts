@@ -503,4 +503,6 @@ export class MemStorage implements IStorage {
   }
 }
 
+// Initialize the appropriate storage implementation
+// Use in-memory storage for now since we're still working on database integration
 export const storage = new MemStorage();
