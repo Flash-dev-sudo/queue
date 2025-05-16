@@ -73,7 +73,7 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
             <span className="material-icons text-sm align-text-top">receipt</span> Print
           </Button>
           
-          {/* Only show status buttons if the order isn't served yet */}
+          {/* Status buttons */}
           {order.status !== OrderStatus.SERVED && order.status !== OrderStatus.COMPLETED && (
             <>
               <Button
@@ -95,18 +95,19 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
               >
                 <span className="material-icons text-sm align-text-top">done</span> Ready
               </Button>
-              
-              {order.status === OrderStatus.READY && (
-                <Button
-                  size="sm"
-                  variant="default"
-                  className="text-sm bg-secondary text-white"
-                  onClick={() => onUpdateStatus(order.id, OrderStatus.SERVED)}
-                >
-                  <span className="material-icons text-sm align-text-top">fastfood</span> Served
-                </Button>
-              )}
             </>
+          )}
+              
+          {/* Always show Served button for all orders */}
+          {order.status !== OrderStatus.SERVED && (
+            <Button
+              size="sm"
+              variant="default"
+              className="text-sm bg-secondary text-white"
+              onClick={() => onUpdateStatus(order.id, OrderStatus.SERVED)}
+            >
+              <span className="material-icons text-sm align-text-top">fastfood</span> Served
+            </Button>
           )}
         </div>
       </div>

@@ -1,18 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import HeroSection from "@/components/ui/hero-section";
 import MenuCategory from "@/components/MenuCategory";
 import MenuItem from "@/components/MenuItem";
 import OrderSummary from "@/components/OrderSummary";
 import { useOrder } from "@/hooks/use-order";
 import { Category, MenuItem as MenuItemType } from "@shared/schema";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import Counter from "@/components/ui/counter";
 
 export default function OrderScreen() {
   const { toast } = useToast();
   const { cart, addToCart, removeFromCart, clearCart, sendOrder, isSubmitting } = useOrder();
   
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   
   // Fetch categories
   const { 
@@ -23,22 +26,21 @@ export default function OrderScreen() {
     queryKey: ['/api/categories'],
   });
   
+  // Fetch all menu items
+  const {
+    data: allMenuItems,
+    isLoading: isLoadingAllMenuItems,
+    error: allMenuItemsError
+  } = useQuery({
+    queryKey: ['/api/menu-items'],
+  });
+  
   // Set the first category as selected by default
   useEffect(() => {
     if (categories && Array.isArray(categories) && categories.length > 0 && !selectedCategory) {
       setSelectedCategory(categories[0].id);
     }
   }, [categories, selectedCategory]);
-  
-  // Fetch menu items for selected category
-  const {
-    data: menuItems,
-    isLoading: isLoadingMenuItems,
-    error: menuItemsError
-  } = useQuery({
-    queryKey: ['/api/categories', selectedCategory, 'items'],
-    enabled: !!selectedCategory,
-  });
   
   // Handle errors
   useEffect(() => {
@@ -50,105 +52,153 @@ export default function OrderScreen() {
       });
     }
     
-    if (menuItemsError) {
+    if (allMenuItemsError) {
       toast({
         title: "Error",
         description: "Failed to load menu items. Please try again.",
         variant: "destructive",
       });
     }
-  }, [categoriesError, menuItemsError, toast]);
+  }, [categoriesError, allMenuItemsError, toast]);
+  
+  // Simple filtered menu items
+  const menuItems = useMemo(() => {
+    if (!allMenuItems || !Array.isArray(allMenuItems)) return [];
+    
+    // Filter by search term if provided
+    if (searchTerm.trim() !== "") {
+      return allMenuItems.filter(item => 
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    // Otherwise filter by selected category
+    if (selectedCategory) {
+      return allMenuItems.filter(item => item.categoryId === selectedCategory);
+    }
+    
+    return [];
+  }, [allMenuItems, selectedCategory, searchTerm]);
   
   const handleCategorySelect = (categoryId: number) => {
     setSelectedCategory(categoryId);
   };
   
+  // Get current category name
+  const currentCategoryName = useMemo(() => {
+    if (!categories || !Array.isArray(categories) || !selectedCategory) {
+      return "";
+    }
+    const category = categories.find(c => c.id === selectedCategory);
+    return category ? category.name : "";
+  }, [categories, selectedCategory]);
+
+  // Get item quantity in cart
+  const getItemQuantity = (itemId: number) => {
+    const item = cart.find(cartItem => cartItem.menuItemId === itemId);
+    return item ? item.quantity : 0;
+  };
+  
   return (
-    <div className="screen-container w-full overflow-hidden">
+    <div className="flex flex-col h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-secondary text-white py-3 px-4 flex justify-between items-center shadow-md">
-        <div className="flex items-center">
-          <span className="material-icons mr-2">restaurant_menu</span>
-          <h1 className="font-heading font-bold text-xl">Emparo Food - Order System</h1>
-        </div>
-        <div className="text-sm bg-primary rounded-full px-3 py-1 font-semibold">
-          Front Counter
-        </div>
+      <div className="bg-secondary text-white p-3 flex justify-between items-center shadow-md">
+        <h1 className="text-xl font-bold">Emparo Food - Order System</h1>
+        <Button variant="outline" className="text-white border-white hover:bg-white hover:text-secondary">
+          Order Screen
+        </Button>
       </div>
 
-      {/* Order Content */}
-      <div className="flex h-[calc(100vh-160px)]">
-        {/* Menu Categories */}
+      {/* Main Content */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Categories Sidebar */}
         <div className="w-1/4 bg-white border-r overflow-y-auto">
-          <div className="sticky top-0 bg-secondary text-white py-3 px-4 font-heading font-semibold">
-            Menu Categories
-          </div>
-          <div className="menu-categories">
-            {isLoadingCategories ? (
-              <div className="p-4 text-center">Loading categories...</div>
-            ) : (
-              Array.isArray(categories) && categories.map((category: Category) => (
+          <h2 className="text-lg font-bold p-4 border-b">Menu Categories</h2>
+          
+          {isLoadingCategories ? (
+            <div className="p-4">Loading categories...</div>
+          ) : (
+            <div>
+              {Array.isArray(categories) && categories.map((category) => (
                 <MenuCategory
                   key={category.id}
                   category={category}
-                  isSelected={selectedCategory === category.id}
+                  isSelected={category.id === selectedCategory}
                   onSelect={() => handleCategorySelect(category.id)}
-                />
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Menu Items */}
-        <div className="w-2/4 bg-white overflow-y-auto">
-          {selectedCategory && Array.isArray(categories) && categories.find((c: Category) => c.id === selectedCategory) && (
-            <div className="sticky top-0 bg-primary text-white py-3 px-4 font-heading flex justify-between items-center">
-              <h2 className="font-semibold">
-                {Array.isArray(categories) && categories.find((c: Category) => c.id === selectedCategory)?.name}
-              </h2>
-              <span className="material-icons">
-                {Array.isArray(categories) && categories.find((c: Category) => c.id === selectedCategory)?.icon}
-              </span>
-            </div>
-          )}
-
-          {/* Search (optional) */}
-          <div className="px-4 py-2 border-b">
-            <div className="relative">
-              <input 
-                type="text"
-                placeholder="Search menu items..."
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-neutral-200 focus:outline-none focus:border-primary"
-              />
-              <span className="material-icons absolute left-3 top-2 text-neutral-400">search</span>
-            </div>
-          </div>
-
-          {isLoadingMenuItems ? (
-            <div className="p-4 text-center">Loading menu items...</div>
-          ) : (
-            <div className="grid grid-cols-1 gap-2 p-2">
-              {Array.isArray(menuItems) && menuItems.map((item: MenuItemType) => (
-                <MenuItem
-                  key={item.id}
-                  item={item}
-                  quantity={cart.find(cartItem => cartItem.menuItemId === item.id)?.quantity || 0}
-                  onAdd={() => addToCart(item)}
-                  onRemove={() => removeFromCart(item.id)}
                 />
               ))}
             </div>
           )}
         </div>
-
+        
+        {/* Menu Items */}
+        <div className="w-2/4 bg-white border-r overflow-y-auto">
+          {/* Category Header */}
+          <div className="sticky top-0 bg-primary text-white p-4 flex items-center justify-between z-10">
+            <h2 className="text-xl font-bold flex items-center">
+              {currentCategoryName}
+            </h2>
+            {selectedCategory && Array.isArray(categories) && 
+              <span className="material-icons">
+                {categories.find(c => c.id === selectedCategory)?.icon}
+              </span>
+            }
+          </div>
+          
+          {/* Search */}
+          <div className="p-4 border-b">
+            <Input
+              type="text"
+              placeholder="Search menu items..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full"
+            />
+          </div>
+          
+          {/* Menu Items */}
+          <div className="p-4">
+            {isLoadingAllMenuItems ? (
+              <div>Loading menu items...</div>
+            ) : menuItems.length > 0 ? (
+              <div className="space-y-4">
+                {menuItems.map((item: MenuItemType) => (
+                  <div key={item.id} className="bg-white rounded-lg border p-4">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-bold text-lg">{item.name}</h3>
+                      <div className="text-lg font-bold">£{(item.price / 100).toFixed(2)}</div>
+                    </div>
+                    {item.description && (
+                      <p className="text-gray-600 mt-1">{item.description}</p>
+                    )}
+                    <div className="mt-4 flex justify-end">
+                      <Counter 
+                        value={getItemQuantity(item.id)}
+                        onDecrement={() => removeFromCart(item.id)}
+                        onIncrement={() => addToCart(item)}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No items found in this category
+              </div>
+            )}
+          </div>
+        </div>
+        
         {/* Order Summary */}
-        <OrderSummary 
-          cart={cart}
-          onRemoveItem={removeFromCart}
-          onClearCart={clearCart}
-          onSendOrder={sendOrder}
-          isSubmitting={isSubmitting}
-        />
+        <div className="w-1/4 bg-white overflow-y-auto">
+          <OrderSummary
+            cart={cart}
+            onRemoveItem={removeFromCart}
+            onClearCart={clearCart}
+            onSendOrder={sendOrder}
+            isSubmitting={isSubmitting}
+          />
+        </div>
       </div>
     </div>
   );
