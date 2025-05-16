@@ -73,17 +73,18 @@ export class MemStorage implements IStorage {
   
   // Initialize with demo menu data based on the provided menu
   private async initializeData() {
-    // Create categories
+    // Create categories based on the provided menu structure
     const categoryData: InsertCategory[] = [
       { name: "Starters", icon: "restaurant", displayOrder: 1 },
-      { name: "Wings & Buckets", icon: "egg", displayOrder: 2 },
+      { name: "Buckets", icon: "egg", displayOrder: 2 },
       { name: "Desserts", icon: "cake", displayOrder: 3 },
       { name: "Shakes", icon: "local_cafe", displayOrder: 4 },
       { name: "Pizzas", icon: "local_pizza", displayOrder: 5 },
       { name: "Platters", icon: "dinner_dining", displayOrder: 6 },
       { name: "Grilled Chicken", icon: "set_meal", displayOrder: 7 },
       { name: "Peri Peri Chicken", icon: "local_fire_department", displayOrder: 8 },
-      { name: "Burgers & Others", icon: "lunch_dining", displayOrder: 9 }
+      { name: "Burgers & More", icon: "lunch_dining", displayOrder: 9 },
+      { name: "Sides & Add-ons", icon: "fastfood", displayOrder: 10 }
     ];
     
     const categories: Category[] = [];
@@ -91,7 +92,7 @@ export class MemStorage implements IStorage {
       categories.push(await this.createCategory(category));
     }
     
-    // Create menu items
+    // Create menu items from the provided menu
     // Starters
     await this.createMenuItem({ 
       name: "Chips", 
@@ -197,10 +198,10 @@ export class MemStorage implements IStorage {
       available: true 
     });
     
-    // Wings & Buckets
+    // Buckets
     await this.createMenuItem({ 
       name: "Wings Bucket", 
-      description: "15 Wings, 2 Fries, 1 Bottle Drink", 
+      description: "15 Wings, 2 Fries & 1 Bottle Drink", 
       price: 1350, 
       categoryId: 2, 
       available: true 
@@ -208,7 +209,7 @@ export class MemStorage implements IStorage {
     
     await this.createMenuItem({ 
       name: "Mix Bucket", 
-      description: "2 Strip Burgers, 2 Fried Wraps, 6 Fried Wings, 1 Box Chips, 1 Bottle Drink", 
+      description: "2 Strip Burgers, 2 Fried Wraps, 6 Fried Wings, 1 Box Chips & 1 Bottle Drink", 
       price: 2000, 
       categoryId: 2, 
       available: true 
@@ -224,7 +225,7 @@ export class MemStorage implements IStorage {
     });
     
     await this.createMenuItem({ 
-      name: "Strawberry Cheese Cake", 
+      name: "Strawberry Cheesecake", 
       description: "Creamy strawberry cheesecake", 
       price: 300, 
       categoryId: 3, 
@@ -278,6 +279,163 @@ export class MemStorage implements IStorage {
       price: 350, 
       categoryId: 4, 
       available: true 
+    });
+    
+    // Pizzas - all £8.50
+    await this.createMenuItem({
+      name: "Margherita Pizza",
+      description: "Classic cheese & tomato pizza",
+      price: 850,
+      categoryId: 5,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Double Pepperoni Pizza",
+      description: "Pizza with extra pepperoni topping",
+      price: 850,
+      categoryId: 5,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Emparo Pizza",
+      description: "House special pizza",
+      price: 850,
+      categoryId: 5,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Ham & Mushroom Pizza",
+      description: "Ham and mushroom topping",
+      price: 850,
+      categoryId: 5,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Veggie Special Pizza",
+      description: "Mixed vegetables topping",
+      price: 850,
+      categoryId: 5,
+      available: true
+    });
+    
+    // Platters
+    await this.createMenuItem({
+      name: "Wings Platter",
+      description: "15 Wings, 2 Sides & 2 Drinks",
+      price: 1549,
+      categoryId: 6,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "EFC Special",
+      description: "Fillet Burger, 3 Wings, Chips & Drink",
+      price: 700,
+      categoryId: 6,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Burger Feast",
+      description: "3 Peri Burgers, 8 Peri Wings, 2 Sides & Bottle Drink",
+      price: 2449,
+      categoryId: 6,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Strip Platter",
+      description: "15 Strips, 2 Sides & 2 Drinks",
+      price: 1549,
+      categoryId: 6,
+      available: true
+    });
+    
+    // Grilled Chicken
+    await this.createMenuItem({
+      name: "Quarter Grilled Chicken",
+      description: "Quarter portion of freshly grilled chicken",
+      price: 400,
+      categoryId: 7,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Half Grilled Chicken",
+      description: "Half portion of freshly grilled chicken",
+      price: 550,
+      categoryId: 7,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Whole Grilled Chicken",
+      description: "Whole freshly grilled chicken",
+      price: 1050,
+      categoryId: 7,
+      available: true
+    });
+    
+    // Peri Peri Chicken
+    await this.createMenuItem({
+      name: "Peri Peri Wrap",
+      description: "Spicy peri peri chicken in a wrap",
+      price: 450,
+      categoryId: 8,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Peri Peri Burger",
+      description: "Spicy peri peri chicken burger",
+      price: 500,
+      categoryId: 8,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Peri Peri Wings",
+      description: "Spicy peri peri chicken wings",
+      price: 420,
+      categoryId: 8,
+      available: true
+    });
+    
+    // Burgers & More
+    await this.createMenuItem({
+      name: "Chicken Strip Burger",
+      description: "Burger with chicken strips",
+      price: 250,
+      categoryId: 9,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Chicken Fillet Burger",
+      description: "Burger with chicken fillet",
+      price: 350,
+      categoryId: 9,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Zinger Burger",
+      description: "Spicy zinger burger",
+      price: 400,
+      categoryId: 9,
+      available: true
+    });
+    
+    await this.createMenuItem({
+      name: "Veggie Burger",
+      description: "Vegetarian burger option",
+      price: 350,
+      categoryId: 9,
+      available: true
     });
     
     // Add sample active orders for kitchen screen

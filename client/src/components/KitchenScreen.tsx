@@ -132,6 +132,23 @@ export default function KitchenScreen() {
               {showHistory ? "Active Orders" : "History"}
             </Button>
             <Button
+              variant="default"
+              className="mr-2 bg-orange-500 hover:bg-orange-600"
+              onClick={() => {
+                // Mark all active orders as served to clear them
+                filteredOrders.forEach(order => {
+                  handleUpdateStatus(order.id, OrderStatus.SERVED);
+                });
+                toast({
+                  title: "Kitchen Screen Cleared",
+                  description: "All orders have been cleared from the kitchen display",
+                });
+              }}
+            >
+              <span className="material-icons text-sm align-middle mr-1">clear_all</span>
+              Clear Screen
+            </Button>
+            <Button
               variant="destructive"
               onClick={alertStaff}
             >
