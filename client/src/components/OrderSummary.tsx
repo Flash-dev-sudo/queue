@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import OrderItem from "@/components/OrderItem";
 import { CartItem } from "@shared/schema";
 import { formatPrice, calculateSubtotal, calculateTax, calculateTotal } from "@/lib/utils/order-utils";
+import { useToast } from "@/hooks/use-toast";
+import { Trash2 } from "lucide-react";
 
 interface OrderSummaryProps {
   cart: CartItem[];
@@ -19,6 +21,7 @@ export default function OrderSummary({
   onSendOrder,
   isSubmitting
 }: OrderSummaryProps) {
+  const { toast } = useToast();
   const [orderNumber, setOrderNumber] = useState<string>(() => {
     // Generate a random order number for display purposes
     const timestamp = Date.now();
@@ -29,9 +32,21 @@ export default function OrderSummary({
   const subtotal = calculateSubtotal(cart);
   const tax = calculateTax(subtotal);
   const total = calculateTotal(subtotal, tax);
+
+  const handleClearCart = () => {
+    onClearCart();
+    toast({
+      title: "Cart Cleared",
+      description: "All items removed from cart ✅",
+    });
+  };
   
   const handleSendOrder = async () => {
     await onSendOrder();
+    toast({
+      title: "Order Sent",
+      description: "Order sent to kitchen successfully ✅",
+    });
     
     // Generate a new order number for the next order
     const timestamp = Date.now();
@@ -84,12 +99,12 @@ export default function OrderSummary({
             <div className="grid grid-cols-2 gap-2 mt-4">
               <Button
                 variant="outline" 
-                className="border-secondary py-3 text-secondary"
+                className="border-secondary py-3 text-secondary hover:bg-red-50 hover:border-red-400 hover:text-red-600"
                 disabled={cart.length === 0 || isSubmitting}
-                onClick={onClearCart}
+                onClick={handleClearCart}
               >
-                <span className="material-icons text-sm mr-1">cancel</span>
-                Cancel
+                <Trash2 className="w-4 h-4 mr-1" />
+                Clear Cart
               </Button>
               
               <Button

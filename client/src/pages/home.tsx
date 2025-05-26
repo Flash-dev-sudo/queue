@@ -25,10 +25,7 @@ export default function Home() {
 
         <div className="mb-8 mt-4">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Emparo Food</h1>
-          <p className="text-gray-600">Restaurant Management System</p>
-          <div className="mt-2 text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full inline-block">
-            ✅ System Ready
-          </div>
+          <p className="text-gray-600 mb-4">Restaurant Management System</p>
         </div>
         
         <div className="space-y-4">
