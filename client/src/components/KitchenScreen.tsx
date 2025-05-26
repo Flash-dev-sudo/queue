@@ -123,19 +123,17 @@ export default function KitchenScreen() {
               {showHistory ? "Order History" : "Active Orders"}
             </h2>
             
-            {/* Navigation buttons */}
-            <div className="flex space-x-2">
-              <Link href="/order">
-                <Button variant="outline" size="sm">
-                  🍽️ Order Screen
-                </Button>
-              </Link>
-              <Link href="/">
-                <Button variant="outline" size="sm">
-                  🏠 Home
-                </Button>
-              </Link>
-            </div>
+            {/* Status indicator */}
+            <span className="bg-green-600 text-white px-3 py-1 rounded text-sm font-medium">
+              👨‍🍳 Kitchen Display
+            </span>
+            
+            {/* Navigation */}
+            <Link href="/">
+              <Button variant="outline" size="sm">
+                🏠 Home
+              </Button>
+            </Link>
           </div>
           
           <div>
