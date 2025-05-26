@@ -24,36 +24,39 @@ export default function OrderItem({ item, onRemove }: OrderItemProps) {
   
   return (
     <>
-      <div className="py-3">
-        <div className="flex justify-between items-start">
+      <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+        <div className="flex justify-between items-start mb-2">
           <div className="flex-1">
-            <p className="font-medium text-secondary">
-              <span className="font-bold">{item.quantity}x</span> {item.name}
+            <p className="font-semibold text-gray-800 text-sm">
+              <span className="bg-primary text-white px-2 py-1 rounded text-xs font-bold mr-2">{item.quantity}x</span>
+              {item.name}
             </p>
-            {item.notes ? (
-              <div className="flex items-center mt-1 p-2 bg-yellow-50 border border-yellow-200 rounded">
+            {item.notes && (
+              <div className="flex items-center mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
                 <StickyNote className="w-4 h-4 text-yellow-600 mr-2 flex-shrink-0" />
                 <p className="text-sm text-yellow-800 font-medium">{item.notes}</p>
               </div>
-            ) : (
-              <p className="text-xs text-neutral-400 mt-1">No special instructions</p>
             )}
           </div>
-          <p className="font-semibold text-primary">{formatPrice(totalPrice)}</p>
+          <p className="font-bold text-primary text-sm">{formatPrice(totalPrice)}</p>
         </div>
-        <div className="flex mt-2">
-          <button 
-            className="text-xs text-neutral-500 hover:text-secondary flex items-center mr-3 px-2 py-1 rounded hover:bg-blue-50"
-            onClick={() => setIsEditing(true)}
-          >
-            <Edit3 className="w-3 h-3 mr-1" /> Notes
-          </button>
-          <button 
-            className="text-xs text-neutral-500 hover:text-red-500 flex items-center px-2 py-1 rounded hover:bg-red-50"
-            onClick={onRemove}
-          >
-            <Trash2 className="w-3 h-3 mr-1" /> Remove
-          </button>
+        
+        <div className="flex justify-between items-center">
+          <div className="flex gap-1">
+            <button 
+              className="text-xs text-blue-600 hover:text-blue-800 flex items-center px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+              onClick={() => setIsEditing(true)}
+            >
+              <Edit3 className="w-3 h-3 mr-1" /> Notes
+            </button>
+            <button 
+              className="text-xs text-red-600 hover:text-red-800 flex items-center px-2 py-1 rounded hover:bg-red-50 transition-colors"
+              onClick={onRemove}
+            >
+              <Trash2 className="w-3 h-3 mr-1" /> Remove
+            </button>
+          </div>
+          <p className="text-xs text-gray-500">Unit: {formatPrice(item.price)}</p>
         </div>
       </div>
       
