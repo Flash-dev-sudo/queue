@@ -17,6 +17,30 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   const [isConnected, setIsConnected] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Function to play notification sound
+  const playNotificationSound = useCallback(() => {
+    try {
+      // Create a simple beep sound using Web Audio API
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 800; // 800Hz beep
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (error) {
+      console.log('Audio notification not available:', error);
+    }
+  }, []);
   
   // Setup WebSocket connection
   useEffect(() => {
@@ -66,6 +90,12 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
         try {
           const data = JSON.parse(event.data);
           console.log('WebSocket message received:', data);
+          
+          // Play notification sound for new orders in kitchen
+          if (options.isKitchen && data.type === "new_order") {
+            playNotificationSound();
+          }
+          
           if (options.onMessage) options.onMessage(data);
         } catch (error) {
           console.error('Error parsing WebSocket message:', error);

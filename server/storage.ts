@@ -112,8 +112,11 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Emparo Special", description: "Half Chicken, 2 Peri Burgers, 5 Wings, 2 Sides, Bottle", price: 2250, categoryId: 2, available: true });
     await this.createMenuItem({ name: "Feast Platter", description: "2 Whole Chickens, 8 Wings, 8 Strips, 3 Sides, Bottle", price: 3849, categoryId: 2, available: true });
     await this.createMenuItem({ name: "Strips with Rice", description: "Chicken strips with flavoured rice & drink", price: 750, categoryId: 2, available: true });
+    await this.createMenuItem({ name: "Strips with Rice (Meal)", description: "Chicken strips with flavoured rice & drink (larger)", price: 800, categoryId: 2, available: true });
     await this.createMenuItem({ name: "Half Chicken with Rice", description: "Half chicken with flavoured rice & drink", price: 800, categoryId: 2, available: true });
+    await this.createMenuItem({ name: "Half Chicken with Rice (Meal)", description: "Half chicken with flavoured rice & drink (larger)", price: 850, categoryId: 2, available: true });
     await this.createMenuItem({ name: "Chicken Wings with Rice", description: "Chicken wings with flavoured rice & drink", price: 700, categoryId: 2, available: true });
+    await this.createMenuItem({ name: "Chicken Wings with Rice (Meal)", description: "Chicken wings with flavoured rice & drink (larger)", price: 750, categoryId: 2, available: true });
 
     // FRIED CHICKEN (£1.50 - £4.00)
     await this.createMenuItem({ name: "Wings (3 pcs)", description: "Three pieces of crispy fried chicken wings", price: 150, categoryId: 3, available: true });
@@ -137,7 +140,7 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Four Seasons", description: "Four different sections with various toppings", price: 850, categoryId: 4, available: true });
     await this.createMenuItem({ name: "Meat Lovers", description: "Mixed meats with cheese", price: 850, categoryId: 4, available: true });
 
-    // MAINS - Individual/Meal Options
+    // MAINS - Individual/Meal Options (Corrected Pricing)
     await this.createMenuItem({ name: "Peri Peri Strips", description: "Spicy peri peri chicken strips", price: 470, categoryId: 5, available: true });
     await this.createMenuItem({ name: "Peri Peri Strips Meal", description: "Peri peri strips with chips and drink", price: 650, categoryId: 5, available: true });
     await this.createMenuItem({ name: "Half Chicken", description: "Half grilled chicken", price: 550, categoryId: 5, available: true });
