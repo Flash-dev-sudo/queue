@@ -6,6 +6,7 @@ import OrderCard from "@/components/OrderCard";
 import { useWebSocket } from "@/hooks/use-websocket";
 import { Button } from "@/components/ui/button";
 import { FullOrder, OrderStatus } from "@shared/schema";
+import { Link } from "wouter";
 
 export default function KitchenScreen() {
   const { toast } = useToast();
@@ -117,9 +118,26 @@ export default function KitchenScreen() {
       {/* Orders grid */}
       <div className="bg-neutral-200 p-4 kitchen-container">
         <div className="flex justify-between mb-4">
-          <h2 className="text-xl font-heading font-semibold">
-            {showHistory ? "Order History" : "Active Orders"}
-          </h2>
+          <div className="flex items-center space-x-4">
+            <h2 className="text-xl font-heading font-semibold">
+              {showHistory ? "Order History" : "Active Orders"}
+            </h2>
+            
+            {/* Navigation buttons */}
+            <div className="flex space-x-2">
+              <Link href="/order">
+                <Button variant="outline" size="sm">
+                  🍽️ Order Screen
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button variant="outline" size="sm">
+                  🏠 Home
+                </Button>
+              </Link>
+            </div>
+          </div>
+          
           <div>
             <Button
               variant={showHistory ? "default" : "outline"}

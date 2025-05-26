@@ -9,6 +9,7 @@ import { Category, MenuItem as MenuItemType } from "@shared/schema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Counter from "@/components/ui/counter";
+import { Link } from "wouter";
 
 export default function OrderScreen() {
   const { toast } = useToast();
@@ -104,9 +105,21 @@ export default function OrderScreen() {
       {/* Header */}
       <div className="bg-secondary text-white p-3 flex justify-between items-center shadow-md">
         <h1 className="text-xl font-bold">Emparo Food - Order System</h1>
-        <Button variant="outline" className="text-white border-white hover:bg-white hover:text-secondary">
-          Order Screen
-        </Button>
+        <div className="flex space-x-2">
+          <Button variant="outline" className="text-white border-white hover:bg-white hover:text-secondary">
+            🍽️ Order Screen
+          </Button>
+          <Link href="/kitchen">
+            <Button variant="outline" className="text-white border-white hover:bg-white hover:text-secondary">
+              👨‍🍳 Kitchen View
+            </Button>
+          </Link>
+          <Link href="/">
+            <Button variant="outline" className="text-white border-white hover:bg-white hover:text-secondary">
+              🏠 Home
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Main Content */}
