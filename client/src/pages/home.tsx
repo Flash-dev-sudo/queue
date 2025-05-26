@@ -6,7 +6,7 @@ export default function Home() {
   const { logout } = useAuth();
 
   const handleLogout = () => {
-    logout();
+    localStorage.removeItem("emparo_logged_in");
     window.location.reload(); // Refresh to show login screen
   };
 
