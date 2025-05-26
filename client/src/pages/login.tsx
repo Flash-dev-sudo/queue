@@ -1,28 +1,26 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Login() {
-  const [_, setLocation] = useLocation();
   const [pin, setPin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { login } = useAuth();
 
-  // Simple PIN authentication (you can enhance this later)
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simple PIN check (you can make this more secure)
-    if (pin === "1234" || pin === "admin") {
-      localStorage.setItem("isAuthenticated", "true");
+    const success = login(pin);
+    
+    if (success) {
       toast({
         title: "Login Successful",
         description: "Welcome to Emparo Food System!",
       });
-      setLocation("/");
     } else {
       toast({
         title: "Invalid PIN",

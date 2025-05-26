@@ -11,6 +11,16 @@ export function useAuth() {
     setIsLoading(false);
   }, []);
 
+  const login = (pin: string) => {
+    // Simple PIN check (you can make this more secure)
+    if (pin === "1234" || pin === "admin") {
+      localStorage.setItem("isAuthenticated", "true");
+      setIsAuthenticated(true);
+      return true;
+    }
+    return false;
+  };
+
   const logout = () => {
     localStorage.removeItem("isAuthenticated");
     setIsAuthenticated(false);
@@ -19,6 +29,7 @@ export function useAuth() {
   return {
     isAuthenticated,
     isLoading,
+    login,
     logout,
   };
 }
