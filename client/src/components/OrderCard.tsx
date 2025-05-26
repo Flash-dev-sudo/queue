@@ -149,10 +149,11 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
             <Button
               size="sm"
               variant="default"
-              className="text-sm bg-secondary text-white"
-              onClick={() => onUpdateStatus(order.id, OrderStatus.SERVED)}
+              className="text-sm bg-green-600 hover:bg-green-700 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+              onClick={handleServed}
             >
-              <span className="material-icons text-sm align-text-top">fastfood</span> Served
+              <CheckCircle className="w-4 h-4 mr-1" />
+              Served
             </Button>
           )}
         </div>
