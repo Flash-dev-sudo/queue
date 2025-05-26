@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { FullOrder, OrderStatus } from "@shared/schema";
 import { formatPrice } from "@/lib/utils/order-utils";
 import { formatDistanceToNow } from "date-fns";
+import { Clock, CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface OrderCardProps {
   order: FullOrder;
@@ -11,9 +13,42 @@ interface OrderCardProps {
 }
 
 export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardProps) {
+  const { toast } = useToast();
+  const [elapsedTime, setElapsedTime] = useState("");
+
+  // Update elapsed time every second
+  useEffect(() => {
+    const updateElapsedTime = () => {
+      const now = new Date().getTime();
+      const created = new Date(order.createdAt).getTime();
+      const diffInSeconds = Math.floor((now - created) / 1000);
+      
+      const minutes = Math.floor(diffInSeconds / 60);
+      const seconds = diffInSeconds % 60;
+      
+      if (minutes > 0) {
+        setElapsedTime(`${minutes}m ${seconds}s`);
+      } else {
+        setElapsedTime(`${seconds}s`);
+      }
+    };
+
+    updateElapsedTime();
+    const interval = setInterval(updateElapsedTime, 1000);
+    return () => clearInterval(interval);
+  }, [order.createdAt]);
+
   // Format time
   const formattedTime = formatDistanceToNow(new Date(order.createdAt), { addSuffix: true });
   const actualTime = new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const handleServed = () => {
+    onUpdateStatus(order.id, OrderStatus.SERVED);
+    toast({
+      title: "Order Marked as Served",
+      description: `Order #${order.orderNumber} completed ✅`,
+    });
+  };
   
   // Status color and label
   const getStatusColor = (status: string) => {
@@ -41,7 +76,11 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
       <div className={`${getStatusColor(order.status)} text-white px-4 py-2 flex justify-between items-center`}>
         <div>
           <h3 className="font-bold">Order #{order.orderNumber}</h3>
-          <p className="text-sm">{formattedTime} - {actualTime}</p>
+          <div className="flex items-center mt-1">
+            <Clock className="w-4 h-4 mr-1" />
+            <span className="text-sm font-medium">⏱ {elapsedTime} waiting</span>
+            <span className="text-sm ml-2 opacity-75">({actualTime})</span>
+          </div>
         </div>
         <div className="bg-white text-secondary font-bold rounded px-2 py-1 text-sm">
           {order.status === OrderStatus.NEW && "NEW"}
@@ -60,7 +99,14 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
               <span className="font-medium">{item.quantity}x {item.name}</span>
               <span>{formatPrice(item.price * item.quantity)}</span>
             </div>
-            <p className="text-sm text-neutral-300">{item.notes || "No special instructions"}</p>
+            {item.notes ? (
+              <div className="flex items-center mt-1 p-2 bg-yellow-50 border border-yellow-200 rounded">
+                <span className="text-yellow-600 mr-2">📝</span>
+                <p className="text-sm text-yellow-800 font-medium">{item.notes}</p>
+              </div>
+            ) : (
+              <p className="text-sm text-neutral-400">No special instructions</p>
+            )}
           </div>
         ))}
         
