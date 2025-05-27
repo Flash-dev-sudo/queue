@@ -170,24 +170,53 @@ export default function OrderScreen() {
               <div>Loading menu items...</div>
             ) : menuItems.length > 0 ? (
               <div className="space-y-4">
-                {menuItems.map((item: MenuItemType) => (
-                  <div key={item.id} className="bg-white rounded-lg border p-4">
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-bold text-lg">{item.name}</h3>
-                      <div className="text-lg font-bold">£{(item.price / 100).toFixed(2)}</div>
-                    </div>
-                    {item.description && (
-                      <p className="text-gray-600 mt-1">{item.description}</p>
-                    )}
-                    <div className="mt-4 flex justify-end">
-                      <Counter 
-                        value={getItemQuantity(item.id)}
-                        onDecrement={() => removeFromCart(item.id)}
-                        onIncrement={() => addToCart(item)}
+                {(() => {
+                  // Group items for Mains category to show meal upgrades
+                  if (selectedCategory === 5) { // Mains category
+                    const groupedItems: { [key: string]: { base: MenuItemType; meal?: MenuItemType } } = {};
+                    
+                    menuItems.forEach((item: MenuItemType) => {
+                      const baseName = item.name.replace(' Meal', '');
+                      if (item.name.includes(' Meal')) {
+                        if (!groupedItems[baseName]) {
+                          groupedItems[baseName] = { base: item }; // Fallback if base not found
+                        }
+                        groupedItems[baseName].meal = item;
+                      } else {
+                        if (!groupedItems[baseName]) {
+                          groupedItems[baseName] = { base: item };
+                        } else {
+                          groupedItems[baseName].base = item;
+                        }
+                      }
+                    });
+
+                    return Object.values(groupedItems).map(({ base, meal }) => (
+                      <MenuItem
+                        key={base.id}
+                        item={base}
+                        quantity={getItemQuantity(base.id)}
+                        onAdd={() => addToCart(base)}
+                        onRemove={() => removeFromCart(base.id)}
+                        mealItem={meal}
+                        onAddMeal={meal ? () => addToCart(meal) : undefined}
+                        onRemoveMeal={meal ? () => removeFromCart(meal.id) : undefined}
+                        mealQuantity={meal ? getItemQuantity(meal.id) : 0}
                       />
-                    </div>
-                  </div>
-                ))}
+                    ));
+                  } else {
+                    // For other categories, show items normally
+                    return menuItems.map((item: MenuItemType) => (
+                      <MenuItem
+                        key={item.id}
+                        item={item}
+                        quantity={getItemQuantity(item.id)}
+                        onAdd={() => addToCart(item)}
+                        onRemove={() => removeFromCart(item.id)}
+                      />
+                    ));
+                  }
+                })()}
               </div>
             ) : (
               <div className="text-center py-8 text-gray-500">
