@@ -127,20 +127,21 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Strips (6 pcs)", description: "Six pieces of chicken breast strips", price: 400, categoryId: 2, available: true });
 
     // PIZZAS (All £8.50)
-    await this.createMenuItem({ name: "Margarita", description: "Classic tomato base with mozzarella cheese", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "Double Pepperoni", description: "Double pepperoni with mozzarella cheese", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "Mediterranean Special", description: "Mediterranean vegetables and herbs", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "Emparo Special", description: "House special with mixed toppings", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "Veggie Hot", description: "Spicy vegetarian pizza with jalapeños", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "Veggie Special", description: "Mixed vegetables with cheese", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "American Hot", description: "Pepperoni, jalapeños, and hot sauce", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "Peri Peri Special", description: "Peri peri chicken with spicy sauce", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "Tandoori Special", description: "Tandoori chicken with onions", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "BBQ Special", description: "BBQ chicken with smoky sauce", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "Hawaiian Special", description: "Ham and pineapple classic", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "Tuna Special", description: "Tuna with onions and sweetcorn", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "Four Seasons", description: "Four different sections with various toppings", price: 850, categoryId: 3, available: true });
-    await this.createMenuItem({ name: "Meat Lovers", description: "Mixed meats with cheese", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Margarita Pizza", description: "Classic cheese & tomato pizza", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Double Pepperoni Pizza", description: "Pizza with extra pepperoni topping", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Mediterranean Special Pizza", description: "Mediterranean vegetables and herbs", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Emparo Pizza", description: "House special pizza", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Veggie Hot Pizza", description: "Spicy vegetarian pizza with jalapeños", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Veggie Special Pizza", description: "Mixed vegetables topping", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "American Hot Pizza", description: "Pepperoni, jalapeños, and hot sauce", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Peri Peri Special Pizza", description: "Peri peri chicken with spicy sauce", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Tandoori Special Pizza", description: "Tandoori chicken with onions", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "BBQ Special Pizza", description: "BBQ chicken with smoky sauce", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Hawaiian Special Pizza", description: "Ham and pineapple classic", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Ham & Mushroom Pizza", description: "Ham and mushroom topping", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Tuna Special Pizza", description: "Tuna with onions and sweetcorn", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Four Seasons Pizza", description: "Four different sections with various toppings", price: 850, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Meat Lovers Pizza", description: "Mixed meats with cheese", price: 850, categoryId: 3, available: true });
 
     // MAINS - Numbered 1-15 (Individual/Meal Options)
     await this.createMenuItem({ name: "1. Strip Burger", description: "Chicken strip burger", price: 250, categoryId: 5, available: true });
