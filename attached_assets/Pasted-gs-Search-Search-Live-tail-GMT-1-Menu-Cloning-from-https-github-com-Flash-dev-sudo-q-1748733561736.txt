@@ -1,0 +1,185 @@
+gs
+Search
+Search
+
+Live tail
+GMT+1
+
+Menu
+==> Cloning from https://github.com/Flash-dev-sudo/queue
+==> Checking out commit 6b423bb01e4b272ae4c5fc68d60050b0a32cd215 in branch main
+==> Using Node.js version 22.14.0 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Using Bun version 1.1.0 (default)
+==> Docs on specifying a bun version: https://render.com/docs/bun-version
+==> Running build command 'npm install --include=dev && npm run build'...
+added 520 packages, and audited 521 packages in 8s
+70 packages are looking for funding
+  run `npm fund` for details
+7 moderate severity vulnerabilities
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+vite v5.4.14 building for production...
+transforming...
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2129 modules transformed.
+rendering chunks...
+computing gzip size...
+../dist/public/index.html                   1.40 kB │ gzip:   0.68 kB
+../dist/public/assets/index-BPSbojgG.css   65.36 kB │ gzip:  11.38 kB
+../dist/public/assets/index-CfEmN-PB.js   434.90 kB │ gzip: 134.17 kB
+✓ built in 3.72s
+  dist/index.js  39.2kb
+⚡ Done in 6ms
+==> Uploading build...
+==> Uploaded in 6.3s. Compression took 3.1s
+==> Build successful 🎉
+==> Deploying...
+==> Running 'npm start'
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+11:17:54 PM [express] serving on port 10000
+==> Your service is live 🎉
+WebSocket client connected
+Client registered as order
+Error fetching menu items: LibsqlError: SQLITE_UNKNOWN: SQLite error: no such table: menu_items
+    at mapHranaError (file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/hrana.js:279:16)
+    at file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/http.js:76:23
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async LibSQLPreparedQuery.all (file:///opt/render/project/src/node_modules/drizzle-orm/libsql/session.js:126:18)
+    at async DatabaseStorage.getMenuItems (file:///opt/render/project/src/dist/index.js:577:12)
+    at async file:///opt/render/project/src/dist/index.js:762:26 {
+  code: 'SQLITE_UNKNOWN',
+  rawCode: undefined,
+  [cause]: [ResponseError: SQLite error: no such table: menu_items] {
+    code: 'SQLITE_UNKNOWN',
+    proto: {
+      message: 'SQLite error: no such table: menu_items',
+      code: 'SQLITE_UNKNOWN'
+    }
+  }
+}
+11:18:10 PM [express] GET /api/menu-items 500 in 254ms :: {"message":"Error fetching menu items"}
+Error fetching categories: LibsqlError: SQLITE_UNKNOWN: SQLite error: no such table: categories
+    at mapHranaError (file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/hrana.js:279:16)
+    at file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/http.js:76:23
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async LibSQLPreparedQuery.all (file:///opt/render/project/src/node_modules/drizzle-orm/libsql/session.js:126:18)
+    at async DatabaseStorage.getCategories (file:///opt/render/project/src/dist/index.js:565:12)
+    at async file:///opt/render/project/src/dist/index.js:740:27 {
+  code: 'SQLITE_UNKNOWN',
+  rawCode: undefined,
+  [cause]: [ResponseError: SQLite error: no such table: categories] {
+    code: 'SQLITE_UNKNOWN',
+    proto: {
+      message: 'SQLite error: no such table: categories',
+      code: 'SQLITE_UNKNOWN'
+    }
+  }
+}
+11:18:10 PM [express] GET /api/categories 500 in 447ms :: {"message":"Error fetching categories"}
+WebSocket client disconnected
+WebSocket client connected
+Client registered as kitchen
+Error fetching active orders: LibsqlError: SQLITE_UNKNOWN: SQLite error: no such table: orders
+    at mapHranaError (file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/hrana.js:279:16)
+    at file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/http.js:76:23
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async LibSQLPreparedQuery.all (file:///opt/render/project/src/node_modules/drizzle-orm/libsql/session.js:126:18)
+    at async DatabaseStorage.getActiveOrders (file:///opt/render/project/src/dist/index.js:642:26)
+    at async file:///opt/render/project/src/dist/index.js:771:28 {
+  code: 'SQLITE_UNKNOWN',
+  rawCode: undefined,
+  [cause]: [ResponseError: SQLite error: no such table: orders] {
+    code: 'SQLITE_UNKNOWN',
+    proto: {
+      message: 'SQLite error: no such table: orders',
+      code: 'SQLITE_UNKNOWN'
+    }
+  }
+}
+11:18:18 PM [express] GET /api/orders/active 500 in 128ms :: {"message":"Error fetching active orders…
+Error handling WebSocket message: LibsqlError: SQLITE_UNKNOWN: SQLite error: no such table: orders
+    at mapHranaError (file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/hrana.js:279:16)
+    at file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/http.js:76:23
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async LibSQLPreparedQuery.all (file:///opt/render/project/src/node_modules/drizzle-orm/libsql/session.js:126:18)
+    at async DatabaseStorage.getActiveOrders (file:///opt/render/project/src/dist/index.js:642:26)
+    at async WebSocket.<anonymous> (file:///opt/render/project/src/dist/index.js:684:34) {
+  code: 'SQLITE_UNKNOWN',
+  rawCode: undefined,
+  [cause]: [ResponseError: SQLite error: no such table: orders] {
+    code: 'SQLITE_UNKNOWN',
+    proto: {
+      message: 'SQLite error: no such table: orders',
+      code: 'SQLITE_UNKNOWN'
+    }
+  }
+}
+WebSocket client connected
+Client registered as order
+WebSocket client disconnected
+WebSocket client connected
+Error fetching categories: LibsqlError: SQLITE_UNKNOWN: SQLite error: no such table: categories
+    at mapHranaError (file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/hrana.js:279:16)
+    at file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/http.js:76:23
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async LibSQLPreparedQuery.all (file:///opt/render/project/src/node_modules/drizzle-orm/libsql/session.js:126:18)
+    at async DatabaseStorage.getCategories (file:///opt/render/project/src/dist/index.js:565:12)
+    at async file:///opt/render/project/src/dist/index.js:740:27 {
+  code: 'SQLITE_UNKNOWN',
+  rawCode: undefined,
+  [cause]: [ResponseError: SQLite error: no such table: categories] {
+    code: 'SQLITE_UNKNOWN',
+    proto: {
+      message: 'SQLite error: no such table: categories',
+      code: 'SQLITE_UNKNOWN'
+    }
+  }
+}
+11:18:22 PM [express] GET /api/categories 500 in 92ms :: {"message":"Error fetching categories"}
+Client registered as order
+Error fetching menu items: LibsqlError: SQLITE_UNKNOWN: SQLite error: no such table: menu_items
+    at mapHranaError (file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/hrana.js:279:16)
+    at file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/http.js:76:23
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async LibSQLPreparedQuery.all (file:///opt/render/project/src/node_modules/drizzle-orm/libsql/session.js:126:18)
+    at async DatabaseStorage.getMenuItems (file:///opt/render/project/src/dist/index.js:577:12)
+    at async file:///opt/render/project/src/dist/index.js:762:26 {
+  code: 'SQLITE_UNKNOWN',
+  rawCode: undefined,
+  [cause]: [ResponseError: SQLite error: no such table: menu_items] {
+    code: 'SQLITE_UNKNOWN',
+    proto: {
+      message: 'SQLite error: no such table: menu_items',
+      code: 'SQLITE_UNKNOWN'
+    }
+  }
+}
+11:18:22 PM [express] GET /api/menu-items 500 in 86ms :: {"message":"Error fetching menu items"}
+WebSocket client connected
+Client registered as kitchen
+Error handling WebSocket message: LibsqlError: SQLITE_UNKNOWN: SQLite error: no such table: orders
+    at mapHranaError (file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/hrana.js:279:16)
+    at file:///opt/render/project/src/node_modules/@libsql/client/lib-esm/http.js:76:23
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async LibSQLPreparedQuery.all (file:///opt/render/project/src/node_modules/drizzle-orm/libsql/session.js:126:18)
+    at async DatabaseStorage.getActiveOrders (file:///opt/render/project/src/dist/index.js:642:26)
+    at async WebSocket.<anonymous> (file:///opt/render/project/src/dist/index.js:684:34) {
+  code: 'SQLITE_UNKNOWN',
+  rawCode: undefined,
+  [cause]: [ResponseError: SQLite error: no such table: orders] {
+    code: 'SQLITE_UNKNOWN',
+    proto: {
+      message: 'SQLite error: no such table: orders',
+      code: 'SQLITE_UNKNOWN'
+    }
+  }
+}
