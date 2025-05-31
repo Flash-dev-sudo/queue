@@ -7,7 +7,7 @@ import {
   type FullOrder, type OrderItemWithDetails,
   OrderStatus
 } from "@shared/schema";
-import { db } from "./db";
+import { db } from "./turso-db";
 import { eq, and } from "drizzle-orm";
 
 // Storage interface for CRUD operations
