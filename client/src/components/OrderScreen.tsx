@@ -175,7 +175,13 @@ export default function OrderScreen() {
                   if (selectedCategory === 5) { // Mains category
                     const groupedItems: { [key: string]: { base: MenuItemType; meal?: MenuItemType } } = {};
                     
-                    menuItems.forEach((item: MenuItemType) => {
+                    // Filter out pizza items and only process mains items
+                    const mainsItems = menuItems.filter((item: MenuItemType) => 
+                      !item.name.toLowerCase().includes('pizza') && 
+                      (item.name.match(/^\d+\./) || item.name.includes(' Meal'))
+                    );
+                    
+                    mainsItems.forEach((item: MenuItemType) => {
                       const baseName = item.name.replace(' Meal', '');
                       if (item.name.includes(' Meal')) {
                         if (!groupedItems[baseName]) {
