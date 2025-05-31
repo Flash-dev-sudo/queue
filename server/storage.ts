@@ -7,6 +7,8 @@ import {
   type FullOrder, type OrderItemWithDetails,
   OrderStatus
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, and } from "drizzle-orm";
 
 // Storage interface for CRUD operations
 export interface IStorage {
@@ -552,6 +554,152 @@ export class MemStorage implements IStorage {
   }
 }
 
+// Database Storage Implementation
+export class DatabaseStorage implements IStorage {
+  // User operations
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
+  }
+
+  // Category operations
+  async getCategories(): Promise<Category[]> {
+    return await db.select().from(categories).orderBy(categories.displayOrder);
+  }
+
+  async getCategory(id: number): Promise<Category | undefined> {
+    const [category] = await db.select().from(categories).where(eq(categories.id, id));
+    return category;
+  }
+
+  async createCategory(insertCategory: InsertCategory): Promise<Category> {
+    const [category] = await db.insert(categories).values(insertCategory).returning();
+    return category;
+  }
+
+  // Menu item operations
+  async getMenuItems(): Promise<MenuItem[]> {
+    return await db.select().from(menuItems);
+  }
+
+  async getMenuItemsByCategory(categoryId: number): Promise<MenuItem[]> {
+    return await db.select().from(menuItems).where(eq(menuItems.categoryId, categoryId));
+  }
+
+  async getMenuItem(id: number): Promise<MenuItem | undefined> {
+    const [item] = await db.select().from(menuItems).where(eq(menuItems.id, id));
+    return item;
+  }
+
+  async createMenuItem(insertMenuItem: InsertMenuItem): Promise<MenuItem> {
+    const [item] = await db.insert(menuItems).values(insertMenuItem).returning();
+    return item;
+  }
+
+  // Order operations
+  async getOrders(): Promise<Order[]> {
+    return await db.select().from(orders);
+  }
+
+  async getOrdersWithStatus(status: string): Promise<Order[]> {
+    return await db.select().from(orders).where(eq(orders.status, status));
+  }
+
+  async getOrder(id: number): Promise<Order | undefined> {
+    const [order] = await db.select().from(orders).where(eq(orders.id, id));
+    return order;
+  }
+
+  async getOrderByNumber(orderNumber: string): Promise<Order | undefined> {
+    const [order] = await db.select().from(orders).where(eq(orders.orderNumber, orderNumber));
+    return order;
+  }
+
+  async createOrder(insertOrder: InsertOrder): Promise<Order> {
+    const [order] = await db.insert(orders).values(insertOrder).returning();
+    return order;
+  }
+
+  async updateOrderStatus(id: number, status: string): Promise<Order | undefined> {
+    const [order] = await db.update(orders)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(orders.id, id))
+      .returning();
+    return order;
+  }
+
+  async getFullOrder(id: number): Promise<FullOrder | undefined> {
+    const order = await this.getOrder(id);
+    if (!order) return undefined;
+
+    const items = await db.select({
+      id: orderItems.id,
+      menuItemId: orderItems.menuItemId,
+      name: menuItems.name,
+      price: menuItems.price,
+      quantity: orderItems.quantity,
+      notes: orderItems.notes
+    })
+    .from(orderItems)
+    .innerJoin(menuItems, eq(orderItems.menuItemId, menuItems.id))
+    .where(eq(orderItems.orderId, id));
+
+    return {
+      id: order.id,
+      orderNumber: order.orderNumber,
+      status: order.status,
+      totalAmount: order.totalAmount,
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: order.updatedAt.toISOString(),
+      items: items.map(item => ({
+        id: item.id,
+        menuItemId: item.menuItemId,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        notes: item.notes || undefined
+      }))
+    };
+  }
+
+  async getActiveOrders(): Promise<FullOrder[]> {
+    const activeOrders = await db.select().from(orders)
+      .where(
+        and(
+          eq(orders.status, 'new')
+        )
+      );
+
+    const fullOrders: FullOrder[] = [];
+    for (const order of activeOrders) {
+      const fullOrder = await this.getFullOrder(order.id);
+      if (fullOrder) fullOrders.push(fullOrder);
+    }
+    return fullOrders;
+  }
+
+  async getOrderItems(orderId: number): Promise<OrderItem[]> {
+    return await db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
+  }
+
+  async createOrderItem(insertOrderItem: InsertOrderItem): Promise<OrderItem> {
+    const [item] = await db.insert(orderItems).values(insertOrderItem).returning();
+    return item;
+  }
+}
+
 // Initialize the appropriate storage implementation
-// Use in-memory storage for now since we're still working on database integration
-export const storage = new MemStorage();
+// Use DatabaseStorage for production, MemStorage for development
+export const storage = process.env.NODE_ENV === 'production' 
+  ? new DatabaseStorage() 
+  : new MemStorage();

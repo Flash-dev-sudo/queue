@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: emparo-food-system
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: emparo-food-db
+          property: connectionString
+    autoDeploy: false
+
+databases:
+  - name: emparo-food-db
+    databaseName: emparo_food
+    user: emparo_user
+    plan: free
