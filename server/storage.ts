@@ -38,6 +38,7 @@ export interface IStorage {
   updateOrderStatus(id: number, status: string): Promise<Order | undefined>;
   getFullOrder(id: number): Promise<FullOrder | undefined>;
   getActiveOrders(): Promise<FullOrder[]>;
+  getAllOrders(): Promise<FullOrder[]>;
   
   // Order item operations
   getOrderItems(orderId: number): Promise<OrderItem[]>;

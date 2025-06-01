@@ -172,6 +172,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all orders (for analytics/history view)
+  app.get('/api/orders', async (req, res) => {
+    try {
+      const allOrders = await storage.getAllOrders();
+      res.json(allOrders);
+    } catch (error) {
+      console.error('Error fetching all orders:', error);
+      res.status(500).json({ message: 'Error fetching all orders' });
+    }
+  });
+
   // Get popular items from last 30 days
   app.get('/api/popular-items', async (req, res) => {
     try {

@@ -23,6 +23,15 @@ export default function KitchenScreen() {
     queryKey: ['/api/orders/active'],
   });
 
+  // Fetch all orders for analytics/history view
+  const { 
+    data: allOrders, 
+    isLoading: isLoadingAllOrders 
+  } = useQuery({ 
+    queryKey: ['/api/orders'],
+    enabled: viewMode === 'analytics',
+  });
+
   // Fetch popular items
   const { 
     data: popularItems, 
@@ -64,12 +73,14 @@ export default function KitchenScreen() {
     isKitchen: true,
   });
   
-  // Initialize orders from API data
+  // Initialize orders from API data based on view mode
   useEffect(() => {
-    if (activeOrders && Array.isArray(activeOrders)) {
+    if (viewMode === 'analytics' && allOrders && Array.isArray(allOrders)) {
+      setOrders(allOrders);
+    } else if (viewMode === 'active' && activeOrders && Array.isArray(activeOrders)) {
       setOrders(activeOrders);
     }
-  }, [activeOrders]);
+  }, [activeOrders, allOrders, viewMode]);
   
   // Handle errors
   useEffect(() => {
