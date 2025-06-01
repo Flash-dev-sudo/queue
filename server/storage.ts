@@ -4,11 +4,12 @@ import {
   menuItems, type MenuItem, type InsertMenuItem,
   orders, type Order, type InsertOrder, type OrderWithItems,
   orderItems, type OrderItem, type InsertOrderItem,
+  dailyStats, type DailyStats, type InsertDailyStats,
   type FullOrder, type OrderItemWithDetails,
   OrderStatus
 } from "@shared/schema";
 import { db } from "./turso-db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 // Storage interface for CRUD operations
 export interface IStorage {
@@ -41,6 +42,10 @@ export interface IStorage {
   // Order item operations
   getOrderItems(orderId: number): Promise<OrderItem[]>;
   createOrderItem(orderItem: InsertOrderItem): Promise<OrderItem>;
+  
+  // Data cleanup operations
+  cleanupOldOrders(): Promise<void>;
+  generateDailyStats(date: string): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -553,6 +558,17 @@ export class MemStorage implements IStorage {
     this.orderItems.set(id, orderItem);
     return orderItem;
   }
+
+  // Data cleanup operations (stub for MemStorage)
+  async cleanupOldOrders(): Promise<void> {
+    // MemStorage doesn't need cleanup since it resets on restart
+    console.log("MemStorage: No cleanup needed");
+  }
+
+  async generateDailyStats(date: string): Promise<void> {
+    // MemStorage doesn't persist stats
+    console.log(`MemStorage: Stats generation skipped for ${date}`);
+  }
 }
 
 // Database Storage Implementation
@@ -696,6 +712,89 @@ export class DatabaseStorage implements IStorage {
   async createOrderItem(insertOrderItem: InsertOrderItem): Promise<OrderItem> {
     const [item] = await db.insert(orderItems).values(insertOrderItem).returning();
     return item;
+  }
+
+  // Data cleanup operations for long-term database management
+  async cleanupOldOrders(): Promise<void> {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const cutoffDate = thirtyDaysAgo.toISOString().split('T')[0]; // YYYY-MM-DD format
+
+    // Delete order items first (foreign key constraint)
+    await db.delete(orderItems)
+      .where(sql`order_id IN (
+        SELECT id FROM orders 
+        WHERE DATE(created_at) < ${cutoffDate}
+      )`);
+
+    // Delete old orders
+    await db.delete(orders)
+      .where(sql`DATE(created_at) < ${cutoffDate}`);
+
+    console.log(`Cleaned up orders older than ${cutoffDate}`);
+  }
+
+  async generateDailyStats(date: string): Promise<void> {
+    // Get all completed orders for the specified date
+    const dayOrders = await db.select({
+      orderId: orders.id,
+      orderTotal: orders.totalAmount
+    })
+    .from(orders)
+    .where(sql`DATE(created_at) = ${date} AND status = 'served'`);
+
+    if (dayOrders.length === 0) return;
+
+    // Get order items for these orders with menu item details
+    const itemStats = await db.select({
+      menuItemId: orderItems.menuItemId,
+      itemName: menuItems.name,
+      quantity: orderItems.quantity,
+      itemPrice: menuItems.price
+    })
+    .from(orderItems)
+    .innerJoin(menuItems, eq(orderItems.menuItemId, menuItems.id))
+    .innerJoin(orders, eq(orderItems.orderId, orders.id))
+    .where(sql`DATE(orders.created_at) = ${date} AND orders.status = 'served'`);
+
+    // Aggregate stats by menu item
+    const aggregatedStats = new Map<number, {
+      itemName: string;
+      totalOrdered: number;
+      totalRevenue: number;
+    }>();
+
+    for (const item of itemStats) {
+      const existing = aggregatedStats.get(item.menuItemId) || {
+        itemName: item.itemName,
+        totalOrdered: 0,
+        totalRevenue: 0
+      };
+
+      existing.totalOrdered += item.quantity;
+      existing.totalRevenue += item.quantity * item.itemPrice;
+      aggregatedStats.set(item.menuItemId, existing);
+    }
+
+    // Save to daily stats table
+    for (const [menuItemId, stats] of aggregatedStats) {
+      await db.insert(dailyStats).values({
+        date,
+        menuItemId,
+        itemName: stats.itemName,
+        totalOrdered: stats.totalOrdered,
+        totalRevenue: stats.totalRevenue
+      }).onConflictDoUpdate({
+        target: [dailyStats.date, dailyStats.menuItemId],
+        set: {
+          totalOrdered: stats.totalOrdered,
+          totalRevenue: stats.totalRevenue,
+          updatedAt: sql`CURRENT_TIMESTAMP`
+        }
+      });
+    }
+
+    console.log(`Generated daily stats for ${date}: ${aggregatedStats.size} menu items`);
   }
 }
 

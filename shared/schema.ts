@@ -138,7 +138,7 @@ export type CartItem = {
   notes?: string;
 };
 
-// Daily order statistics
+// Daily order statistics - for business reporting before data cleanup
 export const dailyStats = sqliteTable("daily_stats", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   date: text("date").notNull(), // YYYY-MM-DD format
