@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeDatabase } from "./init-db";
+import { cleanupService } from "./cleanup";
 
 const app = express();
 app.use(express.json());
@@ -62,6 +63,9 @@ app.use((req, res, next) => {
     console.log("Initializing database for deployment...");
     await initializeDatabase();
   }
+
+  // Start the 30-day rolling cleanup service for long-term database management
+  cleanupService.start();
 
   // Use PORT from environment variable for production deployment
   // this serves both the API and the client.
