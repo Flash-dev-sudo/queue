@@ -158,6 +158,16 @@ export default function KitchenScreen() {
               {showHistory ? "Active Orders" : "History"}
             </Button>
             <Button
+              variant={showPopularItems ? "default" : "outline"}
+              className="mr-2"
+              onClick={() => setShowPopularItems(!showPopularItems)}
+            >
+              <span className="material-icons text-sm align-middle mr-1">
+                {showPopularItems ? "trending_down" : "trending_up"}
+              </span>
+              {showPopularItems ? "Hide Popular" : "Popular Items"}
+            </Button>
+            <Button
               variant="default"
               className="mr-2 bg-orange-500 hover:bg-orange-600"
               onClick={() => {
@@ -183,6 +193,48 @@ export default function KitchenScreen() {
             </Button>
           </div>
         </div>
+
+        {/* Popular Items Section */}
+        {showPopularItems && (
+          <div className="mb-6 bg-white rounded-lg shadow p-6">
+            <h3 className="text-lg font-semibold mb-4 text-neutral-800">
+              Most Popular Items (Last 30 Days)
+            </h3>
+            {isLoadingPopular ? (
+              <div className="text-center py-4">
+                <p className="text-neutral-500">Loading popular items...</p>
+              </div>
+            ) : popularItems && popularItems.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {popularItems.map((item, index) => (
+                  <div 
+                    key={item.itemName}
+                    className="flex items-center justify-between p-3 bg-neutral-50 rounded border"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <span className="flex items-center justify-center w-8 h-8 bg-blue-500 text-white rounded-full text-sm font-bold">
+                        {index + 1}
+                      </span>
+                      <div>
+                        <p className="font-medium text-neutral-800">{item.itemName}</p>
+                        <p className="text-sm text-neutral-500">
+                          {item.totalOrdered} orders • £{item.totalRevenue.toFixed(2)} revenue
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-lg font-bold text-blue-600">{item.percentage}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-neutral-500">No popular items data available</p>
+              </div>
+            )}
+          </div>
+        )}
 
         {isLoading ? (
           <div className="text-center py-8">
