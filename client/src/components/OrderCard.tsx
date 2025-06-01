@@ -20,8 +20,9 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
   useEffect(() => {
     const updateElapsedTime = () => {
       const now = new Date().getTime();
-      const created = new Date(order.createdAt).getTime();
-      const diffInSeconds = Math.floor((now - created) / 1000);
+      // Handle the date string format properly - treat as UTC
+      const created = new Date(order.createdAt + 'Z').getTime();
+      const diffInSeconds = Math.max(0, Math.floor((now - created) / 1000));
       
       const minutes = Math.floor(diffInSeconds / 60);
       const seconds = diffInSeconds % 60;
@@ -76,11 +77,13 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
       <div className={`${getStatusColor(order.status)} text-white px-4 py-2 flex justify-between items-center`}>
         <div>
           <h3 className="font-bold">Order #{order.orderNumber}</h3>
-          <div className="flex items-center mt-1">
-            <Clock className="w-4 h-4 mr-1" />
-            <span className="text-sm font-medium">⏱ {elapsedTime} waiting</span>
-            <span className="text-sm ml-2 opacity-75">({actualTime})</span>
-          </div>
+          {order.status !== OrderStatus.SERVED && order.status !== OrderStatus.COMPLETED && (
+            <div className="flex items-center mt-1">
+              <Clock className="w-4 h-4 mr-1" />
+              <span className="text-sm font-medium">⏱ {elapsedTime} waiting</span>
+              <span className="text-sm ml-2 opacity-75">({actualTime})</span>
+            </div>
+          )}
         </div>
         <div className="bg-white text-secondary font-bold rounded px-3 py-2 text-sm shadow-sm">
           {order.status === OrderStatus.NEW && "NEW"}
