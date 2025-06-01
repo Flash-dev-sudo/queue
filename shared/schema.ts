@@ -137,3 +137,26 @@ export type CartItem = {
   quantity: number;
   notes?: string;
 };
+
+// Daily order statistics
+export const dailyStats = sqliteTable("daily_stats", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  date: text("date").notNull(), // YYYY-MM-DD format
+  menuItemId: integer("menu_item_id").notNull(),
+  itemName: text("item_name").notNull(),
+  totalOrdered: integer("total_ordered").notNull().default(0),
+  totalRevenue: integer("total_revenue").notNull().default(0), // in pence
+  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertDailyStatsSchema = createInsertSchema(dailyStats).pick({
+  date: true,
+  menuItemId: true,
+  itemName: true,
+  totalOrdered: true,
+  totalRevenue: true,
+});
+
+export type DailyStats = typeof dailyStats.$inferSelect;
+export type InsertDailyStats = z.infer<typeof insertDailyStatsSchema>;

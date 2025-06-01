@@ -125,21 +125,21 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
               <Button
                 size="sm"
                 variant="default"
-                className={`text-sm ${!isButtonActive(OrderStatus.PREPARING) ? "bg-warning text-white" : "bg-warning text-white opacity-50"}`}
+                className={`text-sm font-semibold ${!isButtonActive(OrderStatus.PREPARING) ? "bg-orange-500 hover:bg-orange-600 text-white shadow-md" : "bg-orange-400 text-white opacity-70"}`}
                 disabled={isButtonActive(OrderStatus.PREPARING) || order.status === OrderStatus.READY || order.status === OrderStatus.SERVED}
                 onClick={() => onUpdateStatus(order.id, OrderStatus.PREPARING)}
               >
-                <span className="material-icons text-sm align-text-top">sync</span> Preparing
+                Preparing
               </Button>
               
               <Button
                 size="sm"
                 variant="default"
-                className={`text-sm ${!isButtonActive(OrderStatus.READY) ? "bg-success text-white" : "bg-success text-white opacity-50"}`}
+                className={`text-sm font-semibold ${!isButtonActive(OrderStatus.READY) ? "bg-green-500 hover:bg-green-600 text-white shadow-md" : "bg-green-400 text-white opacity-70"}`}
                 disabled={isButtonActive(OrderStatus.READY) || order.status === OrderStatus.SERVED}
                 onClick={() => onUpdateStatus(order.id, OrderStatus.READY)}
               >
-                <span className="material-icons text-sm align-text-top">done</span> Ready
+                Ready
               </Button>
             </>
           )}

@@ -110,7 +110,7 @@ export default function OrderScreen() {
             🍽️ Order Screen
           </span>
           <Link href="/">
-            <Button variant="outline" className="text-white border-white hover:bg-white hover:text-secondary font-semibold px-4 py-2">
+            <Button variant="outline" className="bg-white text-secondary border-2 border-white hover:bg-gray-100 font-semibold px-4 py-2 shadow-sm">
               🏠 Home
             </Button>
           </Link>

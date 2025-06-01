@@ -124,18 +124,14 @@ export default function OrderSummary({
                 
                 <Button
                   variant="outline"
-                  className="border-primary text-primary hover:bg-primary hover:text-white transition-colors font-medium"
-                  disabled={isSubmitting}
-                  onClick={() => {
-                    handleSendOrder();
-                    setTimeout(() => {
-                      if (!isSubmitting) {
-                        onClearCart();
-                      }
-                    }, 1000);
+                  className="border-green-500 text-green-600 hover:bg-green-500 hover:text-white transition-colors font-medium"
+                  disabled={cart.length === 0 || isSubmitting}
+                  onClick={async () => {
+                    await handleSendOrder();
+                    onClearCart();
                   }}
                 >
-                  Next Order
+                  Send & Next
                 </Button>
               </div>
             </div>
