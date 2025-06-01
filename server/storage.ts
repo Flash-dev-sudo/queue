@@ -518,8 +518,8 @@ export class MemStorage implements IStorage {
       orderNumber: order.orderNumber,
       status: order.status,
       totalAmount: order.totalAmount,
-      createdAt: typeof order.createdAt === 'string' ? order.createdAt : order.createdAt.toISOString(),
-      updatedAt: typeof order.updatedAt === 'string' ? order.updatedAt : order.updatedAt.toISOString(),
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
       items
     };
   }
@@ -660,8 +660,8 @@ export class DatabaseStorage implements IStorage {
       orderNumber: order.orderNumber,
       status: order.status,
       totalAmount: order.totalAmount,
-      createdAt: typeof order.createdAt === 'string' ? order.createdAt : order.createdAt.toISOString(),
-      updatedAt: typeof order.updatedAt === 'string' ? order.updatedAt : order.updatedAt.toISOString(),
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
       items: items.map(item => ({
         id: item.id,
         menuItemId: item.menuItemId,
