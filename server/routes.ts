@@ -110,6 +110,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log(`Sent new order notification to ${sentCount} kitchen clients`);
   };
   
+  // Manual database initialization endpoint (for deployment troubleshooting)
+  app.post('/api/init-db', async (req, res) => {
+    try {
+      const { initializeDatabase } = await import('./init-db');
+      await initializeDatabase();
+      res.json({ message: 'Database initialized successfully' });
+    } catch (error) {
+      console.error('Database initialization failed:', error);
+      res.status(500).json({ message: 'Database initialization failed', error: error.message });
+    }
+  });
+
   // API Routes
   // Get all menu categories
   app.get('/api/categories', async (req, res) => {

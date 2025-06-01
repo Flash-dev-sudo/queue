@@ -57,8 +57,9 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // Initialize database in production
-  if (app.get("env") === "production") {
+  // Initialize database on deployment (when using Turso)
+  if (process.env.TURSO_DB_URL) {
+    console.log("Initializing database for deployment...");
     await initializeDatabase();
   }
 
