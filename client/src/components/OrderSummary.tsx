@@ -46,6 +46,7 @@ export default function OrderSummary({
     toast({
       title: "Order Sent",
       description: "Order sent to kitchen successfully ✅",
+      duration: 1500, // Show for 1.5 seconds instead of default 5 seconds
     });
     
     // Generate a new order number for the next order
@@ -101,32 +102,40 @@ export default function OrderSummary({
               </div>
             </div>
             
-            <div className="space-y-2">
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  variant="outline" 
-                  className="border-secondary text-secondary hover:bg-red-50 hover:border-red-400 hover:text-red-600"
-                  disabled={cart.length === 0 || isSubmitting}
-                  onClick={handleClearCart}
-                >
-                  <Trash2 className="w-4 h-4 mr-1" />
-                  Clear Cart
-                </Button>
-                
-                <Button
-                  className="bg-primary text-white font-semibold hover:bg-opacity-90 transition-colors"
-                  disabled={cart.length === 0 || isSubmitting}
-                  onClick={handleSendOrder}
-                >
-                  📤 {isSubmitting ? "Sending..." : "Send Order"}
-                </Button>
-              </div>
+            <div className="grid grid-cols-3 gap-2">
+              <Button
+                variant="outline" 
+                className="border-secondary text-secondary hover:bg-red-50 hover:border-red-400 hover:text-red-600"
+                disabled={cart.length === 0 || isSubmitting}
+                onClick={handleClearCart}
+              >
+                <Trash2 className="w-4 h-4 mr-1" />
+                Clear Cart
+              </Button>
               
               <Button
-                className="w-full bg-secondary text-white font-bold hover:bg-opacity-90 transition-colors"
+                className="bg-primary text-white font-semibold hover:bg-opacity-90 transition-colors"
                 disabled={cart.length === 0 || isSubmitting}
+                onClick={handleSendOrder}
               >
-                💳 Pay Now
+                📤 {isSubmitting ? "Sending..." : "Send Order"}
+              </Button>
+              
+              <Button
+                variant="outline"
+                className="border-primary text-primary hover:bg-primary hover:text-white transition-colors"
+                disabled={isSubmitting}
+                onClick={() => {
+                  handleSendOrder();
+                  // Clear cart after sending for next order
+                  setTimeout(() => {
+                    if (!isSubmitting) {
+                      onClearCart();
+                    }
+                  }, 1000);
+                }}
+              >
+                ➡️ Next Order
               </Button>
             </div>
           </div>

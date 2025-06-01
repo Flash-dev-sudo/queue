@@ -170,59 +170,15 @@ export default function OrderScreen() {
               <div>Loading menu items...</div>
             ) : menuItems.length > 0 ? (
               <div className="space-y-4">
-                {(() => {
-                  // Group items for Mains category to show meal upgrades
-                  if (selectedCategory === 5) { // Mains category
-                    const groupedItems: { [key: string]: { base: MenuItemType; meal?: MenuItemType } } = {};
-                    
-                    // Filter out pizza items and only process mains items
-                    const mainsItems = menuItems.filter((item: MenuItemType) => 
-                      !item.name.toLowerCase().includes('pizza') && 
-                      (item.name.match(/^\d+\./) || item.name.includes(' Meal'))
-                    );
-                    
-                    mainsItems.forEach((item: MenuItemType) => {
-                      const baseName = item.name.replace(' Meal', '');
-                      if (item.name.includes(' Meal')) {
-                        if (!groupedItems[baseName]) {
-                          groupedItems[baseName] = { base: item }; // Fallback if base not found
-                        }
-                        groupedItems[baseName].meal = item;
-                      } else {
-                        if (!groupedItems[baseName]) {
-                          groupedItems[baseName] = { base: item };
-                        } else {
-                          groupedItems[baseName].base = item;
-                        }
-                      }
-                    });
-
-                    return Object.values(groupedItems).map(({ base, meal }) => (
-                      <MenuItem
-                        key={base.id}
-                        item={base}
-                        quantity={getItemQuantity(base.id)}
-                        onAdd={() => addToCart(base)}
-                        onRemove={() => removeFromCart(base.id)}
-                        mealItem={meal}
-                        onAddMeal={meal ? () => addToCart(meal) : undefined}
-                        onRemoveMeal={meal ? () => removeFromCart(meal.id) : undefined}
-                        mealQuantity={meal ? getItemQuantity(meal.id) : 0}
-                      />
-                    ));
-                  } else {
-                    // For other categories, show items normally
-                    return menuItems.map((item: MenuItemType) => (
-                      <MenuItem
-                        key={item.id}
-                        item={item}
-                        quantity={getItemQuantity(item.id)}
-                        onAdd={() => addToCart(item)}
-                        onRemove={() => removeFromCart(item.id)}
-                      />
-                    ));
-                  }
-                })()}
+                {menuItems.map((item: MenuItemType) => (
+                  <MenuItem
+                    key={item.id}
+                    item={item}
+                    quantity={getItemQuantity(item.id)}
+                    onAdd={() => addToCart(item)}
+                    onRemove={() => removeFromCart(item.id)}
+                  />
+                ))}
               </div>
             ) : (
               <div className="text-center py-8 text-gray-500">
