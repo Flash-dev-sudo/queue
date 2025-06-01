@@ -10,6 +10,7 @@ import {
 } from "@shared/schema";
 import { db } from "./turso-db";
 import { eq, and, sql } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 
 // Storage interface for CRUD operations
 export interface IStorage {
@@ -554,6 +555,20 @@ export class MemStorage implements IStorage {
     
     return fullOrders;
   }
+
+  async getAllOrders(): Promise<FullOrder[]> {
+    const result: FullOrder[] = [];
+    
+    for (const order of this.orders.values()) {
+      const fullOrder = await this.getFullOrder(order.id);
+      if (fullOrder) {
+        result.push(fullOrder);
+      }
+    }
+    
+    // Sort by creation time (newest first)
+    return result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
   
   // Order item methods
   async getOrderItems(orderId: number): Promise<OrderItem[]> {
@@ -742,6 +757,18 @@ export class DatabaseStorage implements IStorage {
 
     const fullOrders: FullOrder[] = [];
     for (const order of activeOrders) {
+      const fullOrder = await this.getFullOrder(order.id);
+      if (fullOrder) fullOrders.push(fullOrder);
+    }
+    return fullOrders;
+  }
+
+  async getAllOrders(): Promise<FullOrder[]> {
+    const allOrders = await db.select().from(orders)
+      .orderBy(desc(orders.createdAt));
+
+    const fullOrders: FullOrder[] = [];
+    for (const order of allOrders) {
       const fullOrder = await this.getFullOrder(order.id);
       if (fullOrder) fullOrders.push(fullOrder);
     }
