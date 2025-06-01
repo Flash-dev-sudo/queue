@@ -212,7 +212,7 @@ export default function KitchenScreen() {
                         <div>
                           <p className="font-medium text-neutral-800">{item.itemName}</p>
                           <p className="text-sm text-neutral-500">
-                            {item.totalOrdered} orders • £{item.totalRevenue.toFixed(2)} revenue
+                            {item.totalOrdered} orders • £{(item.totalRevenue / 100).toFixed(2)} revenue
                           </p>
                         </div>
                       </div>
