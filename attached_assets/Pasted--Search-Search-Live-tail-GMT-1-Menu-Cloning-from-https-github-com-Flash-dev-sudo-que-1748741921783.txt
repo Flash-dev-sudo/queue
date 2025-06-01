@@ -1,0 +1,120 @@
+
+Search
+Search
+
+Live tail
+GMT+1
+
+Menu
+==> Cloning from https://github.com/Flash-dev-sudo/queue
+==> Checking out commit 32dd325c420bf9e0228d24db2dbe6fc518a16152 in branch main
+==> Downloading cache...
+==> Transferred 236MB in 8s. Extraction took 12s.
+==> Using Node.js version 22.14.0 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Using Bun version 1.1.0 (default)
+==> Docs on specifying a bun version: https://render.com/docs/bun-version
+==> Running build command 'npm install --include=dev && npm run build'...
+up to date, audited 521 packages in 2s
+70 packages are looking for funding
+  run `npm fund` for details
+7 moderate severity vulnerabilities
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+vite v5.4.14 building for production...
+transforming...
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 2134 modules transformed.
+rendering chunks...
+computing gzip size...
+../dist/public/index.html                   1.40 kB │ gzip:   0.68 kB
+../dist/public/assets/index-CvFJbaa5.css   65.46 kB │ gzip:  11.40 kB
+../dist/public/assets/index-j3rg3CBy.js   418.68 kB │ gzip: 130.14 kB
+✓ built in 3.97s
+  dist/index.js  48.8kb
+⚡ Done in 5ms
+==> Uploading build...
+==> Uploaded in 6.7s. Compression took 3.1s
+==> Build successful 🎉
+==> Deploying...
+==> Running 'npm start'
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+Initializing database for deployment...
+Initializing database tables...
+Database initialized successfully!
+1:35:34 AM [express] serving on port 10000
+==> Your service is live 🎉
+WebSocket client connected
+Client registered as order
+1:36:35 AM [express] GET /api/categories 304 in 166ms :: [{"id":1,"name":"Starters","icon":"utensils…
+1:36:35 AM [express] GET /api/menu-items 200 in 198ms :: [{"id":1471,"categoryId":1,"name":"Chips","…
+Error creating order: TypeError: order.createdAt.toISOString is not a function
+    at DatabaseStorage.getFullOrder (file:///opt/render/project/src/dist/index.js:804:34)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///opt/render/project/src/dist/index.js:1001:25
+1:36:47 AM [express] POST /api/orders 500 in 410ms :: {"message":"Error creating order"}
+Error creating order: TypeError: order.createdAt.toISOString is not a function
+    at DatabaseStorage.getFullOrder (file:///opt/render/project/src/dist/index.js:804:34)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///opt/render/project/src/dist/index.js:1001:25
+1:36:52 AM [express] POST /api/orders 500 in 396ms :: {"message":"Error creating order"}
+WebSocket client disconnected
+WebSocket client connected
+Client registered as kitchen
+Error fetching active orders: TypeError: order.createdAt.toISOString is not a function
+    at DatabaseStorage.getFullOrder (file:///opt/render/project/src/dist/index.js:804:34)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async DatabaseStorage.getActiveOrders (file:///opt/render/project/src/dist/index.js:824:25)
+    at async file:///opt/render/project/src/dist/index.js:956:28
+1:36:56 AM [express] GET /api/orders/active 500 in 82ms :: {"message":"Error fetching active orders"}
+Error handling WebSocket message: TypeError: order.createdAt.toISOString is not a function
+    at DatabaseStorage.getFullOrder (file:///opt/render/project/src/dist/index.js:804:34)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async DatabaseStorage.getActiveOrders (file:///opt/render/project/src/dist/index.js:824:25)
+    at async WebSocket.<anonymous> (file:///opt/render/project/src/dist/index.js:859:34)
+WebSocket client connected
+Client registered as order
+WebSocket client disconnected
+WebSocket client connected
+Client registered as order
+WebSocket client connected
+Client registered as kitchen
+Error handling WebSocket message: TypeError: order.createdAt.toISOString is not a function
+    at DatabaseStorage.getFullOrder (file:///opt/render/project/src/dist/index.js:804:34)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async DatabaseStorage.getActiveOrders (file:///opt/render/project/src/dist/index.js:824:25)
+    at async WebSocket.<anonymous> (file:///opt/render/project/src/dist/index.js:859:34)
+Error creating order: TypeError: order.createdAt.toISOString is not a function
+    at DatabaseStorage.getFullOrder (file:///opt/render/project/src/dist/index.js:804:34)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///opt/render/project/src/dist/index.js:1001:25
+1:37:42 AM [express] POST /api/orders 500 in 471ms :: {"message":"Error creating order"}
+Error creating order: TypeError: order.createdAt.toISOString is not a function
+    at DatabaseStorage.getFullOrder (file:///opt/render/project/src/dist/index.js:804:34)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///opt/render/project/src/dist/index.js:1001:25
+1:37:47 AM [express] POST /api/orders 500 in 367ms :: {"message":"Error creating order"}
+WebSocket client disconnected
+WebSocket client connected
+Client registered as kitchen
+Error fetching active orders: TypeError: order.createdAt.toISOString is not a function
+    at DatabaseStorage.getFullOrder (file:///opt/render/project/src/dist/index.js:804:34)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async DatabaseStorage.getActiveOrders (file:///opt/render/project/src/dist/index.js:824:25)
+    at async file:///opt/render/project/src/dist/index.js:956:28
+1:37:51 AM [express] GET /api/orders/active 500 in 88ms :: {"message":"Error fetching active orders"}
+Error handling WebSocket message: TypeError: order.createdAt.toISOString is not a function
+    at DatabaseStorage.getFullOrder (file:///opt/render/project/src/dist/index.js:804:34)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async DatabaseStorage.getActiveOrders (file:///opt/render/project/src/dist/index.js:824:25)
+    at async WebSocket.<anonymous> (file:///opt/render/project/src/dist/index.js:859:34)
+WebSocket client connected
+Client registered as order
