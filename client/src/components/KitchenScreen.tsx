@@ -147,24 +147,20 @@ export default function KitchenScreen() {
           
           <div>
             <Button
-              variant={showHistory ? "default" : "outline"}
+              variant="outline"
               className="mr-2"
-              onClick={() => setShowHistory(!showHistory)}
+              onClick={() => {
+                if (viewMode === 'active') setViewMode('history');
+                else if (viewMode === 'history') setViewMode('popular');
+                else setViewMode('active');
+              }}
             >
               <span className="material-icons text-sm align-middle mr-1">
-                {showHistory ? "view_list" : "history"}
+                {viewMode === 'active' ? "history" : 
+                 viewMode === 'history' ? "trending_up" : "view_list"}
               </span>
-              {showHistory ? "Active Orders" : "History"}
-            </Button>
-            <Button
-              variant={showPopularItems ? "default" : "outline"}
-              className="mr-2"
-              onClick={() => setShowPopularItems(!showPopularItems)}
-            >
-              <span className="material-icons text-sm align-middle mr-1">
-                {showPopularItems ? "trending_down" : "trending_up"}
-              </span>
-              {showPopularItems ? "Hide Popular" : "Popular Items"}
+              {viewMode === 'active' ? "View History" : 
+               viewMode === 'history' ? "View Analytics" : "Back to Active"}
             </Button>
             <Button
               variant="default"
@@ -197,7 +193,7 @@ export default function KitchenScreen() {
         </div>
 
         {/* Popular Items Section */}
-        {showPopularItems && (
+        {viewMode === 'popular' && (
           <div className="mb-6 bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-4 text-neutral-800">
               Most Popular Items (Last 30 Days)
@@ -206,9 +202,9 @@ export default function KitchenScreen() {
               <div className="text-center py-4">
                 <p className="text-neutral-500">Loading popular items...</p>
               </div>
-            ) : popularItems && popularItems.length > 0 ? (
+            ) : popularItems && Array.isArray(popularItems) && popularItems.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {popularItems.map((item, index) => (
+                {popularItems.map((item: any, index: number) => (
                   <div 
                     key={item.itemName}
                     className="flex items-center justify-between p-3 bg-neutral-50 rounded border"
@@ -238,31 +234,36 @@ export default function KitchenScreen() {
           </div>
         )}
 
-        {isLoading ? (
-          <div className="text-center py-8">
-            <p>Loading orders...</p>
-          </div>
-        ) : filteredOrders.length === 0 ? (
-          <div className="text-center py-8 bg-white rounded-lg shadow p-6">
-            <span className="material-icons text-4xl text-neutral-300 mb-2">receipt_long</span>
-            <h3 className="text-xl font-medium mb-2">No Orders</h3>
-            <p className="text-neutral-500">
-              {showHistory 
-                ? "No order history available" 
-                : "No active orders at the moment"}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-            {filteredOrders.map((order) => (
-              <OrderCard
-                key={order.id}
-                order={order}
-                isNew={order.id === newOrderId}
-                onUpdateStatus={handleUpdateStatus}
-              />
-            ))}
-          </div>
+        {/* Orders Display - only show when not in popular items mode */}
+        {viewMode !== 'popular' && (
+          <>
+            {isLoading ? (
+              <div className="text-center py-8">
+                <p>Loading orders...</p>
+              </div>
+            ) : filteredOrders.length === 0 ? (
+              <div className="text-center py-8 bg-white rounded-lg shadow p-6">
+                <span className="material-icons text-4xl text-neutral-300 mb-2">receipt_long</span>
+                <h3 className="text-xl font-medium mb-2">No Orders</h3>
+                <p className="text-neutral-500">
+                  {viewMode === 'history'
+                    ? "No order history available" 
+                    : "No active orders at the moment"}
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                {filteredOrders.map((order) => (
+                  <OrderCard
+                    key={order.id}
+                    order={order}
+                    isNew={order.id === newOrderId}
+                    onUpdateStatus={handleUpdateStatus}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
