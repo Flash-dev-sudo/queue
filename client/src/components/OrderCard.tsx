@@ -82,7 +82,7 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
             <span className="text-sm ml-2 opacity-75">({actualTime})</span>
           </div>
         </div>
-        <div className="bg-white text-secondary font-bold rounded px-2 py-1 text-sm">
+        <div className="bg-white text-secondary font-bold rounded px-3 py-2 text-sm shadow-sm">
           {order.status === OrderStatus.NEW && "NEW"}
           {order.status === OrderStatus.PREPARING && "PREPARING"}
           {order.status === OrderStatus.READY && "READY"}

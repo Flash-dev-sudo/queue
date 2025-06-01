@@ -102,41 +102,42 @@ export default function OrderSummary({
               </div>
             </div>
             
-            <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-3">
               <Button
-                variant="outline" 
-                className="border-secondary text-secondary hover:bg-red-50 hover:border-red-400 hover:text-red-600"
-                disabled={cart.length === 0 || isSubmitting}
-                onClick={handleClearCart}
-              >
-                <Trash2 className="w-4 h-4 mr-1" />
-                Clear Cart
-              </Button>
-              
-              <Button
-                className="bg-primary text-white font-semibold hover:bg-opacity-90 transition-colors"
+                className="w-full bg-primary text-white font-semibold hover:bg-opacity-90 transition-colors py-3"
                 disabled={cart.length === 0 || isSubmitting}
                 onClick={handleSendOrder}
               >
-                📤 {isSubmitting ? "Sending..." : "Send Order"}
+                {isSubmitting ? "Sending..." : "Send Order"}
               </Button>
               
-              <Button
-                variant="outline"
-                className="border-primary text-primary hover:bg-primary hover:text-white transition-colors"
-                disabled={isSubmitting}
-                onClick={() => {
-                  handleSendOrder();
-                  // Clear cart after sending for next order
-                  setTimeout(() => {
-                    if (!isSubmitting) {
-                      onClearCart();
-                    }
-                  }, 1000);
-                }}
-              >
-                ➡️ Next Order
-              </Button>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  variant="outline" 
+                  className="border-red-400 text-red-600 hover:bg-red-50 hover:border-red-500 font-medium"
+                  disabled={cart.length === 0 || isSubmitting}
+                  onClick={handleClearCart}
+                >
+                  <Trash2 className="w-4 h-4 mr-1" />
+                  Clear Cart
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="border-primary text-primary hover:bg-primary hover:text-white transition-colors font-medium"
+                  disabled={isSubmitting}
+                  onClick={() => {
+                    handleSendOrder();
+                    setTimeout(() => {
+                      if (!isSubmitting) {
+                        onClearCart();
+                      }
+                    }, 1000);
+                  }}
+                >
+                  Next Order
+                </Button>
+              </div>
             </div>
           </div>
         </>
