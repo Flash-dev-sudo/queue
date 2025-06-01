@@ -12,8 +12,7 @@ export default function KitchenScreen() {
   const { toast } = useToast();
   const [orders, setOrders] = useState<FullOrder[]>([]);
   const [newOrderId, setNewOrderId] = useState<number | null>(null);
-  const [showHistory, setShowHistory] = useState(false);
-  const [showPopularItems, setShowPopularItems] = useState(false);
+  const [viewMode, setViewMode] = useState<'active' | 'history' | 'popular'>('active');
   
   // Fetch active orders
   const { 
@@ -30,7 +29,7 @@ export default function KitchenScreen() {
     isLoading: isLoadingPopular 
   } = useQuery({ 
     queryKey: ['/api/popular-items'],
-    enabled: showPopularItems,
+    enabled: viewMode === 'popular',
   });
   
   // Setup WebSocket listener
@@ -93,14 +92,13 @@ export default function KitchenScreen() {
     });
   };
   
-  // Filter orders based on showHistory setting
-  const filteredOrders = showHistory 
-    ? orders 
+  // Filter orders based on view mode
+  const filteredOrders = viewMode === 'history'
+    ? orders.filter(order => order.status === OrderStatus.SERVED)
     : orders.filter(order => 
         order.status === OrderStatus.NEW || 
         order.status === OrderStatus.PREPARING || 
         order.status === OrderStatus.READY
-        // Removed SERVED status so those orders disappear from the active view
       );
   
   // Alert staff (play notification sound)
@@ -130,7 +128,8 @@ export default function KitchenScreen() {
         <div className="flex justify-between mb-4">
           <div className="flex items-center space-x-4">
             <h2 className="text-xl font-heading font-semibold">
-              {showHistory ? "Order History" : "Active Orders"}
+              {viewMode === 'history' ? "Order History" : 
+               viewMode === 'popular' ? "Popular Items Analytics" : "Active Orders"}
             </h2>
             
             {/* Status indicator */}
@@ -185,11 +184,14 @@ export default function KitchenScreen() {
               Clear Screen
             </Button>
             <Button
-              variant="destructive"
-              onClick={alertStaff}
+              variant="default"
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={() => {
+                window.location.reload();
+              }}
             >
-              <span className="material-icons text-sm align-middle mr-1">notifications</span>
-              Alert Staff
+              <span className="material-icons text-sm align-middle mr-1">refresh</span>
+              Refresh
             </Button>
           </div>
         </div>
