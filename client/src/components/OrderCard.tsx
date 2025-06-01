@@ -119,32 +119,7 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
             <span className="material-icons text-sm align-text-top">receipt</span> Print
           </Button>
           
-          {/* Status buttons */}
-          {order.status !== OrderStatus.SERVED && order.status !== OrderStatus.COMPLETED && (
-            <>
-              <Button
-                size="sm"
-                variant="default"
-                className={`text-sm font-semibold ${!isButtonActive(OrderStatus.PREPARING) ? "bg-orange-500 hover:bg-orange-600 text-white shadow-md" : "bg-orange-400 text-white opacity-70"}`}
-                disabled={isButtonActive(OrderStatus.PREPARING) || order.status === OrderStatus.READY || order.status === OrderStatus.SERVED}
-                onClick={() => onUpdateStatus(order.id, OrderStatus.PREPARING)}
-              >
-                Preparing
-              </Button>
-              
-              <Button
-                size="sm"
-                variant="default"
-                className={`text-sm font-semibold ${!isButtonActive(OrderStatus.READY) ? "bg-green-500 hover:bg-green-600 text-white shadow-md" : "bg-green-400 text-white opacity-70"}`}
-                disabled={isButtonActive(OrderStatus.READY) || order.status === OrderStatus.SERVED}
-                onClick={() => onUpdateStatus(order.id, OrderStatus.READY)}
-              >
-                Ready
-              </Button>
-            </>
-          )}
-              
-          {/* Always show Served button for all orders */}
+          {/* Only Served button */}
           {order.status !== OrderStatus.SERVED && (
             <Button
               size="sm"

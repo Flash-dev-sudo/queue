@@ -16,7 +16,7 @@ export default function MenuCategory({ category, isSelected, onSelect }: MenuCat
       onClick={onSelect}
     >
       <div className="flex items-center space-x-3">
-        <span className="text-lg">{category.icon}</span>
+        <span className="material-icons text-lg">{category.icon}</span>
         <span className="font-medium text-sm">{category.name}</span>
       </div>
     </button>
