@@ -13,6 +13,7 @@ export default function KitchenScreen() {
   const [orders, setOrders] = useState<FullOrder[]>([]);
   const [newOrderId, setNewOrderId] = useState<number | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [showPopularItems, setShowPopularItems] = useState(false);
   
   // Fetch active orders
   const { 
@@ -21,6 +22,15 @@ export default function KitchenScreen() {
     error 
   } = useQuery({ 
     queryKey: ['/api/orders/active'],
+  });
+
+  // Fetch popular items
+  const { 
+    data: popularItems, 
+    isLoading: isLoadingPopular 
+  } = useQuery({ 
+    queryKey: ['/api/popular-items'],
+    enabled: showPopularItems,
   });
   
   // Setup WebSocket listener

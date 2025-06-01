@@ -46,6 +46,14 @@ export interface IStorage {
   // Data cleanup operations
   cleanupOldOrders(): Promise<void>;
   generateDailyStats(date: string): Promise<void>;
+  
+  // Analytics operations
+  getPopularItems(): Promise<Array<{
+    itemName: string;
+    totalOrdered: number;
+    totalRevenue: number;
+    percentage: number;
+  }>>;
 }
 
 export class MemStorage implements IStorage {
@@ -569,6 +577,40 @@ export class MemStorage implements IStorage {
     // MemStorage doesn't persist stats
     console.log(`MemStorage: Stats generation skipped for ${date}`);
   }
+
+  async getPopularItems(): Promise<Array<{
+    itemName: string;
+    totalOrdered: number;
+    totalRevenue: number;
+    percentage: number;
+  }>> {
+    // MemStorage: Calculate from current orders
+    const itemStats = new Map<string, { totalOrdered: number; totalRevenue: number }>();
+    let totalAllOrders = 0;
+
+    for (const order of this.orders.values()) {
+      if (order.status === OrderStatus.SERVED) {
+        for (const orderItem of this.orderItems.values()) {
+          if (orderItem.orderId === order.id) {
+            const existing = itemStats.get(orderItem.name) || { totalOrdered: 0, totalRevenue: 0 };
+            existing.totalOrdered += orderItem.quantity;
+            existing.totalRevenue += orderItem.quantity * orderItem.price;
+            itemStats.set(orderItem.name, existing);
+            totalAllOrders += orderItem.quantity;
+          }
+        }
+      }
+    }
+
+    const result = Array.from(itemStats.entries()).map(([itemName, stats]) => ({
+      itemName,
+      totalOrdered: stats.totalOrdered,
+      totalRevenue: stats.totalRevenue,
+      percentage: totalAllOrders > 0 ? Math.round((stats.totalOrdered / totalAllOrders) * 100) : 0
+    }));
+
+    return result.sort((a, b) => b.totalOrdered - a.totalOrdered).slice(0, 10);
+  }
 }
 
 // Database Storage Implementation
@@ -795,6 +837,54 @@ export class DatabaseStorage implements IStorage {
     }
 
     console.log(`Generated daily stats for ${date}: ${aggregatedStats.size} menu items`);
+  }
+
+  async getPopularItems(): Promise<Array<{
+    itemName: string;
+    totalOrdered: number;
+    totalRevenue: number;
+    percentage: number;
+  }>> {
+    // Get popular items from last 30 days of served orders
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const cutoffDate = thirtyDaysAgo.toISOString().split('T')[0];
+
+    const itemStats = await db.select({
+      menuItemId: orderItems.menuItemId,
+      itemName: menuItems.name,
+      quantity: orderItems.quantity,
+      itemPrice: orderItems.price
+    })
+    .from(orderItems)
+    .innerJoin(menuItems, eq(orderItems.menuItemId, menuItems.id))
+    .innerJoin(orders, eq(orderItems.orderId, orders.id))
+    .where(sql`DATE(orders.created_at) >= ${cutoffDate} AND orders.status = 'served'`);
+
+    // Aggregate stats by menu item
+    const aggregatedStats = new Map<string, {
+      totalOrdered: number;
+      totalRevenue: number;
+    }>();
+    
+    let totalAllOrders = 0;
+
+    for (const item of itemStats) {
+      const existing = aggregatedStats.get(item.itemName) || { totalOrdered: 0, totalRevenue: 0 };
+      existing.totalOrdered += item.quantity;
+      existing.totalRevenue += item.quantity * item.itemPrice;
+      aggregatedStats.set(item.itemName, existing);
+      totalAllOrders += item.quantity;
+    }
+
+    const result = Array.from(aggregatedStats.entries()).map(([itemName, stats]) => ({
+      itemName,
+      totalOrdered: stats.totalOrdered,
+      totalRevenue: stats.totalRevenue,
+      percentage: totalAllOrders > 0 ? Math.round((stats.totalOrdered / totalAllOrders) * 100) : 0
+    }));
+
+    return result.sort((a, b) => b.totalOrdered - a.totalOrdered).slice(0, 10);
   }
 }
 

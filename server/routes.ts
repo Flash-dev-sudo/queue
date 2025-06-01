@@ -171,6 +171,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: 'Error fetching active orders' });
     }
   });
+
+  // Get popular items from last 30 days
+  app.get('/api/popular-items', async (req, res) => {
+    try {
+      const popularItems = await storage.getPopularItems();
+      res.json(popularItems);
+    } catch (error) {
+      console.error('Error fetching popular items:', error);
+      res.status(500).json({ message: 'Error fetching popular items' });
+    }
+  });
   
   // Create new order
   app.post('/api/orders', async (req, res) => {
