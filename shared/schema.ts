@@ -1,10 +1,11 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // User model (from template)
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
 });
@@ -14,39 +15,38 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
 });
 
-// Menu item categories
-export const categories = pgTable("categories", {
-  id: serial("id").primaryKey(),
+// Categories
+export const categories = sqliteTable("categories", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
   icon: text("icon").notNull(),
-  displayOrder: integer("display_order").notNull(),
 });
 
 export const insertCategorySchema = createInsertSchema(categories).pick({
   name: true,
   icon: true,
-  displayOrder: true,
 });
 
 // Menu items
-export const menuItems = pgTable("menu_items", {
-  id: serial("id").primaryKey(),
+export const menuItems = sqliteTable("menu_items", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  categoryId: integer("category_id").notNull(),
   name: text("name").notNull(),
   description: text("description"),
-  price: integer("price").notNull(), // Price in pennies (e.g., £2.50 = 250)
-  categoryId: integer("category_id").notNull(),
-  available: boolean("available").notNull().default(true),
+  price: integer("price").notNull(), // Price in pennies to avoid floating point issues
+  available: integer("available", { mode: "boolean" }).notNull().default(true),
+  image: text("image"),
 });
 
 export const insertMenuItemSchema = createInsertSchema(menuItems).pick({
+  categoryId: true,
   name: true,
   description: true,
   price: true,
-  categoryId: true,
   available: true,
+  image: true,
 });
 
-// Order status enum
 export const OrderStatus = {
   NEW: "new",
   PREPARING: "preparing",
@@ -57,13 +57,13 @@ export const OrderStatus = {
 } as const;
 
 // Orders
-export const orders = pgTable("orders", {
-  id: serial("id").primaryKey(),
+export const orders = sqliteTable("orders", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   orderNumber: text("order_number").notNull().unique(),
   status: text("status").notNull().default(OrderStatus.NEW),
   totalAmount: integer("total_amount").notNull(), // Total in pennies
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const insertOrderSchema = createInsertSchema(orders).pick({
@@ -73,8 +73,8 @@ export const insertOrderSchema = createInsertSchema(orders).pick({
 });
 
 // Order items (items in an order)
-export const orderItems = pgTable("order_items", {
-  id: serial("id").primaryKey(),
+export const orderItems = sqliteTable("order_items", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   orderId: integer("order_id").notNull(),
   menuItemId: integer("menu_item_id").notNull(),
   name: text("name").notNull(), // Store name at time of order
@@ -92,7 +92,7 @@ export const insertOrderItemSchema = createInsertSchema(orderItems).pick({
   notes: true,
 });
 
-// Type definitions
+// Type exports
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
@@ -109,7 +109,7 @@ export type OrderWithItems = Order & { items: OrderItem[] };
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
 
-// Order item with menu item details for the client
+// Helper types for complex queries
 export type OrderItemWithDetails = {
   id: number;
   menuItemId: number;
@@ -119,7 +119,6 @@ export type OrderItemWithDetails = {
   notes?: string;
 };
 
-// Full order with items for the client
 export type FullOrder = {
   id: number;
   orderNumber: string;
@@ -130,7 +129,6 @@ export type FullOrder = {
   items: OrderItemWithDetails[];
 };
 
-// CartItem type for the client
 export type CartItem = {
   menuItemId: number;
   name: string;
