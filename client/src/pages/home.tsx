@@ -41,11 +41,21 @@ export default function Home() {
             </Button>
           </Link>
           
-
+          <Link href="/kitchen">
+            <Button className="w-full h-16 text-lg bg-green-600 hover:bg-green-700 text-white">
+              <div className="flex items-center justify-center w-full">
+                <span className="mr-3 text-2xl">👨‍🍳</span>
+                <div>
+                  <div>Kitchen Display</div>
+                  <div className="text-sm mt-1 opacity-90">For Kitchen Staff</div>
+                </div>
+              </div>
+            </Button>
+          </Link>
         </div>
         
         <div className="mt-8 text-sm text-gray-500">
-          <p>Welcome to the Order System</p>
+          <p>Choose your work station to get started</p>
           <p className="mt-1 text-xs">Staff logged in successfully</p>
         </div>
       </div>
