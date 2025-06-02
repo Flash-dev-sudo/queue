@@ -11,47 +11,62 @@ export function useOrder() {
   const { sendMessage } = useWebSocket({});
   
   // Add item to cart
-  const addToCart = (item: MenuItem) => {
+  const addToCart = (item: MenuItem, customizations?: any) => {
     // Make sure price is a valid number
     const itemPrice = typeof item.price === 'number' && !isNaN(item.price) ? item.price : 0;
     
     setCart(prevCart => {
-      const existingItem = prevCart.find(cartItem => cartItem.menuItemId === item.id);
+      // Create a unique key for items with customizations
+      const customizationKey = customizations ? JSON.stringify(customizations) : '';
+      const existingItem = prevCart.find(cartItem => 
+        cartItem.menuItemId === item.id && 
+        JSON.stringify(cartItem.customizations || {}) === customizationKey
+      );
       
       if (existingItem) {
-        // Increase quantity if item already exists
+        // Increase quantity if item with same customizations already exists
         return prevCart.map(cartItem => 
-          cartItem.menuItemId === item.id 
+          cartItem.menuItemId === item.id && 
+          JSON.stringify(cartItem.customizations || {}) === customizationKey
             ? { ...cartItem, quantity: cartItem.quantity + 1 } 
             : cartItem
         );
       } else {
-        // Add new item to cart with validated price
+        // Add new item to cart with validated price and customizations
         return [...prevCart, {
           menuItemId: item.id,
           name: item.name,
-          price: itemPrice, // Use validated price
-          quantity: 1
+          price: itemPrice,
+          quantity: 1,
+          customizations: customizations
         }];
       }
     });
   };
   
-  // Remove item from cart
-  const removeFromCart = (menuItemId: number) => {
+  // Remove item from cart (supports customizations)
+  const removeFromCart = (menuItemId: number, customizations?: any) => {
     setCart(prevCart => {
-      const existingItem = prevCart.find(cartItem => cartItem.menuItemId === menuItemId);
+      const customizationKey = customizations ? JSON.stringify(customizations) : '';
+      const existingItem = prevCart.find(cartItem => 
+        cartItem.menuItemId === menuItemId &&
+        JSON.stringify(cartItem.customizations || {}) === customizationKey
+      );
       
       if (existingItem && existingItem.quantity > 1) {
         // Decrease quantity if more than 1
         return prevCart.map(cartItem => 
-          cartItem.menuItemId === menuItemId 
+          cartItem.menuItemId === menuItemId && 
+          JSON.stringify(cartItem.customizations || {}) === customizationKey
             ? { ...cartItem, quantity: cartItem.quantity - 1 } 
             : cartItem
         );
       } else {
         // Remove item completely if quantity is 1
-        return prevCart.filter(cartItem => cartItem.menuItemId !== menuItemId);
+        return prevCart.filter(cartItem => 
+          !(cartItem.menuItemId === menuItemId && 
+            JSON.stringify(cartItem.customizations || {}) === customizationKey)
+        );
       }
     });
   };

@@ -8,7 +8,7 @@ import { Trash2 } from "lucide-react";
 
 interface OrderSummaryProps {
   cart: CartItem[];
-  onRemoveItem: (menuItemId: number) => void;
+  onRemoveItem: (menuItemId: number, customizations?: any) => void;
   onClearCart: () => void;
   onSendOrder: () => Promise<void>;
   isSubmitting: boolean;
@@ -76,11 +76,11 @@ export default function OrderSummary({
         <>
           <div className="flex-1 overflow-y-auto px-4 py-4">
             <div className="space-y-3">
-              {cart.map((item) => (
+              {cart.map((item, index) => (
                 <OrderItem
-                  key={item.menuItemId}
+                  key={`${item.menuItemId}-${index}-${JSON.stringify(item.customizations || {})}`}
                   item={item}
-                  onRemove={() => onRemoveItem(item.menuItemId)}
+                  onRemove={() => onRemoveItem(item.menuItemId, item.customizations)}
                 />
               ))}
             </div>

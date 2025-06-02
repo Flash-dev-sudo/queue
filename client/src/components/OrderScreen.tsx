@@ -94,10 +94,10 @@ export default function OrderScreen() {
     return category ? category.name : "";
   }, [categories, selectedCategory]);
 
-  // Get item quantity in cart
+  // Get item quantity in cart (sum all variations of the same item)
   const getItemQuantity = (itemId: number) => {
-    const item = cart.find(cartItem => cartItem.menuItemId === itemId);
-    return item ? item.quantity : 0;
+    const items = cart.filter(cartItem => cartItem.menuItemId === itemId);
+    return items.reduce((total, item) => total + item.quantity, 0);
   };
   
   return (
@@ -175,7 +175,7 @@ export default function OrderScreen() {
                     key={item.id}
                     item={item}
                     quantity={getItemQuantity(item.id)}
-                    onAdd={() => addToCart(item)}
+                    onAdd={(customizations?: any) => addToCart(item, customizations)}
                     onRemove={() => removeFromCart(item.id)}
                   />
                 ))}
