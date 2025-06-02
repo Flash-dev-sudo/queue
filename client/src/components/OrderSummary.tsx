@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import OrderItem from "@/components/OrderItem";
 import { CartItem } from "@shared/schema";
-import { formatPrice, calculateSubtotal, calculateTax, calculateTotal } from "@/lib/utils/order-utils";
+import { formatPrice, calculateSubtotal } from "@/lib/utils/order-utils";
 import { useToast } from "@/hooks/use-toast";
 import { Trash2 } from "lucide-react";
 
@@ -30,8 +30,7 @@ export default function OrderSummary({
   });
   
   const subtotal = calculateSubtotal(cart);
-  const tax = calculateTax(subtotal);
-  const total = calculateTotal(subtotal, tax);
+  const total = subtotal; // No tax calculation needed
 
   const handleClearCart = () => {
     onClearCart();
@@ -88,15 +87,7 @@ export default function OrderSummary({
           
           <div className="bg-white border-t px-4 py-4 flex-shrink-0">
             <div className="space-y-2 mb-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-neutral-600">Subtotal</span>
-                <span className="font-medium">{formatPrice(subtotal)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-neutral-600">Tax (20%)</span>
-                <span className="font-medium">{formatPrice(tax)}</span>
-              </div>
-              <div className="flex justify-between font-bold text-lg pt-2 border-t border-neutral-200">
+              <div className="flex justify-between font-bold text-lg">
                 <span>Total</span>
                 <span className="text-primary">{formatPrice(total)}</span>
               </div>

@@ -14,27 +14,17 @@ interface MenuItemProps {
   quantity: number;
   onAdd: (customizations?: any) => void;
   onRemove: () => void;
-  mealItem?: MenuItemType; // The corresponding meal version
-  onAddMeal?: (customizations?: any) => void;
-  onRemoveMeal?: () => void;
-  mealQuantity?: number;
 }
 
 export default function MenuItem({ 
   item, 
   quantity, 
   onAdd, 
-  onRemove, 
-  mealItem, 
-  onAddMeal, 
-  onRemoveMeal, 
-  mealQuantity = 0 
+  onRemove
 }: MenuItemProps) {
-  const [isMeal, setIsMeal] = useState(false);
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const [chipType, setChipType] = useState("normal");
   const [burgerToppings, setBurgerToppings] = useState<string[]>([]);
-  const hasMealOption = !!mealItem;
 
   // Check if item needs customization
   const needsCustomization = (itemName: string) => {
@@ -69,64 +59,33 @@ export default function MenuItem({
     return null;
   };
 
-  const handleMealToggle = (checked: boolean) => {
-    setIsMeal(checked);
-    // When switching to meal, transfer quantity
-    if (checked && quantity > 0 && onAddMeal) {
-      for (let i = 0; i < quantity; i++) {
-        onAddMeal();
-      }
-      // Remove from regular item
-      for (let i = 0; i < quantity; i++) {
-        onRemove();
-      }
-    } else if (!checked && mealQuantity > 0 && onRemoveMeal) {
-      // When switching back to regular, transfer quantity
-      for (let i = 0; i < mealQuantity; i++) {
-        onRemoveMeal();
-      }
-      // Add to regular item
-      for (let i = 0; i < mealQuantity; i++) {
-        onAdd();
-      }
-    }
-  };
-
   // Handle card click - add item with customization if needed
   const handleCardClick = (e: React.MouseEvent) => {
-    // Don't trigger if clicking on counter buttons or switches
-    if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('[role="switch"]')) {
+    // Don't trigger if clicking on counter buttons
+    if ((e.target as HTMLElement).closest('button')) {
       return;
     }
 
-    const currentItem = isMeal ? mealItem : item;
-    const currentOnAdd = isMeal ? onAddMeal : onAdd;
-    
-    if (!currentItem || !currentOnAdd) return;
-
-    if (needsCustomization(currentItem.name)) {
+    if (needsCustomization(item.name)) {
       setIsCustomizationOpen(true);
     } else {
-      currentOnAdd();
+      onAdd();
     }
   };
 
   // Handle customization confirmation
   const handleCustomizationConfirm = () => {
-    const currentOnAdd = isMeal ? onAddMeal : onAdd;
-    if (!currentOnAdd) return;
-
     const customizations: any = {};
     
-    if (chipType && getCustomizationOptions(currentItem?.name || "")?.type === "chips") {
+    if (chipType && getCustomizationOptions(item.name)?.type === "chips") {
       customizations.chipType = chipType;
     }
     
-    if (burgerToppings.length > 0 && getCustomizationOptions(currentItem?.name || "")?.type === "burger") {
+    if (burgerToppings.length > 0 && getCustomizationOptions(item.name)?.type === "burger") {
       customizations.toppings = burgerToppings;
     }
 
-    currentOnAdd(customizations);
+    onAdd(customizations);
     setIsCustomizationOpen(false);
   };
 
@@ -138,55 +97,30 @@ export default function MenuItem({
     );
   };
 
-  const currentItem = isMeal ? mealItem : item;
-  const currentQuantity = isMeal ? mealQuantity : quantity;
-  const currentOnAdd = isMeal ? onAddMeal : onAdd;
-  const currentOnRemove = isMeal ? onRemoveMeal : onRemove;
-
-  if (!currentItem || !currentOnAdd || !currentOnRemove) {
-    return null;
-  }
-
-  const customizationOptions = getCustomizationOptions(currentItem?.name || "");
+  const customizationOptions = getCustomizationOptions(item.name);
 
   return (
     <>
       <div 
         className={`rounded-lg border shadow-sm p-3 cursor-pointer transition-all ${
-          currentQuantity > 0 ? "bg-primary/5 border-primary" : "hover:border-neutral-300 hover:shadow-md"
+          quantity > 0 ? "bg-primary/5 border-primary" : "hover:border-neutral-300 hover:shadow-md"
         }`} 
-        data-item-id={currentItem.id}
+        data-item-id={item.id}
         onClick={handleCardClick}
       >
         <div className="flex justify-between items-center">
           <div className="flex-1">
-            <h3 className="font-bold text-secondary">{currentItem.name}</h3>
-            {currentItem.description && (
-              <p className="text-neutral-500 text-sm line-clamp-1">{currentItem.description}</p>
+            <h3 className="font-bold text-secondary">{item.name}</h3>
+            {item.description && (
+              <p className="text-neutral-500 text-sm line-clamp-1">{item.description}</p>
             )}
-            <p className="font-semibold text-primary mt-1">{formatPrice(currentItem.price)}</p>
-            
-            {hasMealOption && (
-              <div className="flex items-center gap-2 mt-2">
-                <Switch
-                  id={`meal-${item.id}`}
-                  checked={isMeal}
-                  onCheckedChange={handleMealToggle}
-                />
-                <label 
-                  htmlFor={`meal-${item.id}`} 
-                  className="text-sm text-neutral-600 cursor-pointer"
-                >
-                  Upgrade to Meal (+{formatPrice((mealItem?.price || 0) - item.price)})
-                </label>
-              </div>
-            )}
+            <p className="font-semibold text-primary mt-1">{formatPrice(item.price)}</p>
           </div>
           <div className="ml-4">
             <Counter 
-              value={currentQuantity} 
-              onIncrement={currentOnAdd} 
-              onDecrement={currentOnRemove} 
+              value={quantity} 
+              onIncrement={() => onAdd()} 
+              onDecrement={onRemove} 
             />
           </div>
         </div>
