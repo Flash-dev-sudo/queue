@@ -96,19 +96,21 @@ export default function OrderSummary({
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2">
               <Button
                 variant="outline" 
-                className="border-red-400 text-red-600 hover:bg-red-50 hover:border-red-500 font-medium py-3"
+                size="sm"
+                className="border-red-400 text-red-600 hover:bg-red-50 hover:border-red-500 font-medium text-xs"
                 disabled={cart.length === 0 || isSubmitting}
                 onClick={handleClearCart}
               >
-                <Trash2 className="w-4 h-4 mr-1" />
+                <Trash2 className="w-3 h-3 mr-1" />
                 Clear Cart
               </Button>
               
               <Button
-                className="bg-primary text-white font-semibold hover:bg-opacity-90 transition-colors py-3"
+                size="sm"
+                className="bg-primary text-white font-semibold hover:bg-opacity-90 transition-colors text-xs"
                 disabled={cart.length === 0 || isSubmitting}
                 onClick={async () => {
                   await handleSendOrder();

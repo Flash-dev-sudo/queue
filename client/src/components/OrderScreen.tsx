@@ -160,7 +160,7 @@ export default function OrderScreen() {
         </div>
         
         {/* Menu Items */}
-        <div className="flex-1 md:w-3/5 bg-white md:border-r overflow-y-auto">
+        <div className="flex-1 md:w-1/2 bg-white md:border-r overflow-y-auto">
           {/* Category Header */}
           <div className="sticky top-0 bg-primary text-white p-3 md:p-4 flex items-center justify-between z-10">
             <h2 className="text-lg md:text-xl font-bold flex items-center">
@@ -209,7 +209,7 @@ export default function OrderScreen() {
         </div>
         
         {/* Desktop Order Summary */}
-        <div className="hidden md:block w-1/5 bg-white overflow-y-auto">
+        <div className="hidden md:block w-1/3 bg-white overflow-y-auto">
           <OrderSummary
             cart={cart}
             onRemoveItem={removeFromCart}
