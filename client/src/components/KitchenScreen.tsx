@@ -126,7 +126,7 @@ export default function KitchenScreen() {
   };
   
   return (
-    <div className="screen-container w-full overflow-hidden">
+    <div className="min-h-screen flex flex-col">
       {/* Kitchen header */}
       <HeroSection 
         title="Kitchen Display"
@@ -135,7 +135,7 @@ export default function KitchenScreen() {
       />
 
       {/* Orders grid */}
-      <div className="bg-neutral-200 p-4 kitchen-container">
+      <div className="bg-neutral-200 p-4 flex-1 overflow-y-auto">
         <div className="flex justify-between mb-4">
           <div className="flex items-center space-x-4">
             <h2 className="text-xl font-heading font-semibold">
