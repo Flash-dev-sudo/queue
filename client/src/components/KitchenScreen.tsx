@@ -137,15 +137,15 @@ export default function KitchenScreen() {
       {/* Orders grid */}
       <div className="bg-neutral-200 p-2 md:p-4 flex-1 overflow-y-auto">
         {/* Mobile Header */}
-        <div className="flex flex-col md:flex-row md:justify-between mb-4 gap-3">
-          <div className="flex flex-col md:flex-row md:items-center md:space-x-4">
-            <h2 className="text-lg md:text-2xl font-heading font-bold text-gray-800">
+        <div className="flex flex-col lg:flex-row lg:justify-between mb-4 gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between lg:space-x-4">
+            <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-heading font-bold text-gray-800 mb-2 sm:mb-0 flex-shrink-0">
               {viewMode === 'analytics' ? "Analytics & History" : "Active Orders"}
             </h2>
             
             {/* Navigation */}
-            <Link href="/" className="md:ml-auto">
-              <Button variant="outline" size="sm" className="w-full md:w-auto">
+            <Link href="/" className="sm:ml-auto lg:ml-0">
+              <Button variant="outline" size="sm" className="w-full sm:w-auto">
                 🏠 Home
               </Button>
             </Link>
