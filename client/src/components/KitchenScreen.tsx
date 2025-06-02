@@ -155,22 +155,24 @@ export default function KitchenScreen() {
             </Link>
           </div>
           
-          <div>
+          <div className="flex gap-2">
             <Button
-              variant="outline"
-              className="mr-2"
-              onClick={() => {
-                setViewMode(viewMode === 'active' ? 'analytics' : 'active');
-              }}
+              variant={viewMode === 'active' ? 'default' : 'outline'}
+              className={viewMode === 'active' ? 'bg-green-600 hover:bg-green-700' : ''}
+              onClick={() => setViewMode('active')}
             >
-              <span className="material-icons text-sm align-middle mr-1">
-                {viewMode === 'active' ? "analytics" : "view_list"}
-              </span>
-              {viewMode === 'active' ? "Analytics & History" : "Back to Active"}
+              📋 Active Orders
+            </Button>
+            <Button
+              variant={viewMode === 'analytics' ? 'default' : 'outline'}
+              className={viewMode === 'analytics' ? 'bg-purple-600 hover:bg-purple-700' : ''}
+              onClick={() => setViewMode('analytics')}
+            >
+              📊 Analytics & History
             </Button>
             <Button
               variant="default"
-              className="mr-2 bg-orange-500 hover:bg-orange-600"
+              className="bg-orange-500 hover:bg-orange-600"
               onClick={() => {
                 // Mark all active orders as served to clear them
                 filteredOrders.forEach(order => {
@@ -182,8 +184,7 @@ export default function KitchenScreen() {
                 });
               }}
             >
-              <span className="material-icons text-sm align-middle mr-1">clear_all</span>
-              Clear Screen
+              📝 Clear Screen
             </Button>
             <Button
               variant="default"
@@ -192,8 +193,7 @@ export default function KitchenScreen() {
                 window.location.reload();
               }}
             >
-              <span className="material-icons text-sm align-middle mr-1">refresh</span>
-              Refresh
+              🔄 Refresh
             </Button>
           </div>
         </div>
