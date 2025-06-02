@@ -199,14 +199,6 @@ export class MemStorage implements IStorage {
     // FEAST PLATTER
     await this.createMenuItem({ name: "Feast Platter", description: "2 Chickens, 8 Wings, 8 Strips, 3 Sides, 1 Drink", price: 3849, categoryId: 12, available: true });
     
-    await this.createMenuItem({
-      name: "Veggie Burger",
-      description: "Vegetarian burger option",
-      price: 350,
-      categoryId: 9,
-      available: true
-    });
-    
     // Add sample active orders for kitchen screen
     const order1 = await this.createOrder({
       orderNumber: "43825",
