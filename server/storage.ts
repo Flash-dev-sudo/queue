@@ -120,6 +120,22 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Buffalo Wings", description: "", price: 450, categoryId: 1, available: true });
     await this.createMenuItem({ name: "BBQ Wings", description: "", price: 450, categoryId: 1, available: true });
 
+    // PIZZA MENU - All £8.50
+    await this.createMenuItem({ name: "Margarita", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Double Peperoni", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Mediterranean Special", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Emparo Special", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Veggie Hot", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Veggie Special", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "American Hot", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Peri Peri Special", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Tandoori Special", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "BBQ Special", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Hawai Special", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Tuna Special", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Four Season", description: "", price: 850, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Meat Lovers", description: "", price: 850, categoryId: 4, available: true });
+
 
   }
   
