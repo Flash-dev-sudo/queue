@@ -487,7 +487,7 @@ export class DatabaseStorage implements IStorage {
     this.initializeData();
   }
 
-  // Initialize basic categories structure
+  // Initialize only the 6 main categories - no menu items
   private async initializeData() {
     // Check if categories already exist
     const existingCategories = await db.select().from(categories);
@@ -495,7 +495,7 @@ export class DatabaseStorage implements IStorage {
       return; // Data already initialized
     }
 
-    // Create the 6 basic categories
+    // Create only the 6 main categories - completely empty
     const categoryData: InsertCategory[] = [
       { name: "Starters", icon: "restaurant", displayOrder: 1 },
       { name: "Platters", icon: "dinner_dining", displayOrder: 2 },
@@ -509,7 +509,7 @@ export class DatabaseStorage implements IStorage {
       await db.insert(categories).values(category);
     }
     
-    // Categories are ready for step-by-step menu population
+    // No menu items added - categories are completely empty
   }
 
   // User operations
