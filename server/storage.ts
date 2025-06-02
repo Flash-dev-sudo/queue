@@ -173,31 +173,31 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Four Seasons Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
     await this.createMenuItem({ name: "Meat Lovers Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
 
-    // RICE PLATTERS - With flavor options (Garlic & Hector, Medium, Hot, Extra Hot, BBQ) and drink options
-    await this.createMenuItem({ name: "Strips with Rice (No drink)", description: "With Flavour", price: 750, categoryId: 6, available: true, hasFlavorOptions: true });
-    await this.createMenuItem({ name: "Strips with Rice (With drink)", description: "With Flavour and Drink", price: 800, categoryId: 6, available: true, hasFlavorOptions: true });
-    await this.createMenuItem({ name: "Half Chicken with Rice (No drink)", description: "With Flavour", price: 800, categoryId: 6, available: true, hasFlavorOptions: true });
-    await this.createMenuItem({ name: "Half Chicken with Rice (With drink)", description: "With Flavour and Drink", price: 850, categoryId: 6, available: true, hasFlavorOptions: true });
-    await this.createMenuItem({ name: "Chicken Wings with Rice (No drink)", description: "With Flavour", price: 700, categoryId: 6, available: true, hasFlavorOptions: true });
-    await this.createMenuItem({ name: "Chicken Wings with Rice (With drink)", description: "With Flavour and Drink", price: 750, categoryId: 6, available: true, hasFlavorOptions: true });
+    // RICE PLATTERS - With flavor options (Garlic & Hector, Medium, Hot, Extra Hot, BBQ)
+    await this.createMenuItem({ name: "Strips", description: "", price: 750, categoryId: 6, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Strips with Rice", description: "", price: 800, categoryId: 6, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Half Chicken", description: "", price: 800, categoryId: 6, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Half Chicken with Rice", description: "", price: 850, categoryId: 6, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Chicken Wings", description: "", price: 700, categoryId: 6, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Chicken Wings with Rice", description: "", price: 750, categoryId: 6, available: true, hasFlavorOptions: true });
 
     // WINGS PLATTER
-    await this.createMenuItem({ name: "Wings Platter", description: "15 Wings, 2 Chips, 2 Drinks", price: 1549, categoryId: 7, available: true });
+    await this.createMenuItem({ name: "15 Wings, 2 Chips, 2 Drinks", description: "", price: 1549, categoryId: 7, available: true });
 
     // STRIPS PLATTER  
-    await this.createMenuItem({ name: "Strips Platter", description: "15 Strips, 2 Chips, 2 Drinks", price: 1549, categoryId: 8, available: true });
+    await this.createMenuItem({ name: "15 Strips, 2 Chips, 2 Drinks", description: "", price: 1549, categoryId: 8, available: true });
 
     // BURGER FEAST
-    await this.createMenuItem({ name: "Burger Feast", description: "3 Burgers, 8 Wings, 2 Chips, 1 Drink", price: 2449, categoryId: 9, available: true });
+    await this.createMenuItem({ name: "3 Burgers, 8 Wings, 2 Chips, 1 Drink", description: "", price: 2449, categoryId: 9, available: true });
 
     // VARIETY PLATTER
-    await this.createMenuItem({ name: "Variety Platter", description: "1 Chicken, 8 Wings, 5 Strips, 2 Sides, 1 Drink", price: 2400, categoryId: 10, available: true });
+    await this.createMenuItem({ name: "1 Chicken, 8 Wings, 5 Strips, 2 Sides, 1 Drink", description: "", price: 2400, categoryId: 10, available: true });
 
     // EMPARO SPECIAL
-    await this.createMenuItem({ name: "Emparo Special", description: "Half Chicken, 2 Burgers, 5 Wings, 2 Sides, 1 Drink", price: 2250, categoryId: 11, available: true });
+    await this.createMenuItem({ name: "Half Chicken, 2 Burgers, 5 Wings, 2 Sides, 1 Drink", description: "", price: 2250, categoryId: 11, available: true });
 
     // FEAST PLATTER
-    await this.createMenuItem({ name: "Feast Platter", description: "2 Chickens, 8 Wings, 8 Strips, 3 Sides, 1 Drink", price: 3849, categoryId: 12, available: true });
+    await this.createMenuItem({ name: "2 Chickens, 8 Wings, 8 Strips, 3 Sides, 1 Drink", description: "", price: 3849, categoryId: 12, available: true });
     
     // Add sample active orders for kitchen screen
     const order1 = await this.createOrder({

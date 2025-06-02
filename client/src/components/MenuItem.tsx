@@ -25,11 +25,13 @@ export default function MenuItem({
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const [chipType, setChipType] = useState("normal");
   const [burgerToppings, setBurgerToppings] = useState<string[]>([]);
+  const [selectedFlavor, setSelectedFlavor] = useState("Garlic & Hector");
+  const [isMeal, setIsMeal] = useState(false);
+  const [isSpicy, setIsSpicy] = useState(false);
 
   // Check if item needs customization
-  const needsCustomization = (itemName: string) => {
-    const name = itemName.toLowerCase();
-    return name.includes("chip") || name.includes("burger");
+  const needsCustomization = (item: MenuItemType) => {
+    return item.hasFlavorOptions || item.hasMealOption || item.isSpicyOption;
   };
 
   // Get customization options based on item
@@ -66,7 +68,7 @@ export default function MenuItem({
       return;
     }
 
-    if (needsCustomization(item.name)) {
+    if (needsCustomization(item)) {
       setIsCustomizationOpen(true);
     } else {
       onAdd();
@@ -77,6 +79,22 @@ export default function MenuItem({
   const handleCustomizationConfirm = () => {
     const customizations: any = {};
     
+    // Handle flavor options
+    if (item.hasFlavorOptions) {
+      customizations.flavor = selectedFlavor;
+    }
+    
+    // Handle meal upgrade
+    if (item.hasMealOption) {
+      customizations.isMeal = isMeal;
+    }
+    
+    // Handle spicy/normal option
+    if (item.isSpicyOption) {
+      customizations.isSpicy = isSpicy;
+    }
+    
+    // Handle legacy chip and burger customizations
     if (chipType && getCustomizationOptions(item.name)?.type === "chips") {
       customizations.chipType = chipType;
     }
@@ -126,50 +144,96 @@ export default function MenuItem({
             <DialogTitle>Customize {item.name}</DialogTitle>
           </DialogHeader>
           
-          {customizationOptions && (
-            <div className="space-y-4">
-              {customizationOptions.type === "chips" && (
-                <div>
-                  <Label className="text-base font-medium">Choose Style:</Label>
-                  <RadioGroup value={chipType} onValueChange={setChipType} className="mt-2">
-                    {customizationOptions.options.map((option) => (
-                      <div key={option.id} className="flex items-center space-x-2">
-                        <RadioGroupItem value={option.id} id={option.id} />
-                        <Label htmlFor={option.id}>{option.label}</Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                </div>
-              )}
-
-              {customizationOptions.type === "burger" && (
-                <div>
-                  <Label className="text-base font-medium">Select Toppings:</Label>
-                  <div className="mt-2 space-y-2">
-                    {customizationOptions.options.map((option) => (
-                      <div key={option.id} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={option.id}
-                          checked={burgerToppings.includes(option.id)}
-                          onCheckedChange={(checked) => handleToppingsChange(option.id, checked as boolean)}
-                        />
-                        <Label htmlFor={option.id}>{option.label}</Label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="flex gap-2 pt-4">
-                <Button variant="outline" onClick={() => setIsCustomizationOpen(false)} className="flex-1">
-                  Cancel
-                </Button>
-                <Button onClick={handleCustomizationConfirm} className="flex-1">
-                  Add to Order
-                </Button>
+          <div className="space-y-4">
+            {/* Flavor Options */}
+            {item.hasFlavorOptions && (
+              <div>
+                <Label className="text-base font-medium">Choose Flavor:</Label>
+                <RadioGroup value={selectedFlavor} onValueChange={setSelectedFlavor} className="mt-2">
+                  {["Garlic & Hector", "Medium", "Hot", "Extra Hot", "BBQ"].map((flavor) => (
+                    <div key={flavor} className="flex items-center space-x-2">
+                      <RadioGroupItem value={flavor} id={flavor} />
+                      <Label htmlFor={flavor}>{flavor}</Label>
+                    </div>
+                  ))}
+                </RadioGroup>
               </div>
+            )}
+
+            {/* Meal Option */}
+            {item.hasMealOption && (
+              <div>
+                <Label className="text-base font-medium">Upgrade to Meal:</Label>
+                <div className="flex items-center space-x-2 mt-2">
+                  <Switch checked={isMeal} onCheckedChange={setIsMeal} />
+                  <Label>Make it a meal (+{formatPrice((item.mealPrice || 0) - item.price)})</Label>
+                </div>
+              </div>
+            )}
+
+            {/* Spicy Option */}
+            {item.isSpicyOption && (
+              <div>
+                <Label className="text-base font-medium">Choose Style:</Label>
+                <RadioGroup value={isSpicy ? "spicy" : "normal"} onValueChange={(value) => setIsSpicy(value === "spicy")} className="mt-2">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="normal" id="normal" />
+                    <Label htmlFor="normal">Normal</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="spicy" id="spicy" />
+                    <Label htmlFor="spicy">Spicy</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+            )}
+
+            {/* Legacy customizations */}
+            {customizationOptions && (
+              <>
+                {customizationOptions.type === "chips" && (
+                  <div>
+                    <Label className="text-base font-medium">Choose Style:</Label>
+                    <RadioGroup value={chipType} onValueChange={setChipType} className="mt-2">
+                      {customizationOptions.options.map((option) => (
+                        <div key={option.id} className="flex items-center space-x-2">
+                          <RadioGroupItem value={option.id} id={option.id} />
+                          <Label htmlFor={option.id}>{option.label}</Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </div>
+                )}
+
+                {customizationOptions.type === "burger" && (
+                  <div>
+                    <Label className="text-base font-medium">Select Toppings:</Label>
+                    <div className="mt-2 space-y-2">
+                      {customizationOptions.options.map((option) => (
+                        <div key={option.id} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={option.id}
+                            checked={burgerToppings.includes(option.id)}
+                            onCheckedChange={(checked) => handleToppingsChange(option.id, checked as boolean)}
+                          />
+                          <Label htmlFor={option.id}>{option.label}</Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            <div className="flex gap-2 pt-4">
+              <Button variant="outline" onClick={() => setIsCustomizationOpen(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button onClick={handleCustomizationConfirm} className="flex-1">
+                Add to Order
+              </Button>
             </div>
-          )}
+          </div>
         </DialogContent>
       </Dialog>
     </>
