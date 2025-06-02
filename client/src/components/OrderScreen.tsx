@@ -104,14 +104,14 @@ export default function OrderScreen() {
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-secondary text-white p-3 flex justify-between items-center shadow-md">
-        <h1 className="text-xl font-bold">Emparo Food - Order System</h1>
-        <div className="flex space-x-2">
-          <span className="bg-blue-600 text-white px-3 py-1 rounded text-sm font-medium">
+      <div className="bg-secondary text-white p-2 md:p-3 flex justify-between items-center shadow-md">
+        <h1 className="text-lg md:text-xl font-bold">Emparo Food - Order System</h1>
+        <div className="flex space-x-1 md:space-x-2">
+          <span className="bg-blue-600 text-white px-2 md:px-3 py-1 rounded text-xs md:text-sm font-medium">
             🍽️ Order Screen
           </span>
           <Link href="/">
-            <Button variant="outline" className="bg-white text-secondary border-2 border-white hover:bg-gray-100 font-semibold px-4 py-2 shadow-sm">
+            <Button variant="outline" className="bg-white text-secondary border-2 border-white hover:bg-gray-100 font-semibold px-2 md:px-4 py-1 md:py-2 shadow-sm text-xs md:text-sm">
               🏠 Home
             </Button>
           </Link>
@@ -122,15 +122,15 @@ export default function OrderScreen() {
       <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
         {/* Mobile Categories - Horizontal Scroll */}
         <div className="md:hidden bg-white border-b border-gray-200 overflow-x-auto">
-          <div className="flex gap-2 p-3">
+          <div className="flex gap-3 p-4" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
             {Array.isArray(categories) && categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => handleCategorySelect(category.id)}
-                className={`flex-shrink-0 px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                className={`flex-shrink-0 px-6 py-3 rounded-xl font-medium text-sm transition-all active:scale-95 min-w-max ${
                   category.id === selectedCategory
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300'
                 }`}
               >
                 {category.name}
@@ -223,19 +223,19 @@ export default function OrderScreen() {
 
       {/* Mobile Cart Summary - Fixed Bottom */}
       {cart.length > 0 && (
-        <div className="md:hidden bg-white border-t border-gray-200 p-3 shadow-lg">
+        <div className="md:hidden bg-white border-t-2 border-orange-200 p-4 shadow-xl">
           <div className="flex justify-between items-center">
-            <div>
-              <span className="font-semibold text-gray-800">
-                {cart.reduce((sum, item) => sum + item.quantity, 0)} items
+            <div className="flex flex-col">
+              <span className="text-sm text-gray-600">
+                {cart.reduce((sum, item) => sum + item.quantity, 0)} items in cart
               </span>
-              <span className="text-lg font-bold text-orange-600 ml-2">
+              <span className="text-xl font-bold text-orange-600">
                 £{(cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) / 100).toFixed(2)}
               </span>
             </div>
             <button 
               onClick={() => setShowMobileCart(!showMobileCart)}
-              className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium"
+              className="bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all active:scale-95"
             >
               {showMobileCart ? 'Close Cart' : 'View Cart'}
             </button>
