@@ -130,7 +130,7 @@ export default function MenuItem({
       <Dialog open={isCustomizationOpen} onOpenChange={setIsCustomizationOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Customize {currentItem?.name}</DialogTitle>
+            <DialogTitle>Customize {item.name}</DialogTitle>
           </DialogHeader>
           
           {customizationOptions && (
