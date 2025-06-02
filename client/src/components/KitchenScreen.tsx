@@ -138,18 +138,13 @@ export default function KitchenScreen() {
       <div className="bg-neutral-200 p-4 flex-1 overflow-y-auto">
         <div className="flex justify-between mb-4">
           <div className="flex items-center space-x-4">
-            <h2 className="text-xl font-heading font-semibold">
+            <h2 className="text-2xl font-heading font-bold text-gray-800">
               {viewMode === 'analytics' ? "Analytics & History" : "Active Orders"}
             </h2>
             
-            {/* Status indicator */}
-            <span className="bg-green-600 text-white px-3 py-1 rounded text-sm font-medium">
-              👨‍🍳 Kitchen Display
-            </span>
-            
             {/* Navigation */}
             <Link href="/">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="ml-auto">
                 🏠 Home
               </Button>
             </Link>

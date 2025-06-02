@@ -107,9 +107,6 @@ export default function OrderScreen() {
       <div className="bg-secondary text-white p-2 md:p-3 flex justify-between items-center shadow-md">
         <h1 className="text-lg md:text-xl font-bold">Emparo Food - Order System</h1>
         <div className="flex space-x-1 md:space-x-2">
-          <span className="bg-blue-600 text-white px-2 md:px-3 py-1 rounded text-xs md:text-sm font-medium">
-            🍽️ Order Screen
-          </span>
           <Link href="/">
             <Button variant="outline" className="bg-white text-secondary border-2 border-white hover:bg-gray-100 font-semibold px-2 md:px-4 py-1 md:py-2 shadow-sm text-xs md:text-sm">
               🏠 Home
