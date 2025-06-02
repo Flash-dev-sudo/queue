@@ -26,6 +26,7 @@ export const categories = sqliteTable("categories", {
 export const insertCategorySchema = createInsertSchema(categories).pick({
   name: true,
   icon: true,
+  displayOrder: true,
 });
 
 // Menu items
@@ -35,8 +36,12 @@ export const menuItems = sqliteTable("menu_items", {
   name: text("name").notNull(),
   description: text("description"),
   price: integer("price").notNull(), // Price in pennies to avoid floating point issues
+  mealPrice: integer("meal_price"), // Price for meal upgrade in pennies
   available: integer("available", { mode: "boolean" }).notNull().default(true),
   image: text("image"),
+  hasFlavorOptions: integer("has_flavor_options", { mode: "boolean" }).notNull().default(false),
+  hasMealOption: integer("has_meal_option", { mode: "boolean" }).notNull().default(false),
+  isSpicyOption: integer("is_spicy_option", { mode: "boolean" }).notNull().default(false),
 });
 
 export const insertMenuItemSchema = createInsertSchema(menuItems).pick({
@@ -44,8 +49,12 @@ export const insertMenuItemSchema = createInsertSchema(menuItems).pick({
   name: true,
   description: true,
   price: true,
+  mealPrice: true,
   available: true,
   image: true,
+  hasFlavorOptions: true,
+  hasMealOption: true,
+  isSpicyOption: true,
 });
 
 export const OrderStatus = {
@@ -137,9 +146,11 @@ export type CartItem = {
   quantity: number;
   notes?: string;
   customizations?: {
+    flavor?: string; // Garlic & Hector, Medium, Hot, Extra Hot, BBQ
     chipType?: string;
     toppings?: string[];
     isMeal?: boolean;
+    isSpicy?: boolean; // For spicy/normal options
   };
 };
 

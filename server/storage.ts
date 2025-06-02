@@ -93,10 +93,17 @@ export class MemStorage implements IStorage {
     // Create categories based on the updated menu structure
     const categoryData: InsertCategory[] = [
       { name: "Starters", icon: "restaurant", displayOrder: 1 },
-      { name: "Fried Chicken", icon: "set_meal", displayOrder: 2 },
-      { name: "Pizzas", icon: "local_pizza", displayOrder: 3 },
-      { name: "Platters, Feasts & Specials", icon: "dinner_dining", displayOrder: 4 },
-      { name: "Mains", icon: "lunch_dining", displayOrder: 5 }
+      { name: "Main (Burgers)", icon: "lunch_dining", displayOrder: 2 },
+      { name: "Grilled Chicken", icon: "outdoor_grill", displayOrder: 3 },
+      { name: "Fried Chicken", icon: "set_meal", displayOrder: 4 },
+      { name: "Pizza Menu", icon: "local_pizza", displayOrder: 5 },
+      { name: "Rice Platters", icon: "rice_bowl", displayOrder: 6 },
+      { name: "Wings Platter", icon: "restaurant_menu", displayOrder: 7 },
+      { name: "Strips Platter", icon: "restaurant_menu", displayOrder: 8 },
+      { name: "Burger Feast", icon: "dinner_dining", displayOrder: 9 },
+      { name: "Variety Platter", icon: "dinner_dining", displayOrder: 10 },
+      { name: "Emparo Special", icon: "star", displayOrder: 11 },
+      { name: "Feast Platter", icon: "celebration", displayOrder: 12 }
     ];
     
     const categories: Category[] = [];
@@ -106,22 +113,67 @@ export class MemStorage implements IStorage {
     
     // Create menu items from the updated Emparo Food menu
     
-    // STARTERS (£2.50 - £4.50)
-    await this.createMenuItem({ name: "Chips", description: "Regular portion of freshly made chips", price: 250, categoryId: 1, available: true });
-    await this.createMenuItem({ name: "Peri Peri Chips", description: "Spicy peri peri seasoned chips", price: 300, categoryId: 1, available: true });
-    await this.createMenuItem({ name: "Chips with Cheese", description: "Freshly made chips topped with melted cheese", price: 400, categoryId: 1, available: true });
-    await this.createMenuItem({ name: "Potato Wedges", description: "Seasoned potato wedges", price: 350, categoryId: 1, available: true });
-    await this.createMenuItem({ name: "Potato Wedges with Cheese", description: "Potato wedges with melted cheese", price: 400, categoryId: 1, available: true });
-    await this.createMenuItem({ name: "Fish Fingers", description: "Crispy breaded fish fingers", price: 400, categoryId: 1, available: true });
-    await this.createMenuItem({ name: "Calamari", description: "Golden fried squid rings", price: 400, categoryId: 1, available: true });
-    await this.createMenuItem({ name: "Mozzarella Sticks", description: "Breaded mozzarella cheese sticks", price: 400, categoryId: 1, available: true });
-    await this.createMenuItem({ name: "Onion Rings (10 pcs)", description: "Crispy beer-battered onion rings", price: 400, categoryId: 1, available: true });
-    await this.createMenuItem({ name: "Gamberoni (6 pcs)", description: "King prawns in crispy coating", price: 400, categoryId: 1, available: true });
-    await this.createMenuItem({ name: "Nuggets", description: "Golden chicken nuggets", price: 300, categoryId: 1, available: true });
-    await this.createMenuItem({ name: "Buffalo Wings", description: "Spicy buffalo sauce chicken wings", price: 450, categoryId: 1, available: true });
-    await this.createMenuItem({ name: "BBQ Wings", description: "BBQ glazed chicken wings", price: 450, categoryId: 1, available: true });
+    // STARTERS
+    await this.createMenuItem({ name: "Chips", description: "", price: 250, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Peri Peri Chips", description: "", price: 300, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Chips with Cheese", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Potato Wedges", description: "Spicy or Normal", price: 350, categoryId: 1, available: true, isSpicyOption: true });
+    await this.createMenuItem({ name: "Potato Wedges with Cheese", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Fish Fingers", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Calamari", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Mozzarella Sticks", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Onion Rings (10 pcs)", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Gamberoni (6 pcs)", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Nuggets", description: "", price: 300, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Buffalo Wings", description: "", price: 450, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "BBQ Wings", description: "", price: 450, categoryId: 1, available: true });
 
-    // PLATTERS, FEASTS & SPECIALS
+    // MAIN (BURGERS) - Items 1-15 with individual and meal pricing
+    await this.createMenuItem({ name: "1. Strip Burger", description: "", price: 250, mealPrice: 450, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "2. Fillet Burger", description: "", price: 350, mealPrice: 550, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "3. Zinger Burger", description: "", price: 400, mealPrice: 600, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "4. Fish/Vegetarian Burger", description: "", price: 350, mealPrice: 550, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "5. Emparo Burger", description: "", price: 650, mealPrice: 850, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "6. Tower Burger", description: "", price: 500, mealPrice: 700, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "7. EFC Special", description: "", price: 650, mealPrice: 850, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "8. Quarter Pounder", description: "", price: 400, mealPrice: 600, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "9. Half Pounder", description: "", price: 500, mealPrice: 700, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "10. Peri Peri Burger", description: "", price: 500, mealPrice: 700, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "11. Peri Peri Wrap", description: "", price: 450, mealPrice: 650, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "12. Peri Peri Wings", description: "", price: 420, mealPrice: 620, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "13. Peri Peri Strips", description: "", price: 470, mealPrice: 670, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "14. Half Chicken", description: "", price: 550, mealPrice: 750, categoryId: 2, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "15. Whole Chicken", description: "", price: 1050, mealPrice: 1250, categoryId: 2, available: true, hasMealOption: true });
+
+    // GRILLED CHICKEN
+    await this.createMenuItem({ name: "Quarter Chicken", description: "", price: 350, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Half Chicken", description: "", price: 550, categoryId: 3, available: true });
+    await this.createMenuItem({ name: "Whole Chicken", description: "", price: 1050, categoryId: 3, available: true });
+
+    // FRIED CHICKEN
+    await this.createMenuItem({ name: "Wings (3 pcs)", description: "", price: 150, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Wings (6 pcs)", description: "", price: 300, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Strips (3 pcs)", description: "", price: 200, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Strips (6 pcs)", description: "", price: 400, categoryId: 4, available: true });
+
+    // PIZZA MENU - All £8.50 with flavor options
+    await this.createMenuItem({ name: "Margherita Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Double Pepperoni Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Mediterranean Special Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Emparo Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Veggie Hot Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Veggie Special Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "American Hot Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Peri Peri Special Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Tandoori Special Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "BBQ Special Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Hawaiian Special Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Ham & Mushroom Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Tuna Special Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Four Seasons Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Meat Lovers Pizza", description: "", price: 850, categoryId: 5, available: true, hasFlavorOptions: true });
+
+    // RICE PLATTERS - With flavor options (Garlic & Hector, Medium, Hot, Extra Hot, BBQ) and drink options
     await this.createMenuItem({ name: "Strips with Rice (No drink)", description: "Chicken strips with flavoured rice", price: 750, categoryId: 4, available: true });
     await this.createMenuItem({ name: "Strips with Rice (With drink)", description: "Chicken strips with flavoured rice & drink", price: 800, categoryId: 4, available: true });
     await this.createMenuItem({ name: "Half Chicken with Rice (No drink)", description: "Half chicken with flavoured rice", price: 800, categoryId: 4, available: true });
