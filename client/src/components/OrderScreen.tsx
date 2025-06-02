@@ -208,8 +208,8 @@ export default function OrderScreen() {
           </div>
         </div>
         
-        {/* Order Summary */}
-        <div className="w-1/5 bg-white overflow-y-auto">
+        {/* Desktop Order Summary */}
+        <div className="hidden md:block w-1/5 bg-white overflow-y-auto">
           <OrderSummary
             cart={cart}
             onRemoveItem={removeFromCart}
@@ -220,6 +220,55 @@ export default function OrderScreen() {
           />
         </div>
       </div>
+
+      {/* Mobile Cart Summary - Fixed Bottom */}
+      {cart.length > 0 && (
+        <div className="md:hidden bg-white border-t border-gray-200 p-3 shadow-lg">
+          <div className="flex justify-between items-center">
+            <div>
+              <span className="font-semibold text-gray-800">
+                {cart.reduce((sum, item) => sum + item.quantity, 0)} items
+              </span>
+              <span className="text-lg font-bold text-orange-600 ml-2">
+                £{(cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) / 100).toFixed(2)}
+              </span>
+            </div>
+            <button 
+              onClick={() => setShowMobileCart(!showMobileCart)}
+              className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium"
+            >
+              {showMobileCart ? 'Close Cart' : 'View Cart'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Cart Overlay */}
+      {showMobileCart && (
+        <div className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-lg max-h-[80vh] flex flex-col">
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Order Summary</h3>
+              <button 
+                onClick={() => setShowMobileCart(false)}
+                className="text-gray-500 hover:text-gray-700 text-xl"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <OrderSummary
+                cart={cart}
+                onRemoveItem={removeFromCart}
+                onClearCart={clearCart}
+                onSendOrder={sendOrder}
+                isSubmitting={isSubmitting}
+                onUpgradeToMeal={upgradeToMeal}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
