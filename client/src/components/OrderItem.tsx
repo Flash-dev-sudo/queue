@@ -78,8 +78,8 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal }: OrderItem
           <p className="font-bold text-primary text-sm">{formatPrice(totalPrice)}</p>
         </div>
         
-        <div className="flex justify-between items-center">
-          <div className="flex gap-1">
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-wrap gap-1">
             <button 
               className="text-xs text-blue-600 hover:text-blue-800 flex items-center px-2 py-1 rounded hover:bg-blue-50 transition-colors"
               onClick={() => setIsEditing(true)}
@@ -101,7 +101,9 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal }: OrderItem
               <Trash2 className="w-3 h-3 mr-1" /> Remove
             </button>
           </div>
-          <p className="text-xs text-gray-500">Unit: {formatPrice(item.price)}</p>
+          <div className="flex justify-end">
+            <p className="text-xs text-gray-500">Unit: {formatPrice(item.price)}</p>
+          </div>
         </div>
       </div>
       
