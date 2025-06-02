@@ -136,37 +136,22 @@ export async function initializeDatabase() {
       ('Vegetarian Pizza (10inch)', 'Fresh vegetarian pizza', 950, 4, true),
       ('Vegetarian Pizza (12inch)', 'Fresh vegetarian pizza', 1100, 4, true),
 
-      -- Mains (numbered 1-15)
+      -- Mains (numbered 1-15) - Individual items only, meal upgrade available in order summary
       ('1. Classic Beef Burger', 'Juicy beef patty with fresh toppings', 650, 5, true),
-      ('1. Classic Beef Burger Meal', 'Classic beef burger with chips and drink', 950, 5, true),
       ('2. Cheese Burger', 'Beef burger with melted cheese', 700, 5, true),
-      ('2. Cheese Burger Meal', 'Cheese burger with chips and drink', 1000, 5, true),
       ('3. Double Beef Burger', 'Two beef patties with all the trimmings', 850, 5, true),
-      ('3. Double Beef Burger Meal', 'Double beef burger with chips and drink', 1150, 5, true),
       ('4. BBQ Bacon Burger', 'Beef burger with bacon and BBQ sauce', 800, 5, true),
-      ('4. BBQ Bacon Burger Meal', 'BBQ bacon burger with chips and drink', 1100, 5, true),
       ('5. Chicken Burger', 'Grilled chicken breast burger', 600, 5, true),
-      ('5. Chicken Burger Meal', 'Chicken burger with chips and drink', 900, 5, true),
       ('6. Spicy Chicken Burger', 'Spicy grilled chicken burger', 650, 5, true),
-      ('6. Spicy Chicken Burger Meal', 'Spicy chicken burger with chips and drink', 950, 5, true),
       ('7. Fish Burger', 'Crispy fish fillet burger', 550, 5, true),
-      ('7. Fish Burger Meal', 'Fish burger with chips and drink', 850, 5, true),
       ('8. Veggie Burger', 'Plant-based burger patty', 500, 5, true),
-      ('8. Veggie Burger Meal', 'Veggie burger with chips and drink', 800, 5, true),
       ('9. Chicken Wrap', 'Grilled chicken in a soft tortilla', 550, 5, true),
-      ('9. Chicken Wrap Meal', 'Chicken wrap with chips and drink', 850, 5, true),
       ('10. BBQ Chicken Wrap', 'BBQ chicken in a soft tortilla', 600, 5, true),
-      ('10. BBQ Chicken Wrap Meal', 'BBQ chicken wrap with chips and drink', 900, 5, true),
       ('11. Chicken Quesadilla', 'Grilled chicken quesadilla', 650, 5, true),
-      ('11. Chicken Quesadilla Meal', 'Chicken quesadilla with chips and drink', 950, 5, true),
       ('12. Fish and Chips', 'Battered fish with chips', 750, 5, true),
-      ('12. Fish and Chips Meal', 'Fish and chips with drink', 950, 5, true),
       ('13. Chicken Salad', 'Fresh salad with grilled chicken', 600, 5, true),
-      ('13. Chicken Salad Meal', 'Chicken salad with drink', 800, 5, true),
       ('14. Caesar Salad', 'Classic caesar salad', 550, 5, true),
-      ('14. Caesar Salad Meal', 'Caesar salad with drink', 750, 5, true),
-      ('15. Chicken Rice Bowl', 'Grilled chicken with seasoned rice', 700, 5, true),
-      ('15. Chicken Rice Bowl Meal', 'Chicken rice bowl with drink', 900, 5, true)
+      ('15. Chicken Rice Bowl', 'Grilled chicken with seasoned rice', 700, 5, true)
     `);
 
     console.log("Database initialized successfully!");

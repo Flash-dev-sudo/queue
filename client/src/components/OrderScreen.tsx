@@ -17,6 +17,7 @@ export default function OrderScreen() {
   
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [showMobileCart, setShowMobileCart] = useState(false);
   
   // Fetch categories
   const { 
@@ -118,9 +119,28 @@ export default function OrderScreen() {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Categories Sidebar */}
-        <div className="w-1/5 bg-white border-r overflow-y-auto">
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+        {/* Mobile Categories - Horizontal Scroll */}
+        <div className="md:hidden bg-white border-b border-gray-200 overflow-x-auto">
+          <div className="flex gap-2 p-3">
+            {Array.isArray(categories) && categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => handleCategorySelect(category.id)}
+                className={`flex-shrink-0 px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                  category.id === selectedCategory
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop Categories Sidebar */}
+        <div className="hidden md:block w-1/5 bg-white border-r overflow-y-auto">
           <h2 className="text-lg font-bold p-4 border-b">Menu Categories</h2>
           
           {isLoadingCategories ? (
@@ -140,10 +160,10 @@ export default function OrderScreen() {
         </div>
         
         {/* Menu Items */}
-        <div className="w-3/5 bg-white border-r overflow-y-auto">
+        <div className="flex-1 md:w-3/5 bg-white md:border-r overflow-y-auto">
           {/* Category Header */}
-          <div className="sticky top-0 bg-primary text-white p-4 flex items-center justify-between z-10">
-            <h2 className="text-xl font-bold flex items-center">
+          <div className="sticky top-0 bg-primary text-white p-3 md:p-4 flex items-center justify-between z-10">
+            <h2 className="text-lg md:text-xl font-bold flex items-center">
               {currentCategoryName}
             </h2>
             {selectedCategory && Array.isArray(categories) && 
@@ -154,22 +174,22 @@ export default function OrderScreen() {
           </div>
           
           {/* Search */}
-          <div className="p-4 border-b">
+          <div className="p-2 md:p-4 border-b">
             <Input
               type="text"
               placeholder="Search menu items..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full"
+              className="w-full text-sm md:text-base"
             />
           </div>
           
           {/* Menu Items */}
-          <div className="p-4">
+          <div className="p-2 md:p-4">
             {isLoadingAllMenuItems ? (
               <div>Loading menu items...</div>
             ) : menuItems.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 {menuItems.map((item: MenuItemType) => (
                   <MenuItem
                     key={item.id}
