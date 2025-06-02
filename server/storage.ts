@@ -136,6 +136,19 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Four Season", description: "", price: 850, categoryId: 4, available: true });
     await this.createMenuItem({ name: "Meat Lovers", description: "", price: 850, categoryId: 4, available: true });
 
+    // MAINS - Burgers with meal upgrade options (+£1.50 for most, +£1.80 for grilled items)
+    await this.createMenuItem({ name: "Strip Burger", description: "", price: 250, mealPrice: 400, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Fillet Burger", description: "", price: 350, mealPrice: 500, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Zinger Burger", description: "", price: 400, mealPrice: 550, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Fish / Vegetarian Burger", description: "", price: 350, mealPrice: 500, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Emparo Burger", description: "", price: 650, mealPrice: 800, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Tower Burger", description: "", price: 500, mealPrice: 650, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "EFC Special", description: "", price: 650, mealPrice: 800, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Quarter Pounder", description: "", price: 400, mealPrice: 550, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Half Pounder", description: "", price: 500, mealPrice: 650, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Peri Peri Burger", description: "", price: 500, mealPrice: 680, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Peri Peri Wrap", description: "", price: 450, mealPrice: 630, categoryId: 3, available: true, hasMealOption: true });
+
 
   }
   
