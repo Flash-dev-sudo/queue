@@ -135,61 +135,69 @@ export default function KitchenScreen() {
       />
 
       {/* Orders grid */}
-      <div className="bg-neutral-200 p-4 flex-1 overflow-y-auto">
-        <div className="flex justify-between mb-4">
-          <div className="flex items-center space-x-4">
-            <h2 className="text-2xl font-heading font-bold text-gray-800">
+      <div className="bg-neutral-200 p-2 md:p-4 flex-1 overflow-y-auto">
+        {/* Mobile Header */}
+        <div className="flex flex-col md:flex-row md:justify-between mb-4 gap-3">
+          <div className="flex flex-col md:flex-row md:items-center md:space-x-4">
+            <h2 className="text-lg md:text-2xl font-heading font-bold text-gray-800">
               {viewMode === 'analytics' ? "Analytics & History" : "Active Orders"}
             </h2>
             
             {/* Navigation */}
-            <Link href="/">
-              <Button variant="outline" size="sm" className="ml-auto">
+            <Link href="/" className="md:ml-auto">
+              <Button variant="outline" size="sm" className="w-full md:w-auto">
                 🏠 Home
               </Button>
             </Link>
           </div>
           
-          <div className="flex gap-2">
-            <Button
-              variant={viewMode === 'active' ? 'default' : 'outline'}
-              className={viewMode === 'active' ? 'bg-green-600 hover:bg-green-700' : ''}
-              onClick={() => setViewMode('active')}
-            >
-              📋 Active Orders
-            </Button>
-            <Button
-              variant={viewMode === 'analytics' ? 'default' : 'outline'}
-              className={viewMode === 'analytics' ? 'bg-purple-600 hover:bg-purple-700' : ''}
-              onClick={() => setViewMode('analytics')}
-            >
-              📊 Analytics & History
-            </Button>
-            <Button
-              variant="default"
-              className="bg-orange-500 hover:bg-orange-600"
-              onClick={() => {
-                // Mark all active orders as served to clear them
-                filteredOrders.forEach(order => {
-                  handleUpdateStatus(order.id, OrderStatus.SERVED);
-                });
-                toast({
-                  title: "Kitchen Screen Cleared",
-                  description: "All orders have been cleared from the kitchen display",
-                });
-              }}
-            >
-              📝 Clear Screen
-            </Button>
-            <Button
-              variant="default"
-              className="bg-blue-600 hover:bg-blue-700"
-              onClick={() => {
-                window.location.reload();
-              }}
-            >
-              🔄 Refresh
-            </Button>
+          {/* Mobile-friendly button layout */}
+          <div className="flex flex-col md:flex-row gap-2">
+            <div className="grid grid-cols-2 md:flex gap-2">
+              <Button
+                variant={viewMode === 'active' ? 'default' : 'outline'}
+                className={`text-xs md:text-sm ${viewMode === 'active' ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                onClick={() => setViewMode('active')}
+              >
+                📋 Active Orders
+              </Button>
+              <Button
+                variant={viewMode === 'analytics' ? 'default' : 'outline'}
+                className={`text-xs md:text-sm ${viewMode === 'analytics' ? 'bg-purple-600 hover:bg-purple-700' : ''}`}
+                onClick={() => setViewMode('analytics')}
+              >
+                📊 Analytics & History
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 md:flex gap-2">
+              <Button
+                variant="default"
+                size="sm"
+                className="bg-orange-500 hover:bg-orange-600 text-xs md:text-sm"
+                onClick={() => {
+                  // Mark all active orders as served to clear them
+                  filteredOrders.forEach(order => {
+                    handleUpdateStatus(order.id, OrderStatus.SERVED);
+                  });
+                  toast({
+                    title: "Kitchen Screen Cleared",
+                    description: "All orders have been cleared from the kitchen display",
+                  });
+                }}
+              >
+                📝 Clear Screen
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700 text-xs md:text-sm"
+                onClick={() => {
+                  window.location.reload();
+                }}
+              >
+                🔄 Refresh
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -249,7 +257,7 @@ export default function KitchenScreen() {
                   <p className="text-neutral-500">No completed orders found</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                   {filteredOrders.map((order) => (
                     <OrderCard
                       key={order.id}
@@ -276,7 +284,7 @@ export default function KitchenScreen() {
                 <p className="text-neutral-500">No active orders at the moment</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                 {filteredOrders.map((order) => (
                   <OrderCard
                     key={order.id}

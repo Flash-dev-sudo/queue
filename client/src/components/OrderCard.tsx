@@ -74,7 +74,7 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
   
   return (
     <div className={`bg-white rounded-lg shadow-md overflow-hidden ${isNew ? "pulse-animation" : ""}`}>
-      <div className={`${getStatusColor(order.status)} text-white px-4 py-2 flex justify-between items-center`}>
+      <div className={`${getStatusColor(order.status)} text-white px-3 md:px-4 py-2 flex justify-between items-center`}>
         <div>
           <h3 className="font-bold">Order #{order.orderNumber}</h3>
           {order.status !== OrderStatus.SERVED && order.status !== OrderStatus.COMPLETED && (
@@ -95,25 +95,25 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
         </div>
       </div>
       
-      <div className="p-4">
+      <div className="p-3 md:p-4">
         {order.items.map((item) => (
-          <div className="mb-4" key={item.id}>
+          <div className="mb-3 md:mb-4" key={item.id}>
             <div className="flex justify-between mb-1">
-              <span className="font-medium">{item.quantity}x {item.name}</span>
-              <span>{formatPrice(item.price * item.quantity)}</span>
+              <span className="font-medium text-sm md:text-base">{item.quantity}x {item.name}</span>
+              <span className="text-sm md:text-base">{formatPrice(item.price * item.quantity)}</span>
             </div>
             {item.notes ? (
               <div className="flex items-center mt-1 p-2 bg-yellow-50 border border-yellow-200 rounded">
                 <span className="text-yellow-600 mr-2">📝</span>
-                <p className="text-sm text-yellow-800 font-medium">{item.notes}</p>
+                <p className="text-xs md:text-sm text-yellow-800 font-medium">{item.notes}</p>
               </div>
             ) : (
-              <p className="text-sm text-neutral-400">No special instructions</p>
+              <p className="text-xs md:text-sm text-neutral-400">No special instructions</p>
             )}
           </div>
         ))}
         
-        <div className="pt-3 border-t flex justify-end space-x-2">
+        <div className="pt-3 border-t flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
           <Button 
             size="sm" 
             variant="outline"
