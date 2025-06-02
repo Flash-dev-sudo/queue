@@ -136,6 +136,11 @@ export type CartItem = {
   price: number;
   quantity: number;
   notes?: string;
+  customizations?: {
+    chipType?: string;
+    toppings?: string[];
+    isMeal?: boolean;
+  };
 };
 
 // Daily order statistics - for business reporting before data cleanup
