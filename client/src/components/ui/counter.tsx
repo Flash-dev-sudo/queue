@@ -10,23 +10,23 @@ export default function Counter({ value, onIncrement, onDecrement }: CounterProp
   return (
     <div className="mt-1 flex items-center justify-end">
       <button 
-        className="w-8 h-8 rounded-full bg-neutral-200 hover:bg-neutral-300 flex items-center justify-center"
+        className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-700 font-bold"
         onClick={(e) => {
           e.stopPropagation();
           onDecrement();
         }}
       >
-        <span className="material-icons text-sm">remove</span>
+        −
       </button>
-      <span className="mx-2 w-6 text-center" data-quantity={value}>{value}</span>
+      <span className="mx-3 w-8 text-center font-medium" data-quantity={value}>{value}</span>
       <button 
-        className="w-8 h-8 rounded-full bg-primary text-white hover:bg-opacity-90 flex items-center justify-center"
+        className="w-8 h-8 rounded-full bg-orange-500 text-white hover:bg-orange-600 flex items-center justify-center font-bold"
         onClick={(e) => {
           e.stopPropagation();
           onIncrement();
         }}
       >
-        <span className="material-icons text-sm">add</span>
+        +
       </button>
     </div>
   );

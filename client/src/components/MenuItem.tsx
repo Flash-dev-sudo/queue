@@ -120,7 +120,7 @@ export default function MenuItem({
             <Counter 
               value={quantity} 
               onIncrement={() => onAdd()} 
-              onDecrement={onRemove} 
+              onDecrement={() => onRemove()} 
             />
           </div>
         </div>
