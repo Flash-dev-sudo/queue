@@ -82,6 +82,7 @@ export default function OrderSummary({
                   key={`${item.menuItemId}-${index}-${JSON.stringify(item.customizations || {})}`}
                   item={item}
                   onRemove={() => onRemoveItem(item.menuItemId, item.customizations)}
+                  onUpgradeToMeal={onUpgradeToMeal ? () => onUpgradeToMeal(item.menuItemId, item.customizations) : undefined}
                 />
               ))}
             </div>
