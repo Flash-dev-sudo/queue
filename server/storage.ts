@@ -487,7 +487,7 @@ export class DatabaseStorage implements IStorage {
     this.initializeData();
   }
 
-  // Initialize with updated Emparo Food menu
+  // Initialize basic categories structure
   private async initializeData() {
     // Check if categories already exist
     const existingCategories = await db.select().from(categories);
@@ -495,7 +495,7 @@ export class DatabaseStorage implements IStorage {
       return; // Data already initialized
     }
 
-    // Create categories based on the updated menu structure
+    // Create the 6 basic categories
     const categoryData: InsertCategory[] = [
       { name: "Starters", icon: "restaurant", displayOrder: 1 },
       { name: "Platters", icon: "dinner_dining", displayOrder: 2 },
@@ -505,93 +505,11 @@ export class DatabaseStorage implements IStorage {
       { name: "Milkshakes", icon: "local_bar", displayOrder: 6 }
     ];
     
-    const createdCategories: Category[] = [];
     for (const category of categoryData) {
-      const [created] = await db.insert(categories).values(category).returning();
-      createdCategories.push(created);
+      await db.insert(categories).values(category);
     }
     
-    // Create menu items from the updated Emparo Food menu
-    
-    // STARTERS
-    await db.insert(menuItems).values({ name: "Chips", description: "", price: 250, categoryId: 1, available: true });
-    await db.insert(menuItems).values({ name: "Peri Peri Chips", description: "", price: 300, categoryId: 1, available: true });
-    await db.insert(menuItems).values({ name: "Chips with Cheese", description: "", price: 400, categoryId: 1, available: true });
-    await db.insert(menuItems).values({ name: "Potato Wedges", description: "Spicy or Normal", price: 350, categoryId: 1, available: true, isSpicyOption: true });
-    await db.insert(menuItems).values({ name: "Potato Wedges with Cheese", description: "", price: 400, categoryId: 1, available: true });
-    await db.insert(menuItems).values({ name: "Fish Fingers", description: "", price: 400, categoryId: 1, available: true });
-    await db.insert(menuItems).values({ name: "Calamari", description: "", price: 400, categoryId: 1, available: true });
-    await db.insert(menuItems).values({ name: "Mozzarella Sticks", description: "", price: 400, categoryId: 1, available: true });
-    await db.insert(menuItems).values({ name: "Onion Rings (10 pcs)", description: "", price: 400, categoryId: 1, available: true });
-    await db.insert(menuItems).values({ name: "Gamberoni (6 pcs)", description: "", price: 400, categoryId: 1, available: true });
-    await db.insert(menuItems).values({ name: "Nuggets", description: "", price: 300, categoryId: 1, available: true });
-    await db.insert(menuItems).values({ name: "Buffalo Wings", description: "", price: 450, categoryId: 1, available: true });
-    await db.insert(menuItems).values({ name: "BBQ Wings", description: "", price: 450, categoryId: 1, available: true });
-
-    // PLATTERS - All with flavor options (Garlic & Hector, Medium, Hot, Extra Hot, BBQ)
-    // Rice Platters
-    await db.insert(menuItems).values({ name: "Strips", description: "£7.50", price: 750, categoryId: 2, available: true, hasFlavorOptions: true });
-    await db.insert(menuItems).values({ name: "Strips with Drink", description: "£8.00", price: 800, categoryId: 2, available: true, hasFlavorOptions: true });
-    await db.insert(menuItems).values({ name: "Half Chicken", description: "£8.00", price: 800, categoryId: 2, available: true, hasFlavorOptions: true });
-    await db.insert(menuItems).values({ name: "Half Chicken with Drink", description: "£8.50", price: 850, categoryId: 2, available: true, hasFlavorOptions: true });
-    await db.insert(menuItems).values({ name: "Chicken Wings", description: "£7.00", price: 700, categoryId: 2, available: true, hasFlavorOptions: true });
-    await db.insert(menuItems).values({ name: "Chicken Wings with Drink", description: "£7.50", price: 750, categoryId: 2, available: true, hasFlavorOptions: true });
-    // Share Platters
-    await db.insert(menuItems).values({ name: "Wings Platter", description: "15 wings, 2 chips, 2 drinks", price: 1549, categoryId: 2, available: true, hasFlavorOptions: true });
-    await db.insert(menuItems).values({ name: "Strips Platter", description: "15 strips, 2 chips, 2 drinks", price: 1549, categoryId: 2, available: true, hasFlavorOptions: true });
-    await db.insert(menuItems).values({ name: "Burger Feast", description: "3 Peri Peri Burgers, 8 Peri Peri Wings, 2 Chips, Bottle drink", price: 2449, categoryId: 2, available: true, hasFlavorOptions: true });
-    await db.insert(menuItems).values({ name: "Variety Platter", description: "Whole Chicken, 8 Wings, 5 Strips, 2 sides, Bottle of drink", price: 2400, categoryId: 2, available: true, hasFlavorOptions: true });
-    await db.insert(menuItems).values({ name: "Emparo Special", description: "Half Chicken, 2 Peri Burgers, 5 Peri Wings, 2 sides, Bottle", price: 2250, categoryId: 2, available: true, hasFlavorOptions: true });
-    await db.insert(menuItems).values({ name: "Feast Platter", description: "2 Whole Chickens, 8 Wings, 8 Strips, 3 sides, Bottle", price: 3849, categoryId: 2, available: true, hasFlavorOptions: true });
-
-    // MAINS - Burgers with meal options
-    await db.insert(menuItems).values({ name: "1. Strip Burger", description: "", price: 250, mealPrice: 450, categoryId: 3, available: true, hasMealOption: true });
-    await db.insert(menuItems).values({ name: "2. Fillet Burger", description: "", price: 350, mealPrice: 550, categoryId: 3, available: true, hasMealOption: true });
-    await db.insert(menuItems).values({ name: "3. Zinger Burger", description: "", price: 400, mealPrice: 600, categoryId: 3, available: true, hasMealOption: true });
-    await db.insert(menuItems).values({ name: "4. Fish/Vegetarian Burger", description: "", price: 350, mealPrice: 550, categoryId: 3, available: true, hasMealOption: true });
-    await db.insert(menuItems).values({ name: "5. Emparo Burger", description: "", price: 650, mealPrice: 850, categoryId: 3, available: true, hasMealOption: true });
-    await db.insert(menuItems).values({ name: "6. Tower Burger", description: "", price: 500, mealPrice: 700, categoryId: 3, available: true, hasMealOption: true });
-    await db.insert(menuItems).values({ name: "7. EFC Special", description: "", price: 650, mealPrice: 850, categoryId: 3, available: true, hasMealOption: true });
-    await db.insert(menuItems).values({ name: "8. Quarter Pounder", description: "", price: 400, mealPrice: 600, categoryId: 3, available: true, hasMealOption: true });
-    await db.insert(menuItems).values({ name: "9. Half Pounder", description: "", price: 500, mealPrice: 700, categoryId: 3, available: true, hasMealOption: true });
-    await db.insert(menuItems).values({ name: "10. Peri Peri Burger", description: "", price: 500, mealPrice: 700, categoryId: 3, available: true, hasMealOption: true });
-    await db.insert(menuItems).values({ name: "11. Peri Peri Wrap", description: "", price: 450, mealPrice: 650, categoryId: 3, available: true, hasMealOption: true });
-
-    // PIZZA - All £8.50
-    await db.insert(menuItems).values({ name: "Margherita Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "Double Pepperoni Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "Mediterranean Special Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "Emparo Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "Veggie Hot Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "Veggie Special Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "American Hot Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "Peri Peri Special Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "Tandoori Special Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "BBQ Special Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "Hawaiian Special Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "Ham & Mushroom Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "Tuna Special Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "Four Seasons Pizza", description: "", price: 850, categoryId: 4, available: true });
-    await db.insert(menuItems).values({ name: "Meat Lovers Pizza", description: "", price: 850, categoryId: 4, available: true });
-
-    // CHICKEN - Grilled and Fried
-    await db.insert(menuItems).values({ name: "Quarter Chicken", description: "", price: 350, categoryId: 5, available: true });
-    await db.insert(menuItems).values({ name: "Half Chicken", description: "", price: 550, categoryId: 5, available: true });
-    await db.insert(menuItems).values({ name: "Whole Chicken", description: "", price: 1050, categoryId: 5, available: true });
-    await db.insert(menuItems).values({ name: "Wings (3 pcs)", description: "", price: 150, categoryId: 5, available: true });
-    await db.insert(menuItems).values({ name: "Wings (6 pcs)", description: "", price: 300, categoryId: 5, available: true });
-    await db.insert(menuItems).values({ name: "Strips (3 pcs)", description: "", price: 200, categoryId: 5, available: true });
-    await db.insert(menuItems).values({ name: "Strips (6 pcs)", description: "", price: 400, categoryId: 5, available: true });
-    await db.insert(menuItems).values({ name: "Peri Peri Wings", description: "", price: 420, categoryId: 5, available: true });
-    await db.insert(menuItems).values({ name: "Peri Peri Strips", description: "", price: 470, categoryId: 5, available: true });
-
-    // MILKSHAKES - Various flavors
-    await db.insert(menuItems).values({ name: "Vanilla Milkshake", description: "", price: 350, categoryId: 6, available: true });
-    await db.insert(menuItems).values({ name: "Chocolate Milkshake", description: "", price: 350, categoryId: 6, available: true });
-    await db.insert(menuItems).values({ name: "Strawberry Milkshake", description: "", price: 350, categoryId: 6, available: true });
-    await db.insert(menuItems).values({ name: "Banana Milkshake", description: "", price: 350, categoryId: 6, available: true });
-    await db.insert(menuItems).values({ name: "Oreo Milkshake", description: "", price: 400, categoryId: 6, available: true });
-    await db.insert(menuItems).values({ name: "Nutella Milkshake", description: "", price: 400, categoryId: 6, available: true });
+    // Categories are ready for step-by-step menu population
   }
 
   // User operations
