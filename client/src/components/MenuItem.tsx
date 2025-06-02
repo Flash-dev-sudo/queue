@@ -116,13 +116,6 @@ export default function MenuItem({
             )}
             <p className="font-semibold text-primary mt-1">{formatPrice(item.price)}</p>
           </div>
-          <div className="ml-4">
-            <Counter 
-              value={quantity} 
-              onIncrement={() => onAdd()} 
-              onDecrement={() => onRemove()} 
-            />
-          </div>
         </div>
       </div>
 
