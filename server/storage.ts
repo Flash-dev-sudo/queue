@@ -105,7 +105,20 @@ export class MemStorage implements IStorage {
       categories.push(await this.createCategory(category));
     }
     
-    // No menu items added - categories are completely empty
+    // STARTERS - Adding the first category items
+    await this.createMenuItem({ name: "Chips", description: "", price: 250, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Peri Peri Chips", description: "", price: 300, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Chips with Cheese", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Potato Wedges", description: "", price: 350, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Potato Wedges with Cheese", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Fish Fingers", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Calamari", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Mozzarella Sticks", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Onion Rings (10 pcs)", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Gamberoni (6 pcs)", description: "", price: 400, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Nuggets", description: "", price: 300, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "Buffalo Wings", description: "", price: 450, categoryId: 1, available: true });
+    await this.createMenuItem({ name: "BBQ Wings", description: "", price: 450, categoryId: 1, available: true });
 
 
   }
