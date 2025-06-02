@@ -158,37 +158,22 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Four Seasons Pizza", description: "Four different sections with various toppings", price: 850, categoryId: 3, available: true });
     await this.createMenuItem({ name: "Meat Lovers Pizza", description: "Mixed meats with cheese", price: 850, categoryId: 3, available: true });
 
-    // MAINS - Numbered 1-15 (Individual/Meal Options)
+    // MAINS - Numbered 1-15 (Individual items only, meal upgrade available in order summary)
     await this.createMenuItem({ name: "1. Strip Burger", description: "Chicken strip burger", price: 250, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "1. Strip Burger Meal", description: "Strip burger with chips and drink", price: 400, categoryId: 5, available: true });
     await this.createMenuItem({ name: "2. Fillet Burger", description: "Chicken fillet burger", price: 350, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "2. Fillet Burger Meal", description: "Fillet burger with chips and drink", price: 500, categoryId: 5, available: true });
     await this.createMenuItem({ name: "3. Zinger Burger", description: "Spicy zinger chicken burger", price: 400, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "3. Zinger Burger Meal", description: "Zinger burger with chips and drink", price: 550, categoryId: 5, available: true });
     await this.createMenuItem({ name: "4. Fish/Vegetarian Burger", description: "Fish or vegetarian burger", price: 350, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "4. Fish/Vegetarian Burger Meal", description: "Fish/veggie burger with chips and drink", price: 500, categoryId: 5, available: true });
     await this.createMenuItem({ name: "5. Emparo Burger", description: "House special signature burger", price: 650, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "5. Emparo Burger Meal", description: "Emparo burger with chips and drink", price: 800, categoryId: 5, available: true });
     await this.createMenuItem({ name: "6. Tower Burger", description: "Multi-layer tower burger", price: 500, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "6. Tower Burger Meal", description: "Tower burger with chips and drink", price: 650, categoryId: 5, available: true });
     await this.createMenuItem({ name: "7. EFC Special", description: "Emparo Fried Chicken special", price: 650, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "7. EFC Special Meal", description: "EFC special with chips and drink", price: 800, categoryId: 5, available: true });
     await this.createMenuItem({ name: "8. Quarter Pounder", description: "1/4 lb beef burger", price: 400, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "8. Quarter Pounder Meal", description: "Quarter pounder with chips and drink", price: 550, categoryId: 5, available: true });
     await this.createMenuItem({ name: "9. Half Pounder", description: "1/2 lb beef burger", price: 500, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "9. Half Pounder Meal", description: "Half pounder with chips and drink", price: 650, categoryId: 5, available: true });
     await this.createMenuItem({ name: "10. Peri Peri Burger", description: "Spicy peri peri chicken burger", price: 500, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "10. Peri Peri Burger Meal", description: "Peri peri burger with chips and drink", price: 680, categoryId: 5, available: true });
     await this.createMenuItem({ name: "11. Peri Peri Wrap", description: "Peri peri chicken wrap", price: 450, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "11. Peri Peri Wrap Meal", description: "Peri peri wrap with chips and drink", price: 630, categoryId: 5, available: true });
     await this.createMenuItem({ name: "12. Peri Peri Wings", description: "Spicy peri peri chicken wings", price: 420, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "12. Peri Peri Wings Meal", description: "Peri peri wings with chips and drink", price: 600, categoryId: 5, available: true });
     await this.createMenuItem({ name: "13. Peri Peri Strips", description: "Spicy peri peri chicken strips", price: 470, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "13. Peri Peri Strips Meal", description: "Peri peri strips with chips and drink", price: 650, categoryId: 5, available: true });
     await this.createMenuItem({ name: "14. Half Chicken", description: "Half grilled chicken", price: 550, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "14. Half Chicken Meal", description: "Half chicken with chips and drink", price: 730, categoryId: 5, available: true });
     await this.createMenuItem({ name: "15. Whole Chicken", description: "Whole grilled chicken", price: 1050, categoryId: 5, available: true });
-    await this.createMenuItem({ name: "15. Whole Chicken Meal", description: "Whole chicken with chips and drink", price: 1230, categoryId: 5, available: true });
     
     // Pizzas - all £8.50
     await this.createMenuItem({

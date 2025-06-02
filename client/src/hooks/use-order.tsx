@@ -122,12 +122,33 @@ export function useOrder() {
     }
   };
   
+  // Upgrade item to meal (+£1.50)
+  const upgradeToMeal = (menuItemId: number, customizations?: any) => {
+    setCart(prevCart => {
+      return prevCart.map(cartItem => {
+        if (cartItem.menuItemId === menuItemId && 
+            JSON.stringify(cartItem.customizations || {}) === JSON.stringify(customizations || {})) {
+          return {
+            ...cartItem,
+            price: cartItem.price + 150, // Add £1.50 (150 pence)
+            customizations: {
+              ...cartItem.customizations,
+              isMeal: true
+            }
+          };
+        }
+        return cartItem;
+      });
+    });
+  };
+
   return {
     cart,
     addToCart,
     removeFromCart,
     clearCart,
     sendOrder,
-    isSubmitting
+    isSubmitting,
+    upgradeToMeal
   };
 }

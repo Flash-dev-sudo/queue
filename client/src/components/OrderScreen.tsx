@@ -13,7 +13,7 @@ import { Link } from "wouter";
 
 export default function OrderScreen() {
   const { toast } = useToast();
-  const { cart, addToCart, removeFromCart, clearCart, sendOrder, isSubmitting } = useOrder();
+  const { cart, addToCart, removeFromCart, clearCart, sendOrder, isSubmitting, upgradeToMeal } = useOrder();
   
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -196,6 +196,7 @@ export default function OrderScreen() {
             onClearCart={clearCart}
             onSendOrder={sendOrder}
             isSubmitting={isSubmitting}
+            onUpgradeToMeal={upgradeToMeal}
           />
         </div>
       </div>
