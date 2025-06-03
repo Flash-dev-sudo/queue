@@ -141,13 +141,13 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Fillet Burger", description: "", price: 350, mealPrice: 500, categoryId: 3, available: true, hasMealOption: true });
     await this.createMenuItem({ name: "Zinger Burger", description: "", price: 400, mealPrice: 550, categoryId: 3, available: true, hasMealOption: true });
     await this.createMenuItem({ name: "Fish / Vegetarian Burger", description: "", price: 350, mealPrice: 500, categoryId: 3, available: true, hasMealOption: true });
-    await this.createMenuItem({ name: "Emparo Burger", description: "", price: 650, mealPrice: 800, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Emparo Burger", description: "", price: 650, mealPrice: 800, categoryId: 3, available: true, hasMealOption: true, hasFlavorOptions: true });
     await this.createMenuItem({ name: "Tower Burger", description: "", price: 500, mealPrice: 650, categoryId: 3, available: true, hasMealOption: true });
-    await this.createMenuItem({ name: "EFC Special", description: "", price: 650, mealPrice: 800, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "EFC Special", description: "", price: 650, mealPrice: 800, categoryId: 3, available: true, hasMealOption: true, hasFlavorOptions: true });
     await this.createMenuItem({ name: "Quarter Pounder", description: "", price: 400, mealPrice: 550, categoryId: 3, available: true, hasMealOption: true });
     await this.createMenuItem({ name: "Half Pounder", description: "", price: 500, mealPrice: 650, categoryId: 3, available: true, hasMealOption: true });
-    await this.createMenuItem({ name: "Peri Peri Burger", description: "", price: 500, mealPrice: 680, categoryId: 3, available: true, hasMealOption: true });
-    await this.createMenuItem({ name: "Peri Peri Wrap", description: "", price: 450, mealPrice: 630, categoryId: 3, available: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Peri Peri Burger", description: "", price: 500, mealPrice: 680, categoryId: 3, available: true, hasMealOption: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Peri Peri Wrap", description: "", price: 450, mealPrice: 630, categoryId: 3, available: true, hasMealOption: true, hasFlavorOptions: true });
 
     // MILKSHAKES - All flavors £3.50
     await this.createMenuItem({ name: "Oreo Milkshake", description: "", price: 350, categoryId: 6, available: true });
