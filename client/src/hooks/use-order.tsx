@@ -90,8 +90,57 @@ export function useOrder() {
     setIsSubmitting(true);
     
     try {
+      // Format cart items with customizations as readable notes
+      const formattedItems = cart.map(item => {
+        let notes = "";
+        const customizations = item.customizations;
+        
+        if (customizations) {
+          const notesParts = [];
+          
+          // Add flavor
+          if (customizations.flavor) {
+            notesParts.push(`🌶️ Flavor: ${customizations.flavor}`);
+          }
+          
+          // Add spicy indicator
+          if (customizations.isSpicy) {
+            notesParts.push(`🔥 SPICY`);
+          }
+          
+          // Add meal option or drinks
+          if (customizations.isMeal) {
+            if (item.name.includes("Rice Platter")) {
+              notesParts.push(`🥤 With drinks`);
+            } else {
+              notesParts.push(`🍟 Made as meal`);
+            }
+          }
+          
+          // Add toppings
+          if (customizations.toppings && customizations.toppings.length > 0) {
+            notesParts.push(`🥬 Toppings: ${customizations.toppings.join(", ")}`);
+          }
+          
+          // Add chip type
+          if (customizations.chipType && customizations.chipType !== "normal") {
+            notesParts.push(`🍟 ${customizations.chipType} chips`);
+          }
+          
+          notes = notesParts.join(" • ");
+        }
+        
+        return {
+          menuItemId: item.menuItemId,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          notes: notes || undefined
+        };
+      });
+      
       const response = await apiRequest('POST', '/api/orders', {
-        items: cart
+        items: formattedItems
       });
       
       const data = await response.json();

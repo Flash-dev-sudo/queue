@@ -20,8 +20,23 @@ export default function OrderCard({ order, isNew, onUpdateStatus }: OrderCardPro
   useEffect(() => {
     const updateElapsedTime = () => {
       const now = new Date().getTime();
-      // Handle the date string format properly - treat as UTC
-      const created = new Date(order.createdAt + 'Z').getTime();
+      let created;
+      
+      // Handle different date formats
+      if (order.createdAt.includes('T')) {
+        // ISO format with T separator
+        created = new Date(order.createdAt).getTime();
+      } else {
+        // Fallback for other formats
+        created = new Date(order.createdAt).getTime();
+      }
+      
+      // Check if date parsing was successful
+      if (isNaN(created)) {
+        setElapsedTime("0s");
+        return;
+      }
+      
       const diffInSeconds = Math.max(0, Math.floor((now - created) / 1000));
       
       const minutes = Math.floor(diffInSeconds / 60);
