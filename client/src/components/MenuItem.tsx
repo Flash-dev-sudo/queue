@@ -246,7 +246,7 @@ export default function MenuItem({
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Flavor</Label>
                 <RadioGroup value={selectedFlavor} onValueChange={setSelectedFlavor}>
-                  {["Garlic & Hector", "Medium", "Hot", "Extra Hot", "BBQ"].map((flavor) => (
+                  {["Garlic & Herb", "Medium", "Hot", "Extra Hot", "BBQ"].map((flavor) => (
                     <div key={flavor} className="flex items-center space-x-2">
                       <RadioGroupItem value={flavor} id={flavor} />
                       <Label htmlFor={flavor}>{flavor}</Label>
