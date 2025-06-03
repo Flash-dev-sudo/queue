@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { CartItem } from "@shared/schema";
+import { CartItem, MenuItem } from "@shared/schema";
 import { formatPrice } from "@/lib/utils/order-utils";
+import { useQuery } from "@tanstack/react-query";
 
 interface EditItemDialogProps {
   item: CartItem | null;
@@ -17,16 +18,23 @@ interface EditItemDialogProps {
 export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditItemDialogProps) {
   const [chipType, setChipType] = useState("normal");
   const [burgerToppings, setBurgerToppings] = useState<string[]>([]);
-  const [selectedFlavor, setSelectedFlavor] = useState("Garlic & Hector");
+  const [selectedFlavor, setSelectedFlavor] = useState("Garlic & Herb");
   const [isMeal, setIsMeal] = useState(false);
   const [isSpicy, setIsSpicy] = useState(false);
+
+  // Fetch menu items to get mealPrice information
+  const { data: menuItems } = useQuery<MenuItem[]>({
+    queryKey: ["/api/menu-items"],
+  });
 
   // Initialize form with current item customizations
   useEffect(() => {
     if (item?.customizations) {
       setChipType(item.customizations.chipType || "normal");
       setBurgerToppings(item.customizations.toppings || []);
-      setSelectedFlavor(item.customizations.flavor || "Garlic & Hector");
+      // Set default flavor based on item type
+      const defaultFlavor = item.name.includes("Platter") || item.name.includes("Rice Platter") ? "Garlic & Herb" : "Garlic & Hector";
+      setSelectedFlavor(item.customizations.flavor || defaultFlavor);
       setIsMeal(item.customizations.isMeal || false);
       setIsSpicy(item.customizations.isSpicy || false);
     }
@@ -77,12 +85,15 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
     // Calculate the final price based on customizations
     let finalPrice = item.price;
     
+    // Get original menu item data for mealPrice
+    const originalMenuItem = menuItems?.find(mi => mi.id === item.menuItemId);
+    
     // Add meal/drinks upgrade if selected
     if (isMeal) {
       if (item.name.includes("Rice Platter")) {
         finalPrice += 50; // +£0.50 for drinks
-      } else if (item.mealPrice) {
-        finalPrice = item.mealPrice; // Use meal price for other items
+      } else if (originalMenuItem?.mealPrice) {
+        finalPrice = originalMenuItem.mealPrice; // Use meal price for other items
       }
     }
     
