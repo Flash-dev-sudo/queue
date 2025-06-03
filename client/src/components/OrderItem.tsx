@@ -24,10 +24,14 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal, onEdit }: O
     setIsEditing(false);
   };
 
-  // Check if item can be upgraded to meal (mains category items, excluding platters and specials)
+  // Check if item can be upgraded to meal or drinks
   const canUpgradeToMeal = (itemName: string) => {
     const name = itemName.toLowerCase();
-    // Exclude platters and specials as they are already complete meals
+    // Rice platters can add drinks
+    if (name.includes('rice platter')) {
+      return true;
+    }
+    // Exclude other platters and specials as they are already complete meals
     if (name.includes('platter') || name.includes('special')) {
       return false;
     }
