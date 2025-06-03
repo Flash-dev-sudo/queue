@@ -46,7 +46,7 @@ export default function MenuItem({
         ]
       };
     }
-    if (name.includes("burger")) {
+    if (name.includes("burger") || name.includes("wrap") || name.includes("special") || name.includes("pounder")) {
       return {
         type: "burger",
         options: [
@@ -227,16 +227,20 @@ export default function MenuItem({
                 {customizationOptions.type === "burger" && (
                   <div>
                     <Label className="text-base font-medium">Select Toppings:</Label>
-                    <div className="mt-2 space-y-2">
+                    <div className="mt-2 flex flex-wrap gap-2">
                       {customizationOptions.options.map((option) => (
-                        <div key={option.id} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={option.id}
-                            checked={burgerToppings.includes(option.id)}
-                            onCheckedChange={(checked) => handleToppingsChange(option.id, checked as boolean)}
-                          />
-                          <Label htmlFor={option.id}>{option.label}</Label>
-                        </div>
+                        <button
+                          key={option.id}
+                          type="button"
+                          className={`px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                            burgerToppings.includes(option.id)
+                              ? 'bg-primary text-white border-primary'
+                              : 'bg-white text-gray-700 border-gray-300 hover:border-primary hover:text-primary'
+                          }`}
+                          onClick={() => handleToppingsChange(option.id, !burgerToppings.includes(option.id))}
+                        >
+                          {option.label}
+                        </button>
                       ))}
                     </div>
                   </div>

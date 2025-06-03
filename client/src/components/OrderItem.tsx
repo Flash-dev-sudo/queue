@@ -83,14 +83,7 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal }: OrderItem
             >
               <Edit3 className="w-3 h-3 mr-1" /> Notes
             </button>
-            {showMealUpgrade && (
-              <button 
-                className="text-xs text-green-600 hover:text-green-800 flex items-center px-2 py-1 rounded hover:bg-green-50 transition-colors"
-                onClick={onUpgradeToMeal}
-              >
-                <span className="mr-1">🍟</span> Meal (+£1.50)
-              </button>
-            )}
+
             <button 
               className="text-xs text-red-600 hover:text-red-800 flex items-center px-2 py-1 rounded hover:bg-red-50 transition-colors"
               onClick={onRemove}
