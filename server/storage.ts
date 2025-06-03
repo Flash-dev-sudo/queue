@@ -156,15 +156,7 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Kinder Bueno Milkshake", description: "", price: 350, categoryId: 6, available: true });
     await this.createMenuItem({ name: "Mango Milkshake", description: "", price: 350, categoryId: 6, available: true });
 
-    // PLATTERS - Rice platters with flavor options and drinks
-    await this.createMenuItem({ name: "BBQ Strips Rice Platter", description: "Rice platter with drink", price: 650, categoryId: 2, available: true, hasFlavorOptions: true });
-    await this.createMenuItem({ name: "Chicken Strips Rice Platter", description: "Rice platter with drink", price: 600, categoryId: 2, available: true, hasFlavorOptions: true });
-    await this.createMenuItem({ name: "Wings Rice Platter", description: "Rice platter with drink", price: 650, categoryId: 2, available: true, hasFlavorOptions: true });
-    await this.createMenuItem({ name: "Quarter Pounder Rice Platter", description: "Rice platter with drink", price: 550, categoryId: 2, available: true, hasFlavorOptions: true });
-    await this.createMenuItem({ name: "Half Pounder Rice Platter", description: "Rice platter with drink", price: 650, categoryId: 2, available: true, hasFlavorOptions: true });
-    await this.createMenuItem({ name: "Zinger Rice Platter", description: "Rice platter with drink", price: 550, categoryId: 2, available: true, hasFlavorOptions: true });
-    await this.createMenuItem({ name: "Strip Burger Rice Platter", description: "Rice platter with drink", price: 400, categoryId: 2, available: true, hasFlavorOptions: true });
-    await this.createMenuItem({ name: "Fillet Burger Rice Platter", description: "Rice platter with drink", price: 500, categoryId: 2, available: true, hasFlavorOptions: true });
+    // PLATTERS - No items currently
 
     // CHICKEN - All items have meal options, Peri Peri items also have flavor options
     // Fried options (meal option only)
