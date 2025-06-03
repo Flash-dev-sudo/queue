@@ -49,8 +49,8 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
   const handleSave = () => {
     const newCustomizations: any = {};
     
-    // Handle flavor options for specific items, rice platters, and peri peri chicken
-    if (item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger") || item.name.includes("Rice Platter") || item.name.includes("Peri Peri Wings") || item.name.includes("Peri Peri Strips") || item.name.includes("Half Chicken") || item.name.includes("Whole Chicken")) {
+    // Handle flavor options for specific items, all platters, and peri peri chicken
+    if (item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger") || item.name.includes("Platter") || item.name.includes("Peri Peri Wings") || item.name.includes("Peri Peri Strips") || item.name.includes("Half Chicken") || item.name.includes("Whole Chicken")) {
       newCustomizations.flavor = selectedFlavor;
     }
     
@@ -74,7 +74,19 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
       newCustomizations.toppings = burgerToppings;
     }
 
-    onSave(item.customizations, newCustomizations, currentPrice);
+    // Calculate the final price based on customizations
+    let finalPrice = item.price;
+    
+    // Add meal/drinks upgrade if selected
+    if (isMeal) {
+      if (item.name.includes("Rice Platter")) {
+        finalPrice += 50; // +£0.50 for drinks
+      } else if (item.mealPrice) {
+        finalPrice = item.mealPrice; // Use meal price for other items
+      }
+    }
+    
+    onSave(item.customizations, newCustomizations, finalPrice);
     onClose();
   };
 
@@ -89,7 +101,7 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
   const toppingsOptions = ["Cheese", "Lettuce", "Mayo", "Burger Sauce", "Tomato", "Onions"];
   
   // Different flavor options for chicken vs other items
-  const isChickenItem = item?.name.includes("Peri Peri") || item?.name.includes("Wings") || item?.name.includes("Half Chicken") || item?.name.includes("Whole Chicken");
+  const isChickenItem = (item?.name.includes("Peri Peri Wings") || item?.name.includes("Peri Peri Strips") || item?.name.includes("Half Chicken") || item?.name.includes("Whole Chicken") || item?.name.includes("Fried Chicken")) && !item?.name.includes("Platter");
   const flavorOptions = isChickenItem 
     ? ["Garlic & Hector", "Medium", "Hot", "Extra Hot", "BBQ"]
     : ["Garlic & Herb", "Medium", "Hot", "Extra Hot", "BBQ"];
