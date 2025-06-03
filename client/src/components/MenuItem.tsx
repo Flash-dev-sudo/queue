@@ -241,8 +241,8 @@ export default function MenuItem({
               </>
             )}
 
-            {/* Flavor Options - Only for specific items */}
-            {(item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger") || item.name.includes("Rice Platter") || item.name.includes("Peri Peri Wings") || item.name.includes("Peri Peri Strips") || item.name.includes("Half Chicken") || item.name.includes("Whole Chicken")) && (
+            {/* Flavor Options - For all items with hasFlavorOptions */}
+            {item.hasFlavorOptions && (
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Flavor</Label>
                 <RadioGroup value={selectedFlavor} onValueChange={setSelectedFlavor}>

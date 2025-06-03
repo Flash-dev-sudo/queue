@@ -126,32 +126,6 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Meal Option or Drinks for Rice Platters */}
-          {(item.name.includes("Burger") || item.name.includes("Wrap") || 
-            item.name.includes("Wings") || item.name.includes("Strip") || 
-            item.name.includes("Half Chicken") || item.name.includes("Whole Chicken")) && 
-           !item.name.includes("Platter") ? (
-            <div className="flex items-center justify-between">
-              <Label htmlFor="meal-option">Make it a meal +£1.50</Label>
-              <Switch
-                id="meal-option"
-                checked={isMeal}
-                onCheckedChange={setIsMeal}
-              />
-            </div>
-          ) : item.name.includes("Rice Platter") ? (
-            <div className="flex items-center justify-between bg-orange-50 p-3 rounded-lg">
-              <div>
-                <Label htmlFor="drinks-option" className="font-medium">Add drinks</Label>
-                <p className="text-sm text-gray-600">+£0.50</p>
-              </div>
-              <Switch
-                id="drinks-option"
-                checked={isMeal}
-                onCheckedChange={setIsMeal}
-              />
-            </div>
-          ) : null}
 
           {/* Spicy Option */}
           {item.name.includes("Burger") || item.name.includes("Wrap") ? (
@@ -203,12 +177,11 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
             </div>
           ) : null}
 
-          {/* Flavor Options - For all platters and specific items */}
-          {(item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || 
-            item.name.includes("EFC Special") || item.name.includes("Emparo Burger") || 
-            item.name.includes("Platter") || item.name.includes("Peri Peri Wings") || 
-            item.name.includes("Peri Peri Strips") || item.name.includes("Half Chicken") || 
-            item.name.includes("Whole Chicken")) && (
+          {/* Flavor Options - For all items with hasFlavorOptions */}
+          {(() => {
+            const originalMenuItem = menuItems?.find(mi => mi.id === item.menuItemId);
+            return originalMenuItem?.hasFlavorOptions;
+          })() && (
             <div className="space-y-2">
               <Label className="text-sm font-medium">Flavor</Label>
               <RadioGroup value={selectedFlavor} onValueChange={setSelectedFlavor}>

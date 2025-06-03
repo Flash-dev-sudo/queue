@@ -92,6 +92,30 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal, onEdit }: O
         </div>
         
         <div className="flex flex-col gap-2">
+          {/* Upgrade Options */}
+          {canUpgradeToMeal(item.name) && !item.customizations?.isMeal && (
+            <div className="bg-green-50 border border-green-200 rounded p-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-green-800">
+                    {item.name.includes("Rice Platter") ? "Add drinks +£0.50" : "Upgrade to meal +£1.50"}
+                  </p>
+                  <p className="text-xs text-green-600">
+                    {item.name.includes("Rice Platter") ? "Includes drinks" : "Includes chips & drink"}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-xs h-6 px-2 border-green-300 text-green-700 hover:bg-green-100"
+                  onClick={onUpgradeToMeal}
+                >
+                  Upgrade
+                </Button>
+              </div>
+            </div>
+          )}
+          
           <div className="flex flex-wrap gap-1">
             {onEdit && (
               <button 
