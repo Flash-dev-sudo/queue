@@ -166,11 +166,13 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Strip Burger Rice Platter", description: "Rice platter with drink", price: 400, categoryId: 5, available: true, hasFlavorOptions: true });
     await this.createMenuItem({ name: "Fillet Burger Rice Platter", description: "Rice platter with drink", price: 500, categoryId: 5, available: true, hasFlavorOptions: true });
 
-    // CHICKEN - Fried and Peri Peri options
+    // CHICKEN - Clear all old items and add new ones
+    // Fried options (no customization)
     await this.createMenuItem({ name: "Fried Chicken Wings (3 pcs)", description: "", price: 150, categoryId: 4, available: true });
     await this.createMenuItem({ name: "Fried Chicken Wings (6 pcs)", description: "", price: 300, categoryId: 4, available: true });
     await this.createMenuItem({ name: "Fried Chicken Strips (3 pcs)", description: "", price: 200, categoryId: 4, available: true });
     await this.createMenuItem({ name: "Fried Chicken Strips (6 pcs)", description: "", price: 400, categoryId: 4, available: true });
+    // Peri Peri options (with flavor and meal options)
     await this.createMenuItem({ name: "Peri Peri Wings", description: "", price: 420, mealPrice: 600, categoryId: 4, available: true, hasMealOption: true, hasFlavorOptions: true });
     await this.createMenuItem({ name: "Peri Peri Strips", description: "", price: 470, mealPrice: 650, categoryId: 4, available: true, hasMealOption: true, hasFlavorOptions: true });
     await this.createMenuItem({ name: "Half Chicken", description: "", price: 550, mealPrice: 730, categoryId: 4, available: true, hasMealOption: true, hasFlavorOptions: true });
