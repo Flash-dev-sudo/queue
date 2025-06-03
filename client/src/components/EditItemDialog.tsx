@@ -27,18 +27,43 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
     queryKey: ["/api/menu-items"],
   });
 
+  // Calculate current price based on customizations
+  const calculateCurrentPrice = () => {
+    if (!item) return 0;
+    
+    let price = item.price;
+    const originalMenuItem = menuItems?.find(mi => mi.id === item.menuItemId);
+    
+    if (isMeal) {
+      if (item.name.includes("Rice Platter")) {
+        price += 50; // +£0.50 for drinks
+      } else if (originalMenuItem?.mealPrice) {
+        price = originalMenuItem.mealPrice; // Use meal price for other items
+      }
+    }
+    
+    return price;
+  };
+
   // Initialize form with current item customizations
   useEffect(() => {
     if (item?.customizations) {
       setChipType(item.customizations.chipType || "normal");
       setBurgerToppings(item.customizations.toppings || []);
-      // Set default flavor based on item type
-      const defaultFlavor = item.name.includes("Platter") || item.name.includes("Rice Platter") ? "Garlic & Herb" : "Garlic & Hector";
+      // Set default flavor based on item type - all platters use "Garlic & Herb"
+      const defaultFlavor = item.name.includes("Platter") ? "Garlic & Herb" : "Garlic & Hector";
       setSelectedFlavor(item.customizations.flavor || defaultFlavor);
       setIsMeal(item.customizations.isMeal || false);
       setIsSpicy(item.customizations.isSpicy || false);
     }
   }, [item]);
+
+  // Update current price whenever options change
+  useEffect(() => {
+    if (item) {
+      setCurrentPrice(calculateCurrentPrice());
+    }
+  }, [item, isMeal, menuItems]);
 
   if (!item) return null;
 
@@ -111,7 +136,7 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
 
   const toppingsOptions = ["Cheese", "Lettuce", "Mayo", "Burger Sauce", "Tomato", "Onions"];
   
-  // Different flavor options for chicken vs other items
+  // Different flavor options for chicken vs platters/other items
   const isChickenItem = (item?.name.includes("Peri Peri Wings") || item?.name.includes("Peri Peri Strips") || item?.name.includes("Half Chicken") || item?.name.includes("Whole Chicken") || item?.name.includes("Fried Chicken")) && !item?.name.includes("Platter");
   const flavorOptions = isChickenItem 
     ? ["Garlic & Hector", "Medium", "Hot", "Extra Hot", "BBQ"]
@@ -194,8 +219,8 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
             </div>
           ) : null}
 
-          {/* Flavor Options - Only for specific items */}
-          {(item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger")) && (
+          {/* Flavor Options - For all platters and specific items */}
+          {(item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger") || item.name.includes("Platter") || item.name.includes("Peri Peri Wings") || item.name.includes("Peri Peri Strips") || item.name.includes("Half Chicken") || item.name.includes("Whole Chicken")) && (
             <div className="space-y-2">
               <Label className="text-sm font-medium">Flavor</Label>
               <RadioGroup value={selectedFlavor} onValueChange={setSelectedFlavor}>
