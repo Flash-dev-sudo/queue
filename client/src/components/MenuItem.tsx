@@ -172,20 +172,6 @@ export default function MenuItem({
           </DialogHeader>
           
           <div className="space-y-4">
-            {/* Flavor Options */}
-            {item.hasFlavorOptions && (
-              <div>
-                <Label className="text-base font-medium">Choose Flavor:</Label>
-                <RadioGroup value={selectedFlavor} onValueChange={setSelectedFlavor} className="mt-2">
-                  {["Garlic & Hector", "Medium", "Hot", "Extra Hot", "BBQ"].map((flavor) => (
-                    <div key={flavor} className="flex items-center space-x-2">
-                      <RadioGroupItem value={flavor} id={flavor} />
-                      <Label htmlFor={flavor}>{flavor}</Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </div>
-            )}
 
             {/* Meal Option */}
             {(item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip")) && (
@@ -251,6 +237,21 @@ export default function MenuItem({
                   </div>
                 )}
               </>
+            )}
+
+            {/* Flavor Options - Only for specific items */}
+            {(item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger")) && (
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Flavor</Label>
+                <RadioGroup value={selectedFlavor} onValueChange={setSelectedFlavor}>
+                  {["Garlic & Hector", "Medium", "Hot", "Extra Hot", "BBQ"].map((flavor) => (
+                    <div key={flavor} className="flex items-center space-x-2">
+                      <RadioGroupItem value={flavor} id={flavor} />
+                      <Label htmlFor={flavor}>{flavor}</Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
             )}
 
             <div className="flex gap-2 pt-4">

@@ -93,20 +93,7 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
             </div>
           ) : null}
 
-          {/* Flavor Options */}
-          {item.name.includes("Wings") || item.name.includes("Strip") || item.name.includes("Chips") ? (
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Flavor</Label>
-              <RadioGroup value={selectedFlavor} onValueChange={setSelectedFlavor}>
-                {flavorOptions.map((flavor) => (
-                  <div key={flavor} className="flex items-center space-x-2">
-                    <RadioGroupItem value={flavor} id={flavor} />
-                    <Label htmlFor={flavor}>{flavor}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-          ) : null}
+
 
           {/* Spicy Option */}
           {item.name.includes("Burger") || item.name.includes("Wrap") ? (
@@ -157,6 +144,21 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
               </div>
             </div>
           ) : null}
+
+          {/* Flavor Options - Only for specific items */}
+          {(item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger")) && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Flavor</Label>
+              <RadioGroup value={selectedFlavor} onValueChange={setSelectedFlavor}>
+                {flavorOptions.map((flavor) => (
+                  <div key={flavor} className="flex items-center space-x-2">
+                    <RadioGroupItem value={flavor} id={flavor} />
+                    <Label htmlFor={flavor}>{flavor}</Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+          )}
 
           {/* Price Display */}
           <div className="pt-2 border-t">
