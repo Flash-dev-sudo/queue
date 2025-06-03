@@ -47,13 +47,32 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
   };
 
   const handleSave = () => {
-    const newCustomizations = {
-      chipType,
-      toppings: burgerToppings,
-      flavor: selectedFlavor,
-      isMeal,
-      isSpicy
-    };
+    const newCustomizations: any = {};
+    
+    // Handle flavor options for specific items only
+    if (item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger")) {
+      newCustomizations.flavor = selectedFlavor;
+    }
+    
+    // Handle meal upgrade for applicable items
+    if (item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip")) {
+      newCustomizations.isMeal = isMeal;
+    }
+    
+    // Handle spicy option for all burgers and wraps
+    if (item.name.includes("Burger") || item.name.includes("Wrap")) {
+      newCustomizations.isSpicy = isSpicy;
+    }
+    
+    // Handle chip customizations
+    if (item.name.includes("Chips")) {
+      newCustomizations.chipType = chipType;
+    }
+    
+    // Handle burger/wrap toppings
+    if ((item.name.includes("Burger") || item.name.includes("Wrap")) && burgerToppings.length > 0) {
+      newCustomizations.toppings = burgerToppings;
+    }
 
     onSave(item.customizations, newCustomizations, currentPrice);
     onClose();

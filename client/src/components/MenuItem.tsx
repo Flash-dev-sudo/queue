@@ -98,8 +98,8 @@ export default function MenuItem({
   const handleCustomizationConfirm = () => {
     const customizations: any = {};
     
-    // Handle flavor options
-    if (item.hasFlavorOptions) {
+    // Handle flavor options for specific items
+    if (item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger")) {
       customizations.flavor = selectedFlavor;
     }
     
@@ -108,7 +108,7 @@ export default function MenuItem({
       customizations.isMeal = isMeal;
     }
     
-    // Handle spicy/normal option
+    // Handle spicy/normal option for all burgers and wraps
     if (item.name.includes("Burger") || item.name.includes("Wrap")) {
       customizations.isSpicy = isSpicy;
     }
