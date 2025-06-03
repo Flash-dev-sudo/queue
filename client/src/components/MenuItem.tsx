@@ -52,6 +52,7 @@ export default function MenuItem({
         options: [
           { id: "cheese", label: "Cheese" },
           { id: "lettuce", label: "Lettuce" },
+          { id: "mayo", label: "Mayo" },
           { id: "burger_sauce", label: "Burger Sauce" },
           { id: "tomato", label: "Tomato" },
           { id: "onions", label: "Onions" }
@@ -59,6 +60,15 @@ export default function MenuItem({
       };
     }
     return null;
+  };
+
+  // Reset customizations to default values
+  const resetCustomizations = () => {
+    setChipType("normal");
+    setBurgerToppings([]);
+    setSelectedFlavor("Garlic & Hector");
+    setIsMeal(false);
+    setIsSpicy(false);
   };
 
   // Handle card click - add item with customization if needed
@@ -69,6 +79,7 @@ export default function MenuItem({
     }
 
     if (needsCustomization(item)) {
+      resetCustomizations(); // Reset before opening
       setIsCustomizationOpen(true);
     } else {
       onAdd();
@@ -107,6 +118,14 @@ export default function MenuItem({
     setIsCustomizationOpen(false);
   };
 
+  // Handle dialog close (cancel)
+  const handleDialogClose = (open: boolean) => {
+    if (!open) {
+      resetCustomizations(); // Reset when closing
+    }
+    setIsCustomizationOpen(open);
+  };
+
   const handleToppingsChange = (toppingId: string, checked: boolean) => {
     setBurgerToppings(prev => 
       checked 
@@ -138,7 +157,7 @@ export default function MenuItem({
       </div>
 
       {/* Customization Dialog */}
-      <Dialog open={isCustomizationOpen} onOpenChange={setIsCustomizationOpen}>
+      <Dialog open={isCustomizationOpen} onOpenChange={handleDialogClose}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Customize {item.name}</DialogTitle>

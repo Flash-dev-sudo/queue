@@ -40,9 +40,6 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal }: OrderItem
             <p className="font-semibold text-gray-800 text-sm">
               <span className="bg-primary text-white px-2 py-1 rounded text-xs font-bold mr-2">{item.quantity}x</span>
               {item.name}
-              {item.customizations?.isMeal && (
-                <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-bold ml-2">MEAL</span>
-              )}
             </p>
             
             {/* Display customizations */}
