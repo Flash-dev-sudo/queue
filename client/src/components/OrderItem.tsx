@@ -24,15 +24,15 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal, onEdit }: O
     setIsEditing(false);
   };
 
-  // Check if item can be upgraded to meal (mains category items, excluding platters)
+  // Check if item can be upgraded to meal (mains category items, excluding platters and specials)
   const canUpgradeToMeal = (itemName: string) => {
     const name = itemName.toLowerCase();
-    // Exclude platters as they are already complete meals
-    if (name.includes('platter')) {
+    // Exclude platters and specials as they are already complete meals
+    if (name.includes('platter') || name.includes('special')) {
       return false;
     }
     return name.includes('burger') || name.includes('wrap') || name.includes('wings') || 
-           name.includes('strips') || name.includes('chicken') || name.includes('special');
+           name.includes('strips') || name.includes('chicken');
   };
 
   const showMealUpgrade = canUpgradeToMeal(item.name) && !item.customizations?.isMeal && onUpgradeToMeal;
