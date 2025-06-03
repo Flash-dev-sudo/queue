@@ -156,7 +156,19 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Kinder Bueno Milkshake", description: "", price: 350, categoryId: 6, available: true });
     await this.createMenuItem({ name: "Mango Milkshake", description: "", price: 350, categoryId: 6, available: true });
 
-    // PLATTERS - No items currently
+    // PLATTERS - Rice platters and sharing platters with flavor options
+    // Rice Platters (individual items with drink option toggle)
+    await this.createMenuItem({ name: "Strips Rice Platter", description: "Rice platter", price: 750, mealPrice: 800, categoryId: 2, available: true, hasFlavorOptions: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Half Chicken Rice Platter", description: "Rice platter", price: 800, mealPrice: 850, categoryId: 2, available: true, hasFlavorOptions: true, hasMealOption: true });
+    await this.createMenuItem({ name: "Chicken Wings Rice Platter", description: "Rice platter", price: 700, mealPrice: 750, categoryId: 2, available: true, hasFlavorOptions: true, hasMealOption: true });
+    
+    // Sharing Platters (with flavor options)
+    await this.createMenuItem({ name: "Wings Platter", description: "15 wings, 2 chips, 2 drinks", price: 1549, categoryId: 2, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Strips Platter", description: "15 strips, 2 chips, 2 drinks", price: 1549, categoryId: 2, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Burger Feast", description: "3 Peri Peri Burgers, 8 Peri Peri Wings, 2 Chips, Bottle drink", price: 2449, categoryId: 2, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Variety Platter", description: "Whole Chicken, 8 Wings, 5 Strips, 2 sides, Bottle of drink", price: 2400, categoryId: 2, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Emparo Special", description: "Half Chicken, 2 Peri Burgers, 5 Peri Wings, 2 sides, Bottle", price: 2250, categoryId: 2, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Feast Platter", description: "2 Whole Chickens, 8 Wings, 8 Strips, 3 sides, Bottle", price: 3849, categoryId: 2, available: true, hasFlavorOptions: true });
 
     // CHICKEN - All items have meal options, Peri Peri items also have flavor options
     // Fried options (meal option only)

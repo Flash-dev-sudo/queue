@@ -102,11 +102,13 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Meal Option */}
-          {item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip") || item.name.includes("Half Chicken") || item.name.includes("Whole Chicken") ? (
+          {/* Meal Option or Drinks Option */}
+          {item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip") || item.name.includes("Half Chicken") || item.name.includes("Whole Chicken") || item.name.includes("Rice Platter") ? (
             <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
               <div>
-                <Label htmlFor="meal-option" className="font-medium">Make it a meal</Label>
+                <Label htmlFor="meal-option" className="font-medium">
+                  {item.name.includes("Rice Platter") ? "Add drinks" : "Make it a meal"}
+                </Label>
                 <p className="text-sm text-gray-600">+{formatPrice(mealUpgradePrice)}</p>
               </div>
               <Switch
