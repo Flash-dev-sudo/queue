@@ -17,7 +17,7 @@ interface EditItemDialogProps {
 export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditItemDialogProps) {
   const [chipType, setChipType] = useState("normal");
   const [burgerToppings, setBurgerToppings] = useState<string[]>([]);
-  const [selectedFlavor, setSelectedFlavor] = useState("Garlic & Hector");
+  const [selectedFlavor, setSelectedFlavor] = useState("Garlic & Herb");
   const [isMeal, setIsMeal] = useState(false);
   const [isSpicy, setIsSpicy] = useState(false);
 
@@ -26,7 +26,7 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
     if (item?.customizations) {
       setChipType(item.customizations.chipType || "normal");
       setBurgerToppings(item.customizations.toppings || []);
-      setSelectedFlavor(item.customizations.flavor || "Garlic & Hector");
+      setSelectedFlavor(item.customizations.flavor || "Garlic & Herb");
       setIsMeal(item.customizations.isMeal || false);
       setIsSpicy(item.customizations.isSpicy || false);
     }
@@ -68,7 +68,7 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
   };
 
   const toppingsOptions = ["Cheese", "Lettuce", "Mayo", "Burger Sauce", "Tomato", "Onions"];
-  const flavorOptions = ["Garlic & Hector", "Medium", "Hot", "Extra Hot", "BBQ"];
+  const flavorOptions = ["Garlic & Herb", "Medium", "Hot", "Extra Hot", "BBQ"];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
