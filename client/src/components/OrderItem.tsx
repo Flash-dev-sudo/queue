@@ -58,9 +58,24 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal, onEdit }: O
                     <span className="text-xs text-gray-600">Toppings:</span>
                     {item.customizations.toppings.map((topping, index) => (
                       <span key={index} className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">
-                        {topping.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                        {topping}
                       </span>
                     ))}
+                  </div>
+                )}
+                {item.customizations.flavor && (
+                  <div className="flex items-center">
+                    <span className="text-xs text-gray-600 mr-1">Flavor:</span>
+                    <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded font-medium">
+                      {item.customizations.flavor}
+                    </span>
+                  </div>
+                )}
+                {item.customizations.isSpicy && (
+                  <div className="flex items-center">
+                    <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded font-medium">
+                      🌶️ Spicy
+                    </span>
                   </div>
                 )}
               </div>
