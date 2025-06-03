@@ -174,7 +174,7 @@ export default function MenuItem({
           <div className="space-y-4">
 
             {/* Meal Option */}
-            {(item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip")) && (
+            {(item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip") || item.name.includes("Half Chicken") || item.name.includes("Whole Chicken")) && (
               <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
                 <div>
                   <Label htmlFor="meal-option" className="font-medium">Make it a meal</Label>
