@@ -156,6 +156,26 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Kinder Bueno Milkshake", description: "", price: 350, categoryId: 6, available: true });
     await this.createMenuItem({ name: "Mango Milkshake", description: "", price: 350, categoryId: 6, available: true });
 
+    // PLATTERS - Rice platters with flavor options and drinks
+    await this.createMenuItem({ name: "BBQ Strips Rice Platter", description: "Rice platter with drink", price: 650, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Chicken Strips Rice Platter", description: "Rice platter with drink", price: 600, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Wings Rice Platter", description: "Rice platter with drink", price: 650, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Quarter Pounder Rice Platter", description: "Rice platter with drink", price: 550, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Half Pounder Rice Platter", description: "Rice platter with drink", price: 650, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Zinger Rice Platter", description: "Rice platter with drink", price: 550, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Strip Burger Rice Platter", description: "Rice platter with drink", price: 400, categoryId: 5, available: true, hasFlavorOptions: true });
+    await this.createMenuItem({ name: "Fillet Burger Rice Platter", description: "Rice platter with drink", price: 500, categoryId: 5, available: true, hasFlavorOptions: true });
+
+    // CHICKEN - Various chicken items
+    await this.createMenuItem({ name: "2 Piece Chicken", description: "", price: 350, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "3 Piece Chicken", description: "", price: 450, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "6 Piece Chicken", description: "", price: 750, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "10 Piece Chicken", description: "", price: 1200, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Chicken Popcorn", description: "", price: 350, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Family Bucket (15 Pieces)", description: "", price: 1700, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Boneless Mini Fillets", description: "", price: 350, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "Hot Wings (6 pieces)", description: "", price: 350, categoryId: 4, available: true });
+    await this.createMenuItem({ name: "BBQ Wings (6 pieces)", description: "", price: 350, categoryId: 4, available: true });
 
   }
   

@@ -98,8 +98,8 @@ export default function MenuItem({
   const handleCustomizationConfirm = () => {
     const customizations: any = {};
     
-    // Handle flavor options for specific items
-    if (item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger")) {
+    // Handle flavor options for specific items and rice platters
+    if (item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger") || item.name.includes("Rice Platter")) {
       customizations.flavor = selectedFlavor;
     }
     
@@ -240,7 +240,7 @@ export default function MenuItem({
             )}
 
             {/* Flavor Options - Only for specific items */}
-            {(item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger")) && (
+            {(item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger") || item.name.includes("Rice Platter")) && (
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Flavor</Label>
                 <RadioGroup value={selectedFlavor} onValueChange={setSelectedFlavor}>
