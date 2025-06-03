@@ -407,7 +407,7 @@ export class DatabaseStorage implements IStorage {
     this.initializeData();
   }
 
-  // Initialize only the 6 main categories - no menu items
+  // Initialize categories and essential platter menu items
   private async initializeData() {
     // Check if categories already exist
     const existingCategories = await db.select().from(categories);
@@ -415,7 +415,7 @@ export class DatabaseStorage implements IStorage {
       return; // Data already initialized
     }
 
-    // Create only the 6 main categories - completely empty
+    // Create the 6 main categories
     const categoryData: InsertCategory[] = [
       { name: "Starters", icon: "restaurant", displayOrder: 1 },
       { name: "Platters", icon: "dinner_dining", displayOrder: 2 },
@@ -428,8 +428,26 @@ export class DatabaseStorage implements IStorage {
     for (const category of categoryData) {
       await db.insert(categories).values(category);
     }
-    
-    // No menu items added - categories are completely empty
+
+    // Add essential platter items to the Platters category (ID: 2)
+    const platterItems: InsertMenuItem[] = [
+      // Rice Platters with drinks option
+      { categoryId: 2, name: "Strips Rice Platter", description: "Rice platter", price: 750, hasFlavorOptions: true, hasMealOption: true },
+      { categoryId: 2, name: "Half Chicken Rice Platter", description: "Rice platter", price: 800, hasFlavorOptions: true, hasMealOption: true },
+      { categoryId: 2, name: "Chicken Wings Rice Platter", description: "Rice platter", price: 700, hasFlavorOptions: true, hasMealOption: true },
+      
+      // Sharing Platters with flavor options only
+      { categoryId: 2, name: "Wings Platter", description: "15 wings, 2 chips, 2 drinks", price: 1549, hasFlavorOptions: true, hasMealOption: false },
+      { categoryId: 2, name: "Strips Platter", description: "15 strips, 2 chips, 2 drinks", price: 1549, hasFlavorOptions: true, hasMealOption: false },
+      { categoryId: 2, name: "Burger Feast", description: "3 Peri Peri Burgers, 8 Peri Peri Wings, 2 Chips, Bottle drink", price: 2449, hasFlavorOptions: true, hasMealOption: false },
+      { categoryId: 2, name: "Variety Platter", description: "Whole Chicken, 8 Wings, 5 Strips, 2 sides, Bottle of drink", price: 2400, hasFlavorOptions: true, hasMealOption: false },
+      { categoryId: 2, name: "Emparo Special", description: "Half Chicken, 2 Peri Burgers, 5 Peri Wings, 2 sides, Bottle", price: 2250, hasFlavorOptions: true, hasMealOption: false },
+      { categoryId: 2, name: "Feast Platter", description: "2 Whole Chickens, 8 Wings, 8 Strips, 3 sides, Bottle", price: 3849, hasFlavorOptions: true, hasMealOption: false }
+    ];
+
+    for (const item of platterItems) {
+      await db.insert(menuItems).values(item);
+    }
   }
 
   // User operations
@@ -718,5 +736,5 @@ export class DatabaseStorage implements IStorage {
 }
 
 // Initialize the appropriate storage implementation
-// Use MemStorage for now to ensure clean start
-export const storage = new MemStorage();
+// Use DatabaseStorage with Turso SQLite
+export const storage = new DatabaseStorage();
