@@ -34,6 +34,9 @@ export default function MenuItem({
   const [isMeal, setIsMeal] = useState(false);
   const [isSpicy, setIsSpicy] = useState(false);
 
+  // Calculate meal upgrade price
+  const mealUpgradePrice = item.name.includes("Peri Peri") && (item.name.includes("Burger") || item.name.includes("Wrap")) ? 180 : 150;
+
   // Check if item needs customization
   const needsCustomization = (item: MenuItemType) => {
     return item.hasFlavorOptions || item.hasMealOption || item.isSpicyOption;
@@ -100,13 +103,13 @@ export default function MenuItem({
       customizations.flavor = selectedFlavor;
     }
     
-    // Handle meal upgrade
-    if (item.hasMealOption) {
+    // Handle meal upgrade and calculate proper price
+    if (item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip")) {
       customizations.isMeal = isMeal;
     }
     
     // Handle spicy/normal option
-    if (item.isSpicyOption) {
+    if (item.name.includes("Burger") || item.name.includes("Wrap")) {
       customizations.isSpicy = isSpicy;
     }
     
@@ -185,30 +188,29 @@ export default function MenuItem({
             )}
 
             {/* Meal Option */}
-            {item.hasMealOption && (
-              <div>
-                <Label className="text-base font-medium">Upgrade to Meal:</Label>
-                <div className="flex items-center space-x-2 mt-2">
-                  <Switch checked={isMeal} onCheckedChange={setIsMeal} />
-                  <Label>Make it a meal (+{formatPrice((item.mealPrice || 0) - item.price)})</Label>
+            {(item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip")) && (
+              <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                <div>
+                  <Label htmlFor="meal-option" className="font-medium">Make it a meal</Label>
+                  <p className="text-sm text-gray-600">+{formatPrice(mealUpgradePrice)}</p>
                 </div>
+                <Switch
+                  id="meal-option"
+                  checked={isMeal}
+                  onCheckedChange={setIsMeal}
+                />
               </div>
             )}
 
             {/* Spicy Option */}
-            {item.isSpicyOption && (
-              <div>
-                <Label className="text-base font-medium">Choose Style:</Label>
-                <RadioGroup value={isSpicy ? "spicy" : "normal"} onValueChange={(value) => setIsSpicy(value === "spicy")} className="mt-2">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="normal" id="normal" />
-                    <Label htmlFor="normal">Normal</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="spicy" id="spicy" />
-                    <Label htmlFor="spicy">Spicy</Label>
-                  </div>
-                </RadioGroup>
+            {(item.name.includes("Burger") || item.name.includes("Wrap")) && (
+              <div className="flex items-center justify-between">
+                <Label htmlFor="spicy-option" className="font-medium">Spicy</Label>
+                <Switch
+                  id="spicy-option"
+                  checked={isSpicy}
+                  onCheckedChange={setIsSpicy}
+                />
               </div>
             )}
 
@@ -230,22 +232,20 @@ export default function MenuItem({
                 )}
 
                 {customizationOptions.type === "burger" && (
-                  <div>
-                    <Label className="text-base font-medium">Select Toppings:</Label>
-                    <div className="mt-2 flex flex-wrap gap-2">
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium">Toppings</Label>
+                    <div className="grid grid-cols-2 gap-2">
                       {customizationOptions.options.map((option) => (
-                        <button
+                        <Button
                           key={option.id}
                           type="button"
-                          className={`px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                            burgerToppings.includes(option.id)
-                              ? 'bg-primary text-white border-primary'
-                              : 'bg-white text-gray-700 border-gray-300 hover:border-primary hover:text-primary'
-                          }`}
+                          variant={burgerToppings.includes(option.id) ? "default" : "outline"}
+                          size="sm"
                           onClick={() => handleToppingsChange(option.id, !burgerToppings.includes(option.id))}
+                          className="h-10 text-xs"
                         >
                           {option.label}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>
