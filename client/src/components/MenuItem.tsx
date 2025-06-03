@@ -39,7 +39,17 @@ export default function MenuItem({
 
   // Check if item needs customization
   const needsCustomization = (item: MenuItemType) => {
-    return item.hasFlavorOptions || item.hasMealOption || item.isSpicyOption;
+    // Check if item has flavor options
+    if (item.hasFlavorOptions) return true;
+    
+    // Check if item is a burger or wrap (needs toppings/spicy option)
+    if (item.name.includes("Burger") || item.name.includes("Wrap")) return true;
+    
+    // Check if item is chips (needs chip type selection)
+    if (item.name.includes("Chips") && !item.name.includes("Wings") && !item.name.includes("Strip")) return true;
+    
+    // All other items (like plain chicken strips, wings without peri peri, etc.) don't need customization
+    return false;
   };
 
   // Get customization options based on item
