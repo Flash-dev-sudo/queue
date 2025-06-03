@@ -13,6 +13,7 @@ interface OrderSummaryProps {
   onSendOrder: () => Promise<void>;
   isSubmitting: boolean;
   onUpgradeToMeal?: (menuItemId: number, customizations?: any) => void;
+  onEditItem?: (menuItemId: number, customizations?: any) => void;
 }
 
 export default function OrderSummary({ 
@@ -21,7 +22,8 @@ export default function OrderSummary({
   onClearCart, 
   onSendOrder,
   isSubmitting,
-  onUpgradeToMeal
+  onUpgradeToMeal,
+  onEditItem
 }: OrderSummaryProps) {
   const { toast } = useToast();
   const [orderNumber, setOrderNumber] = useState<string>(() => {
@@ -83,6 +85,7 @@ export default function OrderSummary({
                   item={item}
                   onRemove={() => onRemoveItem(item.menuItemId, item.customizations)}
                   onUpgradeToMeal={onUpgradeToMeal ? () => onUpgradeToMeal(item.menuItemId, item.customizations) : undefined}
+                  onEdit={onEditItem ? () => onEditItem(item.menuItemId, item.customizations) : undefined}
                 />
               ))}
             </div>

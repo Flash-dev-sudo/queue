@@ -15,6 +15,15 @@ export default function OrderScreen() {
   const { toast } = useToast();
   const { cart, addToCart, removeFromCart, clearCart, sendOrder, isSubmitting, upgradeToMeal } = useOrder();
   
+  // Handle editing an item - reopen customization dialog
+  const editItem = (menuItemId: number, customizations?: any) => {
+    // For now, show a toast that editing functionality is coming
+    toast({
+      title: "Edit Item",
+      description: "Item editing functionality will be available soon",
+    });
+  };
+  
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [showMobileCart, setShowMobileCart] = useState(false);
@@ -214,6 +223,7 @@ export default function OrderScreen() {
             onSendOrder={sendOrder}
             isSubmitting={isSubmitting}
             onUpgradeToMeal={upgradeToMeal}
+            onEditItem={editItem}
           />
         </div>
       </div>
@@ -261,6 +271,7 @@ export default function OrderScreen() {
                 onSendOrder={sendOrder}
                 isSubmitting={isSubmitting}
                 onUpgradeToMeal={upgradeToMeal}
+                onEditItem={editItem}
               />
             </div>
           </div>
