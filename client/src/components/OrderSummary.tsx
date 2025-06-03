@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import OrderItem from "@/components/OrderItem";
+import EditItemDialog from "@/components/EditItemDialog";
 import { CartItem } from "@shared/schema";
 import { formatPrice, calculateSubtotal } from "@/lib/utils/order-utils";
 import { useToast } from "@/hooks/use-toast";
 import { Trash2 } from "lucide-react";
+import { useOrder } from "@/hooks/use-order";
 
 interface OrderSummaryProps {
   cart: CartItem[];

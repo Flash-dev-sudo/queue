@@ -14,6 +14,11 @@ interface MenuItemProps {
   quantity: number;
   onAdd: (customizations?: any) => void;
   onRemove: () => void;
+  editMode?: {
+    isEditing: boolean;
+    currentCustomizations: any;
+    onSaveEdit: (oldCustomizations: any, newCustomizations: any, newPrice: number) => void;
+  };
 }
 
 export default function MenuItem({ 

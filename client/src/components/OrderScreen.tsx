@@ -13,15 +13,13 @@ import { Link } from "wouter";
 
 export default function OrderScreen() {
   const { toast } = useToast();
-  const { cart, addToCart, removeFromCart, clearCart, sendOrder, isSubmitting, upgradeToMeal } = useOrder();
+  const { cart, addToCart, removeFromCart, clearCart, sendOrder, isSubmitting, upgradeToMeal, editItem: updateCartItem } = useOrder();
   
-  // Handle editing an item - reopen customization dialog
-  const editItem = (menuItemId: number, customizations?: any) => {
-    // For now, show a toast that editing functionality is coming
-    toast({
-      title: "Edit Item",
-      description: "Item editing functionality will be available soon",
-    });
+  const [editingItem, setEditingItem] = useState<{menuItemId: number, customizations: any} | null>(null);
+  
+  // Handle editing an item - trigger the MenuItem component's edit mode
+  const handleEditItem = (menuItemId: number, customizations?: any) => {
+    setEditingItem({ menuItemId, customizations });
   };
   
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -223,7 +221,7 @@ export default function OrderScreen() {
             onSendOrder={sendOrder}
             isSubmitting={isSubmitting}
             onUpgradeToMeal={upgradeToMeal}
-            onEditItem={editItem}
+            onEditItem={handleEditItem}
           />
         </div>
       </div>
@@ -271,7 +269,7 @@ export default function OrderScreen() {
                 onSendOrder={sendOrder}
                 isSubmitting={isSubmitting}
                 onUpgradeToMeal={upgradeToMeal}
-                onEditItem={editItem}
+                onEditItem={handleEditItem}
               />
             </div>
           </div>

@@ -142,6 +142,23 @@ export function useOrder() {
     });
   };
 
+  // Edit existing cart item with new customizations
+  const editItem = (menuItemId: number, oldCustomizations: any, newCustomizations: any, newPrice: number) => {
+    setCart(prevCart => {
+      return prevCart.map(cartItem => {
+        if (cartItem.menuItemId === menuItemId && 
+            JSON.stringify(cartItem.customizations || {}) === JSON.stringify(oldCustomizations || {})) {
+          return {
+            ...cartItem,
+            price: newPrice,
+            customizations: newCustomizations
+          };
+        }
+        return cartItem;
+      });
+    });
+  };
+
   return {
     cart,
     addToCart,
@@ -149,6 +166,7 @@ export function useOrder() {
     clearCart,
     sendOrder,
     isSubmitting,
-    upgradeToMeal
+    upgradeToMeal,
+    editItem
   };
 }
