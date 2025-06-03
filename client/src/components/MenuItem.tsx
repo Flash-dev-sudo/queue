@@ -173,22 +173,7 @@ export default function MenuItem({
           
           <div className="space-y-4">
 
-            {/* Meal Option or Drinks Option */}
-            {(item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip") || item.name.includes("Half Chicken") || item.name.includes("Whole Chicken") || item.name.includes("Rice Platter")) && (
-              <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                <div>
-                  <Label htmlFor="meal-option" className="font-medium">
-                    {item.name.includes("Rice Platter") ? "Add drinks" : "Make it a meal"}
-                  </Label>
-                  <p className="text-sm text-gray-600">+{formatPrice(item.name.includes("Rice Platter") ? 50 : mealUpgradePrice)}</p>
-                </div>
-                <Switch
-                  id="meal-option"
-                  checked={isMeal}
-                  onCheckedChange={setIsMeal}
-                />
-              </div>
-            )}
+
 
             {/* Spicy Option */}
             {(item.name.includes("Burger") || item.name.includes("Wrap")) && (
