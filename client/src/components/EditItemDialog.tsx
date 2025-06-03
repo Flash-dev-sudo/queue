@@ -87,7 +87,12 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
   };
 
   const toppingsOptions = ["Cheese", "Lettuce", "Mayo", "Burger Sauce", "Tomato", "Onions"];
-  const flavorOptions = ["Garlic & Hector", "Medium", "Hot", "Extra Hot", "BBQ"];
+  
+  // Different flavor options for chicken vs other items
+  const isChickenItem = item?.name.includes("Peri Peri") || item?.name.includes("Wings") || item?.name.includes("Half Chicken") || item?.name.includes("Whole Chicken");
+  const flavorOptions = isChickenItem 
+    ? ["Garlic & Hector", "Medium", "Hot", "Extra Hot", "BBQ"]
+    : ["Garlic & Herb", "Medium", "Hot", "Extra Hot", "BBQ"];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
