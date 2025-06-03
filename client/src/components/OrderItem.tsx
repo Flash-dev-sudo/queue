@@ -100,9 +100,6 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal, onEdit }: O
                   <p className="text-xs font-medium text-green-800">
                     {item.name.includes("Rice Platter") ? "Add drinks +£0.50" : "Upgrade to meal +£1.50"}
                   </p>
-                  <p className="text-xs text-green-600">
-                    {item.name.includes("Rice Platter") ? "Includes drinks" : "Includes chips & drink"}
-                  </p>
                 </div>
                 <Button
                   size="sm"
