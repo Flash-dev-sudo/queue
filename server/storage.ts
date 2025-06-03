@@ -149,6 +149,13 @@ export class MemStorage implements IStorage {
     await this.createMenuItem({ name: "Peri Peri Burger", description: "", price: 500, mealPrice: 680, categoryId: 3, available: true, hasMealOption: true });
     await this.createMenuItem({ name: "Peri Peri Wrap", description: "", price: 450, mealPrice: 630, categoryId: 3, available: true, hasMealOption: true });
 
+    // MILKSHAKES - All flavors £3.50
+    await this.createMenuItem({ name: "Oreo Milkshake", description: "", price: 350, categoryId: 6, available: true });
+    await this.createMenuItem({ name: "Kit Kat Milkshake", description: "", price: 350, categoryId: 6, available: true });
+    await this.createMenuItem({ name: "Dates Milkshake", description: "", price: 350, categoryId: 6, available: true });
+    await this.createMenuItem({ name: "Kinder Bueno Milkshake", description: "", price: 350, categoryId: 6, available: true });
+    await this.createMenuItem({ name: "Mango Milkshake", description: "", price: 350, categoryId: 6, available: true });
+
 
   }
   
