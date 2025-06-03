@@ -49,8 +49,8 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
   const handleSave = () => {
     const newCustomizations: any = {};
     
-    // Handle flavor options for specific items and rice platters
-    if (item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger") || item.name.includes("Rice Platter")) {
+    // Handle flavor options for specific items, rice platters, and peri peri chicken
+    if (item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger") || item.name.includes("Rice Platter") || item.name.includes("Peri Peri Wings") || item.name.includes("Peri Peri Strips") || item.name.includes("Half Chicken") || item.name.includes("Whole Chicken")) {
       newCustomizations.flavor = selectedFlavor;
     }
     
