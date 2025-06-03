@@ -10,9 +10,10 @@ interface OrderItemProps {
   item: CartItem;
   onRemove: () => void;
   onUpgradeToMeal?: () => void;
+  onEdit?: () => void;
 }
 
-export default function OrderItem({ item, onRemove, onUpgradeToMeal }: OrderItemProps) {
+export default function OrderItem({ item, onRemove, onUpgradeToMeal, onEdit }: OrderItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [notes, setNotes] = useState(item.notes || "");
   
@@ -77,11 +78,19 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal }: OrderItem
         
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap gap-1">
+            {onEdit && (
+              <button 
+                className="text-xs text-orange-600 hover:text-orange-800 flex items-center px-2 py-1 rounded hover:bg-orange-50 transition-colors"
+                onClick={onEdit}
+              >
+                <Edit3 className="w-3 h-3 mr-1" /> Edit
+              </button>
+            )}
             <button 
               className="text-xs text-blue-600 hover:text-blue-800 flex items-center px-2 py-1 rounded hover:bg-blue-50 transition-colors"
               onClick={() => setIsEditing(true)}
             >
-              <Edit3 className="w-3 h-3 mr-1" /> Notes
+              <StickyNote className="w-3 h-3 mr-1" /> Notes
             </button>
 
             <button 
