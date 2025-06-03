@@ -28,6 +28,8 @@ export default function OrderSummary({
   onEditItem
 }: OrderSummaryProps) {
   const { toast } = useToast();
+  const { editItem } = useOrder();
+  const [editingItem, setEditingItem] = useState<CartItem | null>(null);
   const [orderNumber, setOrderNumber] = useState<string>(() => {
     // Generate a random order number for display purposes
     const timestamp = Date.now();
@@ -87,7 +89,7 @@ export default function OrderSummary({
                   item={item}
                   onRemove={() => onRemoveItem(item.menuItemId, item.customizations)}
                   onUpgradeToMeal={onUpgradeToMeal ? () => onUpgradeToMeal(item.menuItemId, item.customizations) : undefined}
-                  onEdit={onEditItem ? () => onEditItem(item.menuItemId, item.customizations) : undefined}
+                  onEdit={() => setEditingItem(item)}
                 />
               ))}
             </div>
@@ -128,6 +130,19 @@ export default function OrderSummary({
           </div>
         </>
       )}
+
+      {/* Edit Item Dialog */}
+      <EditItemDialog
+        item={editingItem}
+        isOpen={!!editingItem}
+        onClose={() => setEditingItem(null)}
+        onSave={(oldCustomizations, newCustomizations, newPrice) => {
+          if (editingItem) {
+            editItem(editingItem.menuItemId, oldCustomizations, newCustomizations, newPrice);
+          }
+          setEditingItem(null);
+        }}
+      />
     </div>
   );
 }
