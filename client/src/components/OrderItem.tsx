@@ -31,8 +31,8 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal, onEdit }: O
     if (name.includes('rice platter')) {
       return true;
     }
-    // Exclude other platters and specials as they are already complete meals
-    if (name.includes('platter') || name.includes('special')) {
+    // Exclude other platters, specials, and feasts as they are already complete meals
+    if (name.includes('platter') || name.includes('special') || name.includes('feast')) {
       return false;
     }
     return name.includes('burger') || name.includes('wrap') || name.includes('wings') || 
