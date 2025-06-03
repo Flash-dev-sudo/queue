@@ -171,15 +171,19 @@ export function useOrder() {
     }
   };
   
-  // Upgrade item to meal (+£1.50)
+  // Upgrade item to meal or add drinks
   const upgradeToMeal = (menuItemId: number, customizations?: any) => {
     setCart(prevCart => {
       return prevCart.map(cartItem => {
         if (cartItem.menuItemId === menuItemId && 
             JSON.stringify(cartItem.customizations || {}) === JSON.stringify(customizations || {})) {
+          
+          // Different pricing for rice platters vs regular items
+          const upgradePrice = cartItem.name.includes("Rice Platter") ? 50 : 150; // £0.50 for rice platters, £1.50 for others
+          
           return {
             ...cartItem,
-            price: cartItem.price + 150, // Add £1.50 (150 pence)
+            price: cartItem.price + upgradePrice,
             customizations: {
               ...cartItem.customizations,
               isMeal: true
