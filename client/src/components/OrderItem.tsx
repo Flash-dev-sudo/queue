@@ -31,12 +31,17 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal, onEdit }: O
     if (name.includes('rice platter')) {
       return true;
     }
-    // Exclude other platters, specials, and feasts as they are already complete meals
-    if (name.includes('platter') || name.includes('special') || name.includes('feast')) {
+    // Exclude other platters and feasts as they are already complete meals
+    // But allow EFC Special, Quarter Pounder, and Half Pounder to be upgraded
+    if (name.includes('platter') || name.includes('feast')) {
       return false;
     }
+    if (name.includes('emparo special')) {
+      return false; // Emparo Special platter should not be upgradeable
+    }
     return name.includes('burger') || name.includes('wrap') || name.includes('wings') || 
-           name.includes('strips') || name.includes('chicken');
+           name.includes('strips') || name.includes('chicken') || name.includes('special') || 
+           name.includes('pounder');
   };
 
   const showMealUpgrade = canUpgradeToMeal(item.name) && !item.customizations?.isMeal && onUpgradeToMeal;
