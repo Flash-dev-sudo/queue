@@ -19,7 +19,7 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
   const [chipType, setChipType] = useState("normal");
   const [burgerToppings, setBurgerToppings] = useState<string[]>([]);
   const [selectedFlavor, setSelectedFlavor] = useState("Garlic & Herb");
-  const [isMeal, setIsMeal] = useState(false);
+
   const [isSpicy, setIsSpicy] = useState(false);
 
   // Fetch menu items to get mealPrice information
@@ -30,19 +30,7 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
   // Calculate current price based on customizations
   const getCurrentPrice = () => {
     if (!item) return 0;
-    
-    let price = item.price;
-    const originalMenuItem = menuItems?.find(mi => mi.id === item.menuItemId);
-    
-    if (isMeal) {
-      if (item.name.includes("Rice Platter")) {
-        price = item.price + 50; // +£0.50 for drinks
-      } else if (originalMenuItem?.mealPrice) {
-        price = originalMenuItem.mealPrice; // Use meal price for other items
-      }
-    }
-    
-    return price;
+    return item.price; // Base price only, meal upgrades handled in order summary
   };
 
   // Initialize form with current item customizations
@@ -54,7 +42,6 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
       // Set default flavor based on item type - all platters use "Garlic & Herb"
       const defaultFlavor = item.name.includes("Platter") ? "Garlic & Herb" : "Garlic & Hector";
       setSelectedFlavor(item.customizations?.flavor || defaultFlavor);
-      setIsMeal(item.customizations?.isMeal || false);
       setIsSpicy(item.customizations?.isSpicy || false);
     }
   }, [item]);
@@ -83,14 +70,7 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
       newCustomizations.flavor = selectedFlavor;
     }
     
-    // Handle meal upgrade for applicable items or drinks for rice platters
-    if (item.name.includes("Burger") || item.name.includes("Wrap") || 
-        item.name.includes("Wings") || item.name.includes("Strip") || 
-        item.name.includes("Half Chicken") || item.name.includes("Whole Chicken") || 
-        item.name.includes("Rice Platter")) {
-      newCustomizations.isMeal = isMeal;
-    }
-    
+
     // Handle spicy option for all burgers and wraps
     if (item.name.includes("Burger") || item.name.includes("Wrap")) {
       newCustomizations.isSpicy = isSpicy;
