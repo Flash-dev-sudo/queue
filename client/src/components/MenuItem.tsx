@@ -180,7 +180,7 @@ export default function MenuItem({
                   <Label htmlFor="meal-option" className="font-medium">
                     {item.name.includes("Rice Platter") ? "Add drinks" : "Make it a meal"}
                   </Label>
-                  <p className="text-sm text-gray-600">+{formatPrice(mealUpgradePrice)}</p>
+                  <p className="text-sm text-gray-600">+{formatPrice(item.name.includes("Rice Platter") ? 50 : mealUpgradePrice)}</p>
                 </div>
                 <Switch
                   id="meal-option"

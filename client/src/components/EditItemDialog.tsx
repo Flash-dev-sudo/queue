@@ -54,8 +54,8 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
       newCustomizations.flavor = selectedFlavor;
     }
     
-    // Handle meal upgrade for applicable items
-    if (item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip")) {
+    // Handle meal upgrade for applicable items or drinks for rice platters
+    if (item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip") || item.name.includes("Half Chicken") || item.name.includes("Whole Chicken") || item.name.includes("Rice Platter")) {
       newCustomizations.isMeal = isMeal;
     }
     
@@ -109,7 +109,7 @@ export default function EditItemDialog({ item, isOpen, onClose, onSave }: EditIt
                 <Label htmlFor="meal-option" className="font-medium">
                   {item.name.includes("Rice Platter") ? "Add drinks" : "Make it a meal"}
                 </Label>
-                <p className="text-sm text-gray-600">+{formatPrice(mealUpgradePrice)}</p>
+                <p className="text-sm text-gray-600">+{formatPrice(item.name.includes("Rice Platter") ? 50 : mealUpgradePrice)}</p>
               </div>
               <Switch
                 id="meal-option"
