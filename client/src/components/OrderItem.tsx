@@ -11,16 +11,19 @@ interface OrderItemProps {
   onRemove: () => void;
   onUpgradeToMeal?: () => void;
   onEdit?: () => void;
+  onSaveNotes?: (notes: string) => void;
 }
 
-export default function OrderItem({ item, onRemove, onUpgradeToMeal, onEdit }: OrderItemProps) {
+export default function OrderItem({ item, onRemove, onUpgradeToMeal, onEdit, onSaveNotes }: OrderItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [notes, setNotes] = useState(item.notes || "");
   
   const totalPrice = item.price * item.quantity;
   
   const handleSaveNotes = () => {
-    item.notes = notes;
+    if (onSaveNotes) {
+      onSaveNotes(notes);
+    }
     setIsEditing(false);
   };
 

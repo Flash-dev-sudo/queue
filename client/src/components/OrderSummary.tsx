@@ -16,16 +16,18 @@ interface OrderSummaryProps {
   isSubmitting: boolean;
   onUpgradeToMeal?: (menuItemId: number, customizations?: any) => void;
   onEditItem?: (menuItemId: number, customizations?: any) => void;
+  onSaveNotes?: (menuItemId: number, customizations: any, notes: string) => void;
 }
 
-export default function OrderSummary({ 
-  cart, 
-  onRemoveItem, 
-  onClearCart, 
+export default function OrderSummary({
+  cart,
+  onRemoveItem,
+  onClearCart,
   onSendOrder,
   isSubmitting,
   onUpgradeToMeal,
-  onEditItem
+  onEditItem,
+  onSaveNotes
 }: OrderSummaryProps) {
   const { toast } = useToast();
   const { editItem } = useOrder();
@@ -90,6 +92,7 @@ export default function OrderSummary({
                   onRemove={() => onRemoveItem(item.menuItemId, item.customizations)}
                   onUpgradeToMeal={onUpgradeToMeal ? () => onUpgradeToMeal(item.menuItemId, item.customizations) : undefined}
                   onEdit={() => setEditingItem(item)}
+                  onSaveNotes={onSaveNotes ? (notes) => onSaveNotes(item.menuItemId, item.customizations, notes) : undefined}
                 />
               ))}
             </div>

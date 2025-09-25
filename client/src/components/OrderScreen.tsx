@@ -13,7 +13,7 @@ import { Link } from "wouter";
 
 export default function OrderScreen() {
   const { toast } = useToast();
-  const { cart, addToCart, removeFromCart, clearCart, sendOrder, isSubmitting, upgradeToMeal, editItem: updateCartItem } = useOrder();
+  const { cart, addToCart, removeFromCart, clearCart, sendOrder, isSubmitting, upgradeToMeal, editItem: updateCartItem, updateItemNotes } = useOrder();
   
   const [editingItem, setEditingItem] = useState<{menuItemId: number, customizations: any} | null>(null);
   
@@ -222,6 +222,7 @@ export default function OrderScreen() {
             isSubmitting={isSubmitting}
             onUpgradeToMeal={upgradeToMeal}
             onEditItem={handleEditItem}
+            onSaveNotes={updateItemNotes}
           />
         </div>
       </div>
@@ -270,6 +271,7 @@ export default function OrderScreen() {
                 isSubmitting={isSubmitting}
                 onUpgradeToMeal={upgradeToMeal}
                 onEditItem={handleEditItem}
+                onSaveNotes={updateItemNotes}
               />
             </div>
           </div>

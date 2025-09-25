@@ -94,20 +94,26 @@ export function useOrder() {
       const formattedItems = cart.map(item => {
         let notes = "";
         const customizations = item.customizations;
-        
-        if (customizations) {
+
+        // Check for manual notes first (user-typed notes take priority)
+        const manualNotes = item.notes && item.notes.trim().length > 0 ? item.notes.trim() : "";
+
+        if (manualNotes) {
+          notes = manualNotes;
+        } else if (customizations) {
+          // Generate notes from customizations if no manual notes
           const notesParts = [];
-          
+
           // Add flavor
           if (customizations.flavor) {
             notesParts.push(`🌶️ Flavor: ${customizations.flavor}`);
           }
-          
+
           // Add spicy indicator
           if (customizations.isSpicy) {
             notesParts.push(`🔥 SPICY`);
           }
-          
+
           // Add meal option or drinks
           if (customizations.isMeal) {
             if (item.name.includes("Rice Platter")) {
@@ -116,17 +122,17 @@ export function useOrder() {
               notesParts.push(`🍟 Made as meal`);
             }
           }
-          
+
           // Add toppings
           if (customizations.toppings && customizations.toppings.length > 0) {
             notesParts.push(`🥬 Toppings: ${customizations.toppings.join(", ")}`);
           }
-          
+
           // Add chip type
           if (customizations.chipType && customizations.chipType !== "normal") {
             notesParts.push(`🍟 ${customizations.chipType} chips`);
           }
-          
+
           notes = notesParts.join(" • ");
         }
         
@@ -195,7 +201,7 @@ export function useOrder() {
   const editItem = (menuItemId: number, oldCustomizations: any, newCustomizations: any, newPrice: number) => {
     setCart(prevCart => {
       return prevCart.map(cartItem => {
-        if (cartItem.menuItemId === menuItemId && 
+        if (cartItem.menuItemId === menuItemId &&
             JSON.stringify(cartItem.customizations || {}) === JSON.stringify(oldCustomizations || {})) {
           return {
             ...cartItem,
@@ -208,6 +214,16 @@ export function useOrder() {
     });
   };
 
+  // Update notes for a specific cart item
+  const updateItemNotes = (menuItemId: number, customizations: any, notes: string) => {
+    setCart(prevCart => prevCart.map(cartItem =>
+      cartItem.menuItemId === menuItemId &&
+      JSON.stringify(cartItem.customizations || {}) === JSON.stringify(customizations || {})
+        ? { ...cartItem, notes }
+        : cartItem
+    ));
+  };
+
   return {
     cart,
     addToCart,
@@ -216,6 +232,7 @@ export function useOrder() {
     sendOrder,
     isSubmitting,
     upgradeToMeal,
-    editItem
+    editItem,
+    updateItemNotes
   };
 }
