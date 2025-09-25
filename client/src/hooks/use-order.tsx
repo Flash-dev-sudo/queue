@@ -145,11 +145,7 @@ export function useOrder() {
       
       const data = await response.json();
       
-      // Notify all clients about the new order
-      sendMessage({
-        type: 'new_order',
-        order: data
-      });
+      // Server already notifies kitchen via WebSocket on order creation
       
       toast({
         title: "Order Sent",

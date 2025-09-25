@@ -521,13 +521,12 @@ export class DatabaseStorage implements IStorage {
     const items = await db.select({
       id: orderItems.id,
       menuItemId: orderItems.menuItemId,
-      name: menuItems.name,
-      price: menuItems.price,
+      name: orderItems.name,
+      price: orderItems.price,
       quantity: orderItems.quantity,
       notes: orderItems.notes
     })
     .from(orderItems)
-    .innerJoin(menuItems, eq(orderItems.menuItemId, menuItems.id))
     .where(eq(orderItems.orderId, id));
 
     return {
@@ -550,11 +549,8 @@ export class DatabaseStorage implements IStorage {
 
   async getActiveOrders(): Promise<FullOrder[]> {
     const activeOrders = await db.select().from(orders)
-      .where(
-        and(
-          eq(orders.status, 'new')
-        )
-      );
+      .where(sql`status IN ('new','preparing','ready')`)
+      .orderBy(desc(orders.createdAt));
 
     const fullOrders: FullOrder[] = [];
     for (const order of activeOrders) {
@@ -718,5 +714,5 @@ export class DatabaseStorage implements IStorage {
 }
 
 // Initialize the appropriate storage implementation
-// Use MemStorage for now to ensure clean start
-export const storage = new MemStorage();
+// Use persistent database storage in production
+export const storage = new DatabaseStorage();

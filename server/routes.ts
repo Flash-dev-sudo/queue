@@ -122,7 +122,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Manual cleanup/stats trigger (protected lightly via env secret optional)
+  app.post('/api/cleanup/run', async (req, res) => {
+    try {
+      const { cleanupService } = await import('./cleanup');
+      await cleanupService.manualCleanup();
+      res.json({ message: 'Cleanup and stats generation executed' });
+    } catch (error: any) {
+      console.error('Manual cleanup failed:', error);
+      res.status(500).json({ message: 'Manual cleanup failed', error: error?.message });
+    }
+  });
+
   // API Routes
+  // Admin endpoints (simple, no auth beyond client-side gate)
+  app.post('/api/admin/categories', async (req, res) => {
+    try {
+      const { name, icon, displayOrder } = req.body || {};
+      if (!name || !icon) return res.status(400).json({ message: 'name and icon required' });
+      const category = await storage.createCategory({ name, icon, displayOrder: Number(displayOrder) || 0 });
+      res.status(201).json(category);
+    } catch (error) {
+      console.error('Error creating category:', error);
+      res.status(500).json({ message: 'Error creating category' });
+    }
+  });
+
+  app.post('/api/admin/menu-items', async (req, res) => {
+    try {
+      const { categoryId, name, description, price, mealPrice, available, image, hasFlavorOptions, hasMealOption, isSpicyOption } = req.body || {};
+      if (!categoryId || !name || !price) return res.status(400).json({ message: 'categoryId, name and price required' });
+      const item = await storage.createMenuItem({
+        categoryId: Number(categoryId),
+        name,
+        description,
+        price: Number(price),
+        mealPrice: mealPrice ? Number(mealPrice) : undefined,
+        available: available !== false,
+        image,
+        hasFlavorOptions: !!hasFlavorOptions,
+        hasMealOption: !!hasMealOption,
+        isSpicyOption: !!isSpicyOption,
+      });
+      res.status(201).json(item);
+    } catch (error) {
+      console.error('Error creating menu item:', error);
+      res.status(500).json({ message: 'Error creating menu item' });
+    }
+  });
   // Get all menu categories
   app.get('/api/categories', async (req, res) => {
     try {

@@ -6,23 +6,25 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Login from "@/pages/login";
+import Admin from "@/pages/admin";
 import OrderScreen from "@/components/OrderScreen";
 import KitchenScreen from "@/components/KitchenScreen";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
-  // For now, let's make it work first - we'll add authentication back later
   const isLoggedIn = localStorage.getItem("emparo_logged_in") === "true";
-
-  if (!isLoggedIn) {
-    return <Login />;
-  }
 
   return (
     <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/order" component={OrderScreen} />
-      <Route path="/kitchen" component={KitchenScreen} />
+      {/* Public routes */}
+      <Route path="/admin" component={Admin} />
+      <Route path="/login" component={Login} />
+
+      {/* Staff routes (require local staff login) */}
+      <Route path="/" component={() => (isLoggedIn ? <Home /> : <Login />)} />
+      <Route path="/order" component={() => (isLoggedIn ? <OrderScreen /> : <Login />)} />
+      <Route path="/kitchen" component={() => (isLoggedIn ? <KitchenScreen /> : <Login />)} />
+
       <Route component={NotFound} />
     </Switch>
   );
