@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { OrderStatus, type CartItem, type InsertOrder, type InsertOrderItem } from "@shared/schema";
+import { OrderStatus, type CartItem, type InsertOrder, type InsertOrderItem, type InsertMenuItem } from "@shared/schema";
 import { z } from "zod";
 
 type WebSocketClient = {
@@ -168,6 +168,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error creating menu item:', error);
       res.status(500).json({ message: 'Error creating menu item' });
+    }
+  });
+
+  // GET /api/admin/menu-items - Get menu items with optional category filtering
+  app.get('/api/admin/menu-items', async (req, res) => {
+    try {
+      const categoryId = req.query.categoryId ? Number(req.query.categoryId) : undefined;
+
+      if (categoryId !== undefined && isNaN(categoryId)) {
+        return res.status(400).json({ message: 'Invalid categoryId parameter' });
+      }
+
+      const menuItems = categoryId
+        ? await storage.getMenuItemsByCategory(categoryId)
+        : await storage.getMenuItems();
+
+      res.json(menuItems);
+    } catch (error) {
+      console.error('Error fetching menu items:', error);
+      res.status(500).json({ message: 'Error fetching menu items' });
+    }
+  });
+
+  // PUT /api/admin/menu-items/:id - Update menu item
+  app.put('/api/admin/menu-items/:id', async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: 'Invalid menu item ID' });
+      }
+
+      const { categoryId, name, description, price, mealPrice, available, image, hasFlavorOptions, hasMealOption, isSpicyOption } = req.body || {};
+
+      const updateData: Partial<InsertMenuItem> = {};
+      if (categoryId !== undefined) updateData.categoryId = Number(categoryId);
+      if (name !== undefined) updateData.name = name;
+      if (description !== undefined) updateData.description = description;
+      if (price !== undefined) updateData.price = Number(price);
+      if (mealPrice !== undefined) updateData.mealPrice = mealPrice ? Number(mealPrice) : undefined;
+      if (available !== undefined) updateData.available = !!available;
+      if (image !== undefined) updateData.image = image;
+      if (hasFlavorOptions !== undefined) updateData.hasFlavorOptions = !!hasFlavorOptions;
+      if (hasMealOption !== undefined) updateData.hasMealOption = !!hasMealOption;
+      if (isSpicyOption !== undefined) updateData.isSpicyOption = !!isSpicyOption;
+
+      const updatedItem = await storage.updateMenuItem(id, updateData);
+
+      if (!updatedItem) {
+        return res.status(404).json({ message: 'Menu item not found' });
+      }
+
+      res.json(updatedItem);
+    } catch (error) {
+      console.error('Error updating menu item:', error);
+      res.status(500).json({ message: 'Error updating menu item' });
+    }
+  });
+
+  // DELETE /api/admin/menu-items/:id - Delete menu item
+  app.delete('/api/admin/menu-items/:id', async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: 'Invalid menu item ID' });
+      }
+
+      const deleted = await storage.deleteMenuItem(id);
+
+      if (!deleted) {
+        return res.status(404).json({ message: 'Menu item not found' });
+      }
+
+      res.json({ message: 'Menu item deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting menu item:', error);
+      res.status(500).json({ message: 'Error deleting menu item' });
     }
   });
   // Get all menu categories

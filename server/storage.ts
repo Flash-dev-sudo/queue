@@ -29,6 +29,8 @@ export interface IStorage {
   getMenuItemsByCategory(categoryId: number): Promise<MenuItem[]>;
   getMenuItem(id: number): Promise<MenuItem | undefined>;
   createMenuItem(menuItem: InsertMenuItem): Promise<MenuItem>;
+  updateMenuItem(id: number, menuItem: Partial<InsertMenuItem>): Promise<MenuItem | undefined>;
+  deleteMenuItem(id: number): Promise<boolean>;
   
   // Order operations
   getOrders(): Promise<Order[]>;
@@ -238,6 +240,19 @@ export class MemStorage implements IStorage {
     const menuItem: MenuItem = { ...insertMenuItem, id };
     this.menuItems.set(id, menuItem);
     return menuItem;
+  }
+
+  async updateMenuItem(id: number, updateData: Partial<InsertMenuItem>): Promise<MenuItem | undefined> {
+    const existing = this.menuItems.get(id);
+    if (!existing) return undefined;
+
+    const updated: MenuItem = { ...existing, ...updateData };
+    this.menuItems.set(id, updated);
+    return updated;
+  }
+
+  async deleteMenuItem(id: number): Promise<boolean> {
+    return this.menuItems.delete(id);
   }
   
   // Order methods
@@ -482,6 +497,19 @@ export class DatabaseStorage implements IStorage {
     return item;
   }
 
+  async updateMenuItem(id: number, updateData: Partial<InsertMenuItem>): Promise<MenuItem | undefined> {
+    const [item] = await db.update(menuItems)
+      .set(updateData)
+      .where(eq(menuItems.id, id))
+      .returning();
+    return item;
+  }
+
+  async deleteMenuItem(id: number): Promise<boolean> {
+    const result = await db.delete(menuItems).where(eq(menuItems.id, id));
+    return result.changes > 0;
+  }
+
   // Order operations
   async getOrders(): Promise<Order[]> {
     return await db.select().from(orders);
@@ -714,5 +742,5 @@ export class DatabaseStorage implements IStorage {
 }
 
 // Initialize the appropriate storage implementation
-// Use persistent database storage in production
-export const storage = new DatabaseStorage();
+// Use MemStorage for development with full demo data, DatabaseStorage for production
+export const storage = process.env.NODE_ENV === "production" ? new DatabaseStorage() : new MemStorage();

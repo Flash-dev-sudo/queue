@@ -59,7 +59,7 @@ export default function Admin() {
 function CategoryManager() {
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("restaurant");
-  const [displayOrder, setDisplayOrder] = useState(0);
+  const [displayOrder, setDisplayOrder] = useState<string>("");
   const [categories, setCategories] = useState<any[]>([]);
 
   useEffect(() => {
@@ -85,9 +85,12 @@ function CategoryManager() {
     <div className="bg-white rounded-lg shadow p-4">
       <h2 className="font-semibold mb-3">Categories</h2>
       <div className="space-y-2 mb-3">
-        <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-        <Input placeholder="Icon" value={icon} onChange={(e) => setIcon(e.target.value)} />
-        <Input placeholder="Display order" type="number" value={displayOrder} onChange={(e) => setDisplayOrder(parseInt(e.target.value || "0"))} />
+        <label className="text-sm font-medium">Name</label>
+        <Input placeholder="e.g., Desserts" value={name} onChange={(e) => setName(e.target.value)} />
+        <label className="text-sm font-medium">Icon</label>
+        <Input placeholder="material icon name (e.g., restaurant)" value={icon} onChange={(e) => setIcon(e.target.value)} />
+        <label className="text-sm font-medium">Display order</label>
+        <Input placeholder="e.g., 7" type="number" value={displayOrder} onChange={(e) => setDisplayOrder(e.target.value)} />
         <Button onClick={add}>Add Category</Button>
       </div>
       <ul className="text-sm space-y-1">
@@ -102,51 +105,245 @@ function CategoryManager() {
 }
 
 function MenuItemManager() {
+  const { toast } = useToast();
   const [categoryId, setCategoryId] = useState<number>(0);
   const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [mealPrice, setMealPrice] = useState<number | undefined>(undefined);
+  const [price, setPrice] = useState<string>("");
+  const [mealPrice, setMealPrice] = useState<string>("");
   const [hasFlavorOptions, setHasFlavorOptions] = useState(false);
   const [hasMealOption, setHasMealOption] = useState(false);
+  const [isSpicyOption, setIsSpicyOption] = useState(false);
   const [available, setAvailable] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
+  const [items, setItems] = useState<any[]>([]);
+  const [editingItem, setEditingItem] = useState<any>(null);
 
   useEffect(() => {
     fetch("/api/categories").then(r => r.json()).then(setCategories).catch(() => {});
   }, []);
 
+  useEffect(() => {
+    if (!categoryId) { setItems([]); return; }
+    fetch(`/api/admin/menu-items?categoryId=${categoryId}`).then(r => r.json()).then(setItems).catch(() => setItems([]));
+  }, [categoryId]);
+
   const add = async () => {
+    if (!categoryId) return alert("Please select a category");
+    if (!name.trim()) return alert("Please enter an item name");
+    const priceNum = parseInt(price || "0");
+    if (!priceNum || priceNum <= 0) return alert("Enter price in pence (e.g., 500 for £5.00)");
+
     const res = await fetch("/api/admin/menu-items", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ categoryId, name, price, mealPrice, available, hasFlavorOptions, hasMealOption })
+      body: JSON.stringify({
+        categoryId,
+        name,
+        price: priceNum,
+        mealPrice: mealPrice ? parseInt(mealPrice) : undefined,
+        available,
+        hasFlavorOptions,
+        hasMealOption,
+        isSpicyOption
+      })
     });
     if (res.ok) {
       setName("");
-      setPrice(0);
-      setMealPrice(undefined);
+      setPrice("");
+      setMealPrice("");
       setHasFlavorOptions(false);
       setHasMealOption(false);
+      setIsSpicyOption(false);
+      const updated = await fetch(`/api/admin/menu-items?categoryId=${categoryId}`).then(r => r.json()).catch(() => []);
+      setItems(updated);
+      toast({ title: "Menu item added successfully" });
+    } else {
+      const err = await res.json().catch(() => ({} as any));
+      toast({ title: "Failed to add item", description: err?.message, variant: "destructive" });
+    }
+  };
+
+  const updateItem = async (item: any, updates: any) => {
+    const res = await fetch(`/api/admin/menu-items/${item.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updates)
+    });
+
+    if (res.ok) {
+      const updated = await fetch(`/api/admin/menu-items?categoryId=${categoryId}`).then(r => r.json()).catch(() => []);
+      setItems(updated);
+      setEditingItem(null);
+      toast({ title: "Menu item updated successfully" });
+    } else {
+      const err = await res.json().catch(() => ({} as any));
+      toast({ title: "Failed to update item", description: err?.message, variant: "destructive" });
+    }
+  };
+
+  const deleteItem = async (item: any) => {
+    if (!confirm(`Delete "${item.name}"?`)) return;
+
+    const res = await fetch(`/api/admin/menu-items/${item.id}`, { method: "DELETE" });
+
+    if (res.ok) {
+      const updated = await fetch(`/api/admin/menu-items?categoryId=${categoryId}`).then(r => r.json()).catch(() => []);
+      setItems(updated);
+      toast({ title: "Menu item deleted successfully" });
+    } else {
+      const err = await res.json().catch(() => ({} as any));
+      toast({ title: "Failed to delete item", description: err?.message, variant: "destructive" });
     }
   };
 
   return (
     <div className="bg-white rounded-lg shadow p-4">
       <h2 className="font-semibold mb-3">Menu Items</h2>
-      <div className="grid gap-2 mb-3">
+
+      {/* Add New Item Form */}
+      <div className="grid gap-2 mb-4 p-3 bg-neutral-50 rounded">
+        <h3 className="font-medium text-sm">Add New Item</h3>
+        <label className="text-sm font-medium">Category</label>
         <select className="border rounded p-2" value={categoryId} onChange={(e) => setCategoryId(parseInt(e.target.value))}>
           <option value={0}>Select Category</option>
           {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
-        <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-        <Input placeholder="Price (pence)" type="number" value={price} onChange={(e) => setPrice(parseInt(e.target.value || "0"))} />
-        <Input placeholder="Meal Price (pence)" type="number" value={mealPrice ?? ""} onChange={(e) => setMealPrice(e.target.value ? parseInt(e.target.value) : undefined)} />
-        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={available} onChange={(e) => setAvailable(e.target.checked)} /> Available</label>
-        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={hasFlavorOptions} onChange={(e) => setHasFlavorOptions(e.target.checked)} /> Has Flavor Options</label>
-        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={hasMealOption} onChange={(e) => setHasMealOption(e.target.checked)} /> Has Meal Option</label>
-        <Button onClick={add} disabled={!categoryId || !name || price <= 0}>Add Item</Button>
+        <label className="text-sm font-medium">Name</label>
+        <Input placeholder="e.g., Burger" value={name} onChange={(e) => setName(e.target.value)} />
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label className="text-sm font-medium">Price (pence)</label>
+            <Input placeholder="e.g., 500" type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
+          </div>
+          <div>
+            <label className="text-sm font-medium">Meal Price (pence)</label>
+            <Input placeholder="e.g., 650" type="number" value={mealPrice} onChange={(e) => setMealPrice(e.target.value)} />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <label className="flex items-center gap-2"><input type="checkbox" checked={available} onChange={(e) => setAvailable(e.target.checked)} /> Available</label>
+          <label className="flex items-center gap-2"><input type="checkbox" checked={hasFlavorOptions} onChange={(e) => setHasFlavorOptions(e.target.checked)} /> Has Flavor Options</label>
+          <label className="flex items-center gap-2"><input type="checkbox" checked={hasMealOption} onChange={(e) => setHasMealOption(e.target.checked)} /> Has Meal Option</label>
+          <label className="flex items-center gap-2"><input type="checkbox" checked={isSpicyOption} onChange={(e) => setIsSpicyOption(e.target.checked)} /> Is Spicy Option</label>
+        </div>
+        <Button onClick={add} disabled={!categoryId || !name || !price}>Add Item</Button>
       </div>
-      <p className="text-xs text-neutral-500">Tip: Set Shakes to 500 (i.e., £5.00). Add Dessert category and items similarly.</p>
+
+      <p className="text-xs text-neutral-500 mb-3">Tip: Set Shakes to 500 (i.e., £5.00). Add Dessert category and items similarly.</p>
+
+      {/* Items List */}
+      {categoryId ? (
+        <div>
+          <h3 className="text-sm font-semibold mb-2">Items in {categories.find(c => c.id === categoryId)?.name}</h3>
+          {items.length === 0 ? (
+            <p className="text-xs text-neutral-500">No items yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {items.map((item) => (
+                <div key={item.id} className="border rounded p-2">
+                  {editingItem?.id === item.id ? (
+                    <EditItemForm
+                      item={editingItem}
+                      onSave={(updates) => updateItem(item, updates)}
+                      onCancel={() => setEditingItem(null)}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{item.name}</span>
+                          <span className="text-sm text-neutral-500">
+                            £{(item.price / 100).toFixed(2)}
+                            {item.mealPrice && ` (meal: £${(item.mealPrice / 100).toFixed(2)})`}
+                          </span>
+                        </div>
+                        <div className="flex gap-2 text-xs text-neutral-500 mt-1">
+                          {!item.available && <span className="bg-red-100 text-red-800 px-1 rounded">Unavailable</span>}
+                          {item.hasFlavorOptions && <span className="bg-blue-100 text-blue-800 px-1 rounded">Flavors</span>}
+                          {item.hasMealOption && <span className="bg-green-100 text-green-800 px-1 rounded">Meal Option</span>}
+                          {item.isSpicyOption && <span className="bg-orange-100 text-orange-800 px-1 rounded">Spicy</span>}
+                        </div>
+                      </div>
+                      <div className="space-x-1">
+                        <Button size="sm" variant="outline" onClick={() => setEditingItem({...item})}>
+                          Edit
+                        </Button>
+                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item)}>
+                          Delete
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates: any) => void, onCancel: () => void }) {
+  const [formData, setFormData] = useState({
+    name: item.name || "",
+    price: item.price || "",
+    mealPrice: item.mealPrice || "",
+    available: item.available !== false,
+    hasFlavorOptions: item.hasFlavorOptions || false,
+    hasMealOption: item.hasMealOption || false,
+    isSpicyOption: item.isSpicyOption || false
+  });
+
+  const handleSave = () => {
+    const updates = {
+      name: formData.name,
+      price: parseInt(formData.price.toString()),
+      mealPrice: formData.mealPrice ? parseInt(formData.mealPrice.toString()) : undefined,
+      available: formData.available,
+      hasFlavorOptions: formData.hasFlavorOptions,
+      hasMealOption: formData.hasMealOption,
+      isSpicyOption: formData.isSpicyOption
+    };
+    onSave(updates);
+  };
+
+  return (
+    <div className="space-y-2 bg-neutral-50 p-3 rounded">
+      <label className="text-sm font-medium">Name</label>
+      <Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <label className="text-sm font-medium">Price (pence)</label>
+          <Input type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} />
+        </div>
+        <div>
+          <label className="text-sm font-medium">Meal Price (pence)</label>
+          <Input type="number" value={formData.mealPrice} onChange={(e) => setFormData({...formData, mealPrice: e.target.value})} />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4 text-sm">
+        <label className="flex items-center gap-2">
+          <input type="checkbox" checked={formData.available} onChange={(e) => setFormData({...formData, available: e.target.checked})} />
+          Available
+        </label>
+        <label className="flex items-center gap-2">
+          <input type="checkbox" checked={formData.hasFlavorOptions} onChange={(e) => setFormData({...formData, hasFlavorOptions: e.target.checked})} />
+          Has Flavor Options
+        </label>
+        <label className="flex items-center gap-2">
+          <input type="checkbox" checked={formData.hasMealOption} onChange={(e) => setFormData({...formData, hasMealOption: e.target.checked})} />
+          Has Meal Option
+        </label>
+        <label className="flex items-center gap-2">
+          <input type="checkbox" checked={formData.isSpicyOption} onChange={(e) => setFormData({...formData, isSpicyOption: e.target.checked})} />
+          Is Spicy Option
+        </label>
+      </div>
+      <div className="flex gap-2">
+        <Button size="sm" onClick={handleSave}>Save</Button>
+        <Button size="sm" variant="outline" onClick={onCancel}>Cancel</Button>
+      </div>
     </div>
   );
 }

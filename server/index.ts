@@ -69,12 +69,10 @@ app.use((req, res, next) => {
 
   // Use PORT from environment variable for production deployment
   // this serves both the API and the client.
-  const port = process.env.PORT || 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
+  const port = process.env.PORT || 5001;
+  const host = process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost";
+
+  server.listen(port, host, () => {
+    log(`serving on http://${host}:${port}`);
   });
 })();
