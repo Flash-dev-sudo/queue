@@ -2,7 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeDatabase } from "./init-db";
-import { cleanupService } from "./cleanup";
+// import { cleanupService } from "./cleanup";
 
 const app = express();
 app.use(express.json());
@@ -65,7 +65,7 @@ app.use((req, res, next) => {
   }
 
   // Start the 30-day rolling cleanup service for long-term database management
-  cleanupService.start();
+  // cleanupService.start();
 
   // Use PORT from environment variable for production deployment
   // this serves both the API and the client.

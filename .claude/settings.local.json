@@ -5,7 +5,9 @@
       "Bash(npm run:*)",
       "Bash(curl:*)",
       "Bash(PORT=5002 npm run dev)",
-      "Bash(PORT=5003 npm run dev)"
+      "Bash(PORT=5003 npm run dev)",
+      "Bash(PORT=5004 npm run dev)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

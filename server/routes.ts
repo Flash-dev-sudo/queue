@@ -122,6 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /*
   // Manual cleanup/stats trigger (protected lightly via env secret optional)
   app.post('/api/cleanup/run', async (req, res) => {
     try {
@@ -133,6 +134,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: 'Manual cleanup failed', error: error?.message });
     }
   });
+  */
 
   // API Routes
   // Admin endpoints (simple, no auth beyond client-side gate)
