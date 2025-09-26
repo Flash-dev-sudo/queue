@@ -130,8 +130,9 @@ function MenuItemManager() {
   const add = async () => {
     if (!categoryId) return alert("Please select a category");
     if (!name.trim()) return alert("Please enter an item name");
-    const priceNum = parseInt(price || "0");
-    if (!priceNum || priceNum <= 0) return alert("Enter price in pence (e.g., 500 for £5.00)");
+    const pricePounds = parseFloat(price || "0");
+    if (!pricePounds || pricePounds <= 0) return alert("Enter price in pounds (e.g., 5.00)");
+    const pricePence = Math.round(pricePounds * 100);
 
     const res = await fetch("/api/admin/menu-items", {
       method: "POST",
@@ -139,8 +140,8 @@ function MenuItemManager() {
       body: JSON.stringify({
         categoryId,
         name,
-        price: priceNum,
-        mealPrice: mealPrice ? parseInt(mealPrice) : undefined,
+        price: pricePence,
+        mealPrice: mealPrice ? Math.round(parseFloat(mealPrice) * 100) : undefined,
         available,
         hasFlavorOptions,
         hasMealOption,
@@ -212,12 +213,12 @@ function MenuItemManager() {
         <Input placeholder="e.g., Burger" value={name} onChange={(e) => setName(e.target.value)} />
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="text-sm font-medium">Price (pence)</label>
-            <Input placeholder="e.g., 500" type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
+            <label className="text-sm font-medium">Price (£)</label>
+            <Input placeholder="e.g., 5.00" type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} />
           </div>
           <div>
-            <label className="text-sm font-medium">Meal Price (pence)</label>
-            <Input placeholder="e.g., 650" type="number" value={mealPrice} onChange={(e) => setMealPrice(e.target.value)} />
+            <label className="text-sm font-medium">Meal Price (£)</label>
+            <Input placeholder="e.g., 6.50" type="number" step="0.01" value={mealPrice} onChange={(e) => setMealPrice(e.target.value)} />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4 text-sm">
@@ -229,7 +230,7 @@ function MenuItemManager() {
         <Button onClick={add} disabled={!categoryId || !name || !price}>Add Item</Button>
       </div>
 
-      <p className="text-xs text-neutral-500 mb-3">Tip: Set Shakes to 500 (i.e., £5.00). Add Dessert category and items similarly.</p>
+      <p className="text-xs text-neutral-500 mb-3">Tip: Set Shakes to 5.00 (i.e., £5.00). Add Dessert category and items similarly.</p>
 
       {/* Items List */}
       {categoryId ? (
@@ -287,8 +288,8 @@ function MenuItemManager() {
 function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates: any) => void, onCancel: () => void }) {
   const [formData, setFormData] = useState({
     name: item.name || "",
-    price: item.price || "",
-    mealPrice: item.mealPrice || "",
+    price: item.price ? (item.price / 100).toFixed(2) : "",
+    mealPrice: item.mealPrice ? (item.mealPrice / 100).toFixed(2) : "",
     available: item.available !== false,
     hasFlavorOptions: item.hasFlavorOptions || false,
     hasMealOption: item.hasMealOption || false,
@@ -298,8 +299,8 @@ function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates:
   const handleSave = () => {
     const updates = {
       name: formData.name,
-      price: parseInt(formData.price.toString()),
-      mealPrice: formData.mealPrice ? parseInt(formData.mealPrice.toString()) : undefined,
+      price: Math.round(parseFloat(formData.price.toString()) * 100),
+      mealPrice: formData.mealPrice ? Math.round(parseFloat(formData.mealPrice.toString()) * 100) : undefined,
       available: formData.available,
       hasFlavorOptions: formData.hasFlavorOptions,
       hasMealOption: formData.hasMealOption,
@@ -314,12 +315,12 @@ function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates:
       <Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="text-sm font-medium">Price (pence)</label>
-          <Input type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} />
+          <label className="text-sm font-medium">Price (£)</label>
+          <Input type="number" step="0.01" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} />
         </div>
         <div>
-          <label className="text-sm font-medium">Meal Price (pence)</label>
-          <Input type="number" value={formData.mealPrice} onChange={(e) => setFormData({...formData, mealPrice: e.target.value})} />
+          <label className="text-sm font-medium">Meal Price (£)</label>
+          <Input type="number" step="0.01" value={formData.mealPrice} onChange={(e) => setFormData({...formData, mealPrice: e.target.value})} />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4 text-sm">
