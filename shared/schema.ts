@@ -182,3 +182,46 @@ export const insertDailyStatsSchema = createInsertSchema(dailyStats).pick({
 
 export type DailyStats = typeof dailyStats.$inferSelect;
 export type InsertDailyStats = z.infer<typeof insertDailyStatsSchema>;
+
+// Gallery table (for website images)
+export const gallery = sqliteTable("gallery", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  title: text("title").notNull(),
+  description: text("description"),
+  imageUrl: text("image_url").notNull(),
+  category: text("category").default("food"),
+  isActive: integer("is_active", { mode: "boolean" }).default(true),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertGallerySchema = createInsertSchema(gallery).pick({
+  title: true,
+  description: true,
+  imageUrl: true,
+  category: true,
+  isActive: true,
+});
+
+export type Gallery = typeof gallery.$inferSelect;
+export type InsertGallery = z.infer<typeof insertGallerySchema>;
+
+// Cart items table (for website cart functionality)
+export const cartItems = sqliteTable("cart_items", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  sessionId: text("session_id").notNull(),
+  menuItemId: integer("menu_item_id").notNull(),
+  quantity: integer("quantity").notNull(),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertCartItemSchema = createInsertSchema(cartItems).pick({
+  sessionId: true,
+  menuItemId: true,
+  quantity: true,
+  notes: true,
+});
+
+export type CartItemDB = typeof cartItems.$inferSelect;
+export type InsertCartItemDB = z.infer<typeof insertCartItemSchema>;
