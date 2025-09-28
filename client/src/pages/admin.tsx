@@ -14,14 +14,31 @@ export default function Admin() {
     if (ok) setIsAuthed(true);
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === "emparo2025") {
-      sessionStorage.setItem("admin_ok", "true");
-      setIsAuthed(true);
-      toast({ title: "Welcome, Admin" });
-    } else {
-      toast({ title: "Wrong password", variant: "destructive" });
+
+    try {
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        sessionStorage.setItem("admin_ok", "true");
+        sessionStorage.setItem("admin_token", data.token);
+        setIsAuthed(true);
+        toast({ title: "Welcome, Admin" });
+      } else {
+        toast({ title: "Wrong password", variant: "destructive" });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast({ title: "Login failed", variant: "destructive" });
     }
   };
 
@@ -67,15 +84,21 @@ function CategoryManager() {
   }, []);
 
   const add = async () => {
+    const token = sessionStorage.getItem("admin_token");
+    if (!token) return;
+
     const res = await fetch("/api/admin/categories", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, icon, displayOrder })
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ name, icon, displayOrder: Number(displayOrder) || 0 })
     });
     if (res.ok) {
       setName("");
       setIcon("restaurant");
-      setDisplayOrder(0);
+      setDisplayOrder("");
       const updated = await fetch("/api/categories").then(r => r.json());
       setCategories(updated);
     }
@@ -124,7 +147,12 @@ function MenuItemManager() {
 
   useEffect(() => {
     if (!categoryId) { setItems([]); return; }
-    fetch(`/api/admin/menu-items?categoryId=${categoryId}`).then(r => r.json()).then(setItems).catch(() => setItems([]));
+    const token = sessionStorage.getItem("admin_token");
+    if (!token) return;
+
+    fetch(`/api/admin/menu-items?categoryId=${categoryId}`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    }).then(r => r.json()).then(setItems).catch(() => setItems([]));
   }, [categoryId]);
 
   const add = async () => {
@@ -134,9 +162,15 @@ function MenuItemManager() {
     if (!pricePounds || pricePounds <= 0) return alert("Enter price in pounds (e.g., 5.00)");
     const pricePence = Math.round(pricePounds * 100);
 
+    const token = sessionStorage.getItem("admin_token");
+    if (!token) return;
+
     const res = await fetch("/api/admin/menu-items", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify({
         categoryId,
         name,
@@ -155,7 +189,9 @@ function MenuItemManager() {
       setHasFlavorOptions(false);
       setHasMealOption(false);
       setIsSpicyOption(false);
-      const updated = await fetch(`/api/admin/menu-items?categoryId=${categoryId}`).then(r => r.json()).catch(() => []);
+      const updated = await fetch(`/api/admin/menu-items?categoryId=${categoryId}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      }).then(r => r.json()).catch(() => []);
       setItems(updated);
       toast({ title: "Menu item added successfully" });
     } else {
@@ -165,14 +201,22 @@ function MenuItemManager() {
   };
 
   const updateItem = async (item: any, updates: any) => {
+    const token = sessionStorage.getItem("admin_token");
+    if (!token) return;
+
     const res = await fetch(`/api/admin/menu-items/${item.id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify(updates)
     });
 
     if (res.ok) {
-      const updated = await fetch(`/api/admin/menu-items?categoryId=${categoryId}`).then(r => r.json()).catch(() => []);
+      const updated = await fetch(`/api/admin/menu-items?categoryId=${categoryId}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      }).then(r => r.json()).catch(() => []);
       setItems(updated);
       setEditingItem(null);
       toast({ title: "Menu item updated successfully" });
@@ -185,10 +229,18 @@ function MenuItemManager() {
   const deleteItem = async (item: any) => {
     if (!confirm(`Delete "${item.name}"?`)) return;
 
-    const res = await fetch(`/api/admin/menu-items/${item.id}`, { method: "DELETE" });
+    const token = sessionStorage.getItem("admin_token");
+    if (!token) return;
+
+    const res = await fetch(`/api/admin/menu-items/${item.id}`, {
+      method: "DELETE",
+      headers: { "Authorization": `Bearer ${token}` }
+    });
 
     if (res.ok) {
-      const updated = await fetch(`/api/admin/menu-items?categoryId=${categoryId}`).then(r => r.json()).catch(() => []);
+      const updated = await fetch(`/api/admin/menu-items?categoryId=${categoryId}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      }).then(r => r.json()).catch(() => []);
       setItems(updated);
       toast({ title: "Menu item deleted successfully" });
     } else {
