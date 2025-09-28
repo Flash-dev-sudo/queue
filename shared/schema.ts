@@ -21,6 +21,9 @@ export const categories = sqliteTable("categories", {
   name: text("name").notNull(),
   icon: text("icon").notNull(),
   displayOrder: integer("display_order").notNull().default(0),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  deletedAt: text("deleted_at"),
+  contentHash: text("content_hash"),
 });
 
 export const insertCategorySchema = createInsertSchema(categories).pick({
@@ -39,9 +42,12 @@ export const menuItems = sqliteTable("menu_items", {
   mealPrice: integer("meal_price"), // Price for meal upgrade in pennies
   available: integer("available", { mode: "boolean" }).notNull().default(true),
   image: text("image"),
-  hasFlavorOptions: integer("has_flavor_options", { mode: "boolean" }).notNull().default(false),
-  hasMealOption: integer("has_meal_option", { mode: "boolean" }).notNull().default(false),
-  isSpicyOption: integer("is_spicy_option", { mode: "boolean" }).notNull().default(false),
+  hasFlavorOptions: integer("has_flavor_options", { mode: "boolean" }).default(false),
+  hasMealOption: integer("has_meal_option", { mode: "boolean" }).default(false),
+  isSpicyOption: integer("is_spicy_option", { mode: "boolean" }).default(false),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  deletedAt: text("deleted_at"),
+  contentHash: text("content_hash"),
 });
 
 export const insertMenuItemSchema = createInsertSchema(menuItems).pick({

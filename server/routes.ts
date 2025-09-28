@@ -1,9 +1,12 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
+import path from "path";
+import express from "express";
 import { storage } from "./storage";
 import { OrderStatus, type CartItem, type InsertOrder, type InsertOrderItem, type InsertMenuItem } from "@shared/schema";
 import { z } from "zod";
+import { catalogSyncService } from "./catalog-sync";
 
 type WebSocketClient = {
   socket: WebSocket;
@@ -122,6 +125,190 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Public API endpoints for catalog sync (no auth required, cached, rate-limited)
+  app.get('/api/public/categories', async (req, res) => {
+    try {
+      // Set cache headers for 60 seconds
+      res.set('Cache-Control', 'public, max-age=60');
+
+      const categories = await storage.getCategories();
+      const publicCategories = categories
+        .filter(cat => !cat.deletedAt) // Only non-deleted
+        .map(cat => ({
+          id: cat.id,
+          name: cat.name,
+          icon: cat.icon,
+          displayOrder: cat.displayOrder,
+          updatedAt: cat.updatedAt,
+          deletedAt: cat.deletedAt,
+          contentHash: cat.contentHash
+        }));
+
+      res.json(publicCategories);
+    } catch (error) {
+      console.error('Error fetching public categories:', error);
+      res.status(500).json({ message: 'Error fetching categories' });
+    }
+  });
+
+  app.get('/api/public/menu-items', async (req, res) => {
+    try {
+      // Set cache headers for 60 seconds
+      res.set('Cache-Control', 'public, max-age=60');
+
+      const { categoryId, updatedSince } = req.query;
+
+      const menuItems = await storage.getMenuItems();
+      let filteredItems = menuItems.filter(item => !item.deletedAt); // Only non-deleted
+
+      // Filter by category if provided
+      if (categoryId) {
+        filteredItems = filteredItems.filter(item => item.categoryId === parseInt(categoryId as string));
+      }
+
+      // Filter by updatedSince if provided
+      if (updatedSince) {
+        const sinceDate = new Date(updatedSince as string);
+        filteredItems = filteredItems.filter(item =>
+          item.updatedAt && new Date(item.updatedAt) > sinceDate
+        );
+      }
+
+      const publicItems = filteredItems.map(item => ({
+        id: item.id,
+        categoryId: item.categoryId,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        mealPrice: item.mealPrice,
+        available: item.available,
+        image: item.image,
+        hasFlavorOptions: item.hasFlavorOptions,
+        hasMealOption: item.hasMealOption,
+        isSpicyOption: item.isSpicyOption,
+        updatedAt: item.updatedAt,
+        deletedAt: item.deletedAt,
+        contentHash: item.contentHash
+      }));
+
+      res.json(publicItems);
+    } catch (error) {
+      console.error('Error fetching public menu items:', error);
+      res.status(500).json({ message: 'Error fetching menu items' });
+    }
+  });
+
+  app.get('/api/public/export', async (req, res) => {
+    try {
+      // Set cache headers for 60 seconds
+      res.set('Cache-Control', 'public, max-age=60');
+
+      const [categories, menuItems] = await Promise.all([
+        storage.getCategories(),
+        storage.getMenuItems()
+      ]);
+
+      const publicData = {
+        categories: categories
+          .filter(cat => !cat.deletedAt)
+          .map(cat => ({
+            id: cat.id,
+            name: cat.name,
+            icon: cat.icon,
+            displayOrder: cat.displayOrder,
+            updatedAt: cat.updatedAt,
+            deletedAt: cat.deletedAt,
+            contentHash: cat.contentHash
+          })),
+        items: menuItems
+          .filter(item => !item.deletedAt)
+          .map(item => ({
+            id: item.id,
+            categoryId: item.categoryId,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            mealPrice: item.mealPrice,
+            available: item.available,
+            image: item.image,
+            hasFlavorOptions: item.hasFlavorOptions,
+            hasMealOption: item.hasMealOption,
+            isSpicyOption: item.isSpicyOption,
+            updatedAt: item.updatedAt,
+            deletedAt: item.deletedAt,
+            contentHash: item.contentHash
+          }))
+      };
+
+      res.json(publicData);
+    } catch (error) {
+      console.error('Error exporting catalog:', error);
+      res.status(500).json({ message: 'Error exporting catalog' });
+    }
+  });
+
+  app.get('/api/public/changes', async (req, res) => {
+    try {
+      // Set cache headers for 60 seconds
+      res.set('Cache-Control', 'public, max-age=60');
+
+      const { since } = req.query;
+
+      if (!since) {
+        return res.status(400).json({ message: 'since parameter is required' });
+      }
+
+      const sinceDate = new Date(since as string);
+      if (isNaN(sinceDate.getTime())) {
+        return res.status(400).json({ message: 'Invalid since date format' });
+      }
+
+      const [categories, menuItems] = await Promise.all([
+        storage.getCategories(),
+        storage.getMenuItems()
+      ]);
+
+      const changedCategories = categories
+        .filter(cat => cat.updatedAt && new Date(cat.updatedAt) > sinceDate)
+        .map(cat => ({
+          id: cat.id,
+          name: cat.name,
+          icon: cat.icon,
+          displayOrder: cat.displayOrder,
+          updatedAt: cat.updatedAt,
+          deletedAt: cat.deletedAt,
+          contentHash: cat.contentHash
+        }));
+
+      const changedItems = menuItems
+        .filter(item => item.updatedAt && new Date(item.updatedAt) > sinceDate)
+        .map(item => ({
+          id: item.id,
+          categoryId: item.categoryId,
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          mealPrice: item.mealPrice,
+          available: item.available,
+          image: item.image,
+          hasFlavorOptions: item.hasFlavorOptions,
+          hasMealOption: item.hasMealOption,
+          isSpicyOption: item.isSpicyOption,
+          updatedAt: item.updatedAt,
+          deletedAt: item.deletedAt,
+          contentHash: item.contentHash
+        }));
+
+      res.json({
+        categories: changedCategories,
+        items: changedItems
+      });
+    } catch (error) {
+      console.error('Error fetching changes:', error);
+      res.status(500).json({ message: 'Error fetching changes' });
+    }
+  });
+
   /*
   // Manual cleanup/stats trigger (protected lightly via env secret optional)
   app.post('/api/cleanup/run', async (req, res) => {
@@ -136,13 +323,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   */
 
+  // Authentication middleware for admin endpoints
+  const adminAuth = (req: any, res: any, next: any) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Authorization header required' });
+    }
+
+    const token = authHeader.substring(7);
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+
+    if (token !== adminPassword) {
+      return res.status(401).json({ message: 'Invalid admin token' });
+    }
+
+    next();
+  };
+
+  // Admin login endpoint
+  app.post('/api/admin/login', async (req, res) => {
+    try {
+      const { password } = req.body;
+      const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+
+      if (password === adminPassword) {
+        res.json({
+          success: true,
+          token: adminPassword, // In production, use JWT
+          message: 'Login successful'
+        });
+      } else {
+        res.status(401).json({
+          success: false,
+          message: 'Invalid password'
+        });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ message: 'Login failed' });
+    }
+  });
+
   // API Routes
-  // Admin endpoints (simple, no auth beyond client-side gate)
-  app.post('/api/admin/categories', async (req, res) => {
+  // Admin endpoints (secured with server-side auth)
+  app.post('/api/admin/categories', adminAuth, async (req, res) => {
     try {
       const { name, icon, displayOrder } = req.body || {};
       if (!name || !icon) return res.status(400).json({ message: 'name and icon required' });
       const category = await storage.createCategory({ name, icon, displayOrder: Number(displayOrder) || 0 });
+
+      // Trigger webhook to sync with website
+      catalogSyncService.publishCategoryChange(category).catch(error => {
+        console.error('Failed to sync category to website:', error);
+      });
+
       res.status(201).json(category);
     } catch (error) {
       console.error('Error creating category:', error);
@@ -150,7 +385,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/admin/menu-items', async (req, res) => {
+  app.post('/api/admin/menu-items', adminAuth, async (req, res) => {
     try {
       const { categoryId, name, description, price, mealPrice, available, image, hasFlavorOptions, hasMealOption, isSpicyOption } = req.body || {};
       if (!categoryId || !name || !price) return res.status(400).json({ message: 'categoryId, name and price required' });
@@ -166,6 +401,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         hasMealOption: !!hasMealOption,
         isSpicyOption: !!isSpicyOption,
       });
+
+      // Trigger webhook to sync with website
+      catalogSyncService.publishMenuItemChange(item).catch(error => {
+        console.error('Failed to sync menu item to website:', error);
+      });
+
       res.status(201).json(item);
     } catch (error) {
       console.error('Error creating menu item:', error);
@@ -174,7 +415,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // GET /api/admin/menu-items - Get menu items with optional category filtering
-  app.get('/api/admin/menu-items', async (req, res) => {
+  app.get('/api/admin/menu-items', adminAuth, async (req, res) => {
     try {
       const categoryId = req.query.categoryId ? Number(req.query.categoryId) : undefined;
 
@@ -194,7 +435,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // PUT /api/admin/menu-items/:id - Update menu item
-  app.put('/api/admin/menu-items/:id', async (req, res) => {
+  app.put('/api/admin/menu-items/:id', adminAuth, async (req, res) => {
     try {
       const id = Number(req.params.id);
       if (isNaN(id)) {
@@ -221,6 +462,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: 'Menu item not found' });
       }
 
+      // Trigger webhook to sync with website
+      catalogSyncService.publishMenuItemChange(updatedItem).catch(error => {
+        console.error('Failed to sync updated menu item to website:', error);
+      });
+
       res.json(updatedItem);
     } catch (error) {
       console.error('Error updating menu item:', error);
@@ -229,18 +475,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // DELETE /api/admin/menu-items/:id - Delete menu item
-  app.delete('/api/admin/menu-items/:id', async (req, res) => {
+  app.delete('/api/admin/menu-items/:id', adminAuth, async (req, res) => {
     try {
       const id = Number(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: 'Invalid menu item ID' });
       }
 
-      const deleted = await storage.deleteMenuItem(id);
+      // Get the item before deletion for webhook
+      const itemToDelete = await storage.getMenuItem(id);
+      if (!itemToDelete) {
+        return res.status(404).json({ message: 'Menu item not found' });
+      }
 
+      const deleted = await storage.deleteMenuItem(id);
       if (!deleted) {
         return res.status(404).json({ message: 'Menu item not found' });
       }
+
+      // Trigger webhook to sync deletion with website
+      const deletedItem = { ...itemToDelete, deletedAt: new Date().toISOString() };
+      catalogSyncService.publishMenuItemChange(deletedItem).catch(error => {
+        console.error('Failed to sync deleted menu item to website:', error);
+      });
 
       res.json({ message: 'Menu item deleted successfully' });
     } catch (error) {
@@ -429,6 +686,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: 'Error updating order status' });
     }
   });
-  
+
+  // Static file serving for images
+  app.use('/api/images', express.static(path.join(import.meta.dirname, 'public', 'images')));
+
+  // Image upload endpoint for admin
+  app.post('/api/admin/upload-image', adminAuth, async (req, res) => {
+    try {
+      // This is a placeholder for image upload functionality
+      // In production, you'd integrate with a service like Cloudinary, AWS S3, or local file handling
+      const { filename, base64Data } = req.body;
+
+      if (!filename || !base64Data) {
+        return res.status(400).json({ message: 'Filename and base64Data are required' });
+      }
+
+      // For now, return a mock URL that points to the queue system
+      const imageUrl = `/api/images/${filename}`;
+
+      res.json({
+        imageUrl,
+        message: 'Image upload endpoint ready for implementation',
+        fullUrl: `${process.env.QUEUE_API_BASE || 'http://localhost:5000'}${imageUrl}`
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      res.status(500).json({ message: 'Error uploading image' });
+    }
+  });
+
   return httpServer;
 }

@@ -7,7 +7,14 @@
       "Bash(PORT=5002 npm run dev)",
       "Bash(PORT=5003 npm run dev)",
       "Bash(PORT=5004 npm run dev)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(PORT=5005 npm run dev)",
+      "Bash(python:*)",
+      "Bash(for i in {1..7})",
+      "Bash(do echo \"=== Category $i ===\")",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []
