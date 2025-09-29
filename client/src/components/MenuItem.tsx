@@ -21,49 +21,26 @@ interface MenuItemProps {
   };
 }
 
-export default function MenuItem({ 
-  item, 
-  quantity, 
-  onAdd, 
+export default function MenuItem({
+  item,
+  quantity,
+  onAdd,
   onRemove
 }: MenuItemProps) {
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
-  const [chipType, setChipType] = useState("normal");
   const [burgerToppings, setBurgerToppings] = useState<string[]>([]);
   const [selectedFlavor, setSelectedFlavor] = useState("Garlic & Herb");
   const [isMeal, setIsMeal] = useState(false);
+  const [isPeriPeriChipsMeal, setIsPeriPeriChipsMeal] = useState(false);
   const [isSpicy, setIsSpicy] = useState(false);
 
-  // Calculate meal upgrade price
-  const mealUpgradePrice = item.name.includes("Peri Peri") && (item.name.includes("Burger") || item.name.includes("Wrap")) ? 180 : 150;
+  // Meal prices: Regular meal (chips + drink) = £2.50 (250p), Peri peri chips meal = £2.80 (280p)
+  const regularMealPrice = 250;
+  const periPeriChipsMealPrice = 280;
 
-  // Check if item needs customization
-  const needsCustomization = (item: MenuItemType) => {
-    // Check if item has flavor options
-    if (item.hasFlavorOptions) return true;
-    
-    // Check if item is a burger or wrap (needs toppings/spicy option)
-    if (item.name.includes("Burger") || item.name.includes("Wrap")) return true;
-    
-    // Check if item is chips (needs chip type selection)
-    if (item.name.includes("Chips") && !item.name.includes("Wings") && !item.name.includes("Strip")) return true;
-    
-    // All other items (like plain chicken strips, wings without peri peri, etc.) don't need customization
-    return false;
-  };
-
-  // Get customization options based on item
+  // Get customization options based on item (removed chip types, simplified)
   const getCustomizationOptions = (itemName: string) => {
     const name = itemName.toLowerCase();
-    if (name.includes("chip")) {
-      return {
-        type: "chips",
-        options: [
-          { id: "normal", label: "Normal" },
-          { id: "spicy", label: "Spicy" }
-        ]
-      };
-    }
     if (name.includes("burger") || name.includes("wrap") || name.includes("special") || name.includes("pounder")) {
       return {
         type: "burger",
@@ -82,52 +59,45 @@ export default function MenuItem({
 
   // Reset customizations to default values
   const resetCustomizations = () => {
-    setChipType("normal");
     setBurgerToppings([]);
-    setSelectedFlavor("Garlic & Hector");
+    setSelectedFlavor("Garlic & Herb");
     setIsMeal(false);
+    setIsPeriPeriChipsMeal(false);
     setIsSpicy(false);
   };
 
-  // Handle card click - add item with customization if needed
+  // Handle card click - always open customization modal
   const handleCardClick = (e: React.MouseEvent) => {
     // Don't trigger if clicking on counter buttons
     if ((e.target as HTMLElement).closest('button')) {
       return;
     }
 
-    if (needsCustomization(item)) {
-      resetCustomizations(); // Reset before opening
-      setIsCustomizationOpen(true);
-    } else {
-      onAdd();
-    }
+    resetCustomizations(); // Reset before opening
+    setIsCustomizationOpen(true);
   };
 
   // Handle customization confirmation
   const handleCustomizationConfirm = () => {
     const customizations: any = {};
-    
+
     // Handle flavor options for specific items, rice platters, and peri peri chicken
     if (item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger") || item.name.includes("Rice Platter") || item.name.includes("Peri Peri Wings") || item.name.includes("Peri Peri Strips") || item.name.includes("Half Chicken") || item.name.includes("Whole Chicken")) {
       customizations.flavor = selectedFlavor;
     }
-    
-    // Handle meal upgrade and calculate proper price
+
+    // Handle meal upgrade options - regular and peri peri chips
     if (item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip")) {
       customizations.isMeal = isMeal;
+      customizations.isPeriPeriChipsMeal = isPeriPeriChipsMeal;
     }
-    
+
     // Handle spicy/normal option for all burgers and wraps
     if (item.name.includes("Burger") || item.name.includes("Wrap")) {
       customizations.isSpicy = isSpicy;
     }
-    
-    // Handle legacy chip and burger customizations
-    if (chipType && getCustomizationOptions(item.name)?.type === "chips") {
-      customizations.chipType = chipType;
-    }
-    
+
+    // Handle burger toppings
     if (burgerToppings.length > 0 && getCustomizationOptions(item.name)?.type === "burger") {
       customizations.toppings = burgerToppings;
     }
@@ -178,7 +148,7 @@ export default function MenuItem({
       <Dialog open={isCustomizationOpen} onOpenChange={handleDialogClose}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Customize {item.name}</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-orange-600">Customize {item.name}</DialogTitle>
           </DialogHeader>
           
           <div className="space-y-4">
@@ -197,43 +167,62 @@ export default function MenuItem({
               </div>
             )}
 
-            {/* Legacy customizations */}
-            {customizationOptions && (
-              <>
-                {customizationOptions.type === "chips" && (
-                  <div>
-                    <Label className="text-base font-medium">Choose Style:</Label>
-                    <RadioGroup value={chipType} onValueChange={setChipType} className="mt-2">
-                      {customizationOptions.options.map((option) => (
-                        <div key={option.id} className="flex items-center space-x-2">
-                          <RadioGroupItem value={option.id} id={option.id} />
-                          <Label htmlFor={option.id}>{option.label}</Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  </div>
-                )}
+            {/* Burger Toppings */}
+            {customizationOptions && customizationOptions.type === "burger" && (
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Toppings</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {customizationOptions.options.map((option) => (
+                    <Button
+                      key={option.id}
+                      type="button"
+                      variant={burgerToppings.includes(option.id) ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleToppingsChange(option.id, !burgerToppings.includes(option.id))}
+                      className="h-10 text-xs"
+                    >
+                      {option.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
 
-                {customizationOptions.type === "burger" && (
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium">Toppings</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {customizationOptions.options.map((option) => (
-                        <Button
-                          key={option.id}
-                          type="button"
-                          variant={burgerToppings.includes(option.id) ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleToppingsChange(option.id, !burgerToppings.includes(option.id))}
-                          className="h-10 text-xs"
-                        >
-                          {option.label}
-                        </Button>
-                      ))}
-                    </div>
+            {/* Meal Options */}
+            {(item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip")) && (
+              <div className="space-y-3">
+                {/* Regular Meal Deal */}
+                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                  <div>
+                    <Label htmlFor="meal-option" className="font-medium text-blue-800">🍽️ Regular Meal Deal</Label>
+                    <p className="text-xs text-blue-600">+{formatPrice(regularMealPrice)} - Chips + Drink</p>
                   </div>
-                )}
-              </>
+                  <Switch
+                    id="meal-option"
+                    checked={isMeal}
+                    onCheckedChange={(checked) => {
+                      setIsMeal(checked);
+                      if (checked) setIsPeriPeriChipsMeal(false);
+                    }}
+                  />
+                </div>
+
+                {/* Peri Peri Chips Meal Deal */}
+                <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                  <div>
+                    <Label htmlFor="peri-meal-option" className="font-medium text-orange-800">🌶️ Peri Peri Chips Meal</Label>
+                    <p className="text-xs text-orange-600">+{formatPrice(periPeriChipsMealPrice)} - Peri Peri Chips + Drink</p>
+                  </div>
+                  <Switch
+                    id="peri-meal-option"
+                    checked={isPeriPeriChipsMeal}
+                    onCheckedChange={(checked) => {
+                      setIsPeriPeriChipsMeal(checked);
+                      if (checked) setIsMeal(false);
+                    }}
+                  />
+                </div>
+              </div>
             )}
 
             {/* Flavor Options - For all items with hasFlavorOptions */}
@@ -251,11 +240,11 @@ export default function MenuItem({
               </div>
             )}
 
-            <div className="flex gap-2 pt-4">
-              <Button variant="outline" onClick={() => setIsCustomizationOpen(false)} className="flex-1">
+            <div className="flex gap-3 pt-4">
+              <Button variant="outline" onClick={() => setIsCustomizationOpen(false)} className="flex-1 border-gray-300 hover:bg-gray-50">
                 Cancel
               </Button>
-              <Button onClick={handleCustomizationConfirm} className="flex-1">
+              <Button onClick={handleCustomizationConfirm} className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-medium">
                 Add to Order
               </Button>
             </div>
