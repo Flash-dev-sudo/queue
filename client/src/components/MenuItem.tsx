@@ -103,28 +103,28 @@ export default function MenuItem({
   const handleCustomizationConfirm = () => {
     const customizations: any = {};
 
-    // Handle flavor options for specific items, rice platters, and peri peri chicken
-    if (item.name.includes("Peri Peri Burger") || item.name.includes("Peri Peri Wrap") || item.name.includes("EFC Special") || item.name.includes("Emparo Burger") || item.name.includes("Rice Platter") || item.name.includes("Peri Peri Wings") || item.name.includes("Peri Peri Strips") || item.name.includes("Half Chicken") || item.name.includes("Whole Chicken")) {
+    // Handle flavor options - use database field
+    if (item.hasFlavorOptions && selectedFlavor) {
       customizations.flavor = selectedFlavor;
     }
 
-    // Handle meal upgrade options - regular and peri peri chips
-    if (item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip")) {
+    // Handle meal upgrade options - use database field
+    if (item.hasMealOption) {
       customizations.isMeal = isMeal;
       customizations.isPeriPeriChipsMeal = isPeriPeriChipsMeal;
     }
 
-    // Handle spicy/normal option for all burgers and wraps
-    if (item.name.includes("Burger") || item.name.includes("Wrap")) {
+    // Handle spicy/normal option - use database field
+    if (item.isSpicyOption) {
       customizations.isSpicy = isSpicy;
     }
 
-    // Handle burger toppings
-    if (burgerToppings.length > 0 && getCustomizationOptions(item.name)?.type === "burger") {
+    // Handle toppings - always include if selected
+    if (burgerToppings.length > 0) {
       customizations.toppings = burgerToppings;
     }
 
-    // Handle sauces
+    // Handle sauces - always include if selected
     if (selectedSauces.length > 0) {
       customizations.sauces = selectedSauces;
     }
@@ -182,10 +182,13 @@ export default function MenuItem({
 
 
 
-            {/* Spicy Option */}
-            {(item.name.includes("Burger") || item.name.includes("Wrap")) && (
-              <div className="flex items-center justify-between">
-                <Label htmlFor="spicy-option" className="font-medium">Spicy</Label>
+            {/* Spicy Option - use database field */}
+            {item.isSpicyOption && (
+              <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                <div>
+                  <Label htmlFor="spicy-option" className="font-medium text-red-800">🌶️ Spicy Option</Label>
+                  <p className="text-xs text-red-600">Make it spicy?</p>
+                </div>
                 <Switch
                   id="spicy-option"
                   checked={isSpicy}
@@ -194,8 +197,8 @@ export default function MenuItem({
               </div>
             )}
 
-            {/* Burger Toppings */}
-            {customizationOptions && customizationOptions.type === "burger" && (
+            {/* Burger Toppings - use database field */}
+            {item.hasToppingsOption && customizationOptions && customizationOptions.type === "burger" && (
               <div className="space-y-3 p-3 bg-green-50 rounded-lg">
                 <Label className="text-sm font-medium">🥬 Add Toppings</Label>
                 <div className="grid grid-cols-2 gap-2">
@@ -216,28 +219,30 @@ export default function MenuItem({
               </div>
             )}
 
-            {/* Sauces Selection */}
-            <div className="p-3 bg-orange-50 rounded-lg">
-              <Label className="text-sm font-medium">🧂 Choose Sauces</Label>
-              <div className="grid grid-cols-2 gap-2 mt-2">
-                {SAUCES.map((sauce) => (
-                  <div key={sauce.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={sauce.id}
-                      checked={selectedSauces.includes(sauce.id)}
-                      onCheckedChange={(checked) => handleSauceToggle(sauce.id, !!checked)}
-                    />
-                    <Label htmlFor={sauce.id} className="text-xs cursor-pointer flex-1">
-                      {sauce.label}
-                      {sauce.price > 0 && <span className="text-green-600 ml-1">+{formatPrice(sauce.price)}</span>}
-                    </Label>
-                  </div>
-                ))}
+            {/* Sauces Selection - use database field */}
+            {item.hasSaucesOption && (
+              <div className="p-3 bg-orange-50 rounded-lg">
+                <Label className="text-sm font-medium">🧂 Choose Sauces</Label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {SAUCES.map((sauce) => (
+                    <div key={sauce.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={sauce.id}
+                        checked={selectedSauces.includes(sauce.id)}
+                        onCheckedChange={(checked) => handleSauceToggle(sauce.id, !!checked)}
+                      />
+                      <Label htmlFor={sauce.id} className="text-xs cursor-pointer flex-1">
+                        {sauce.label}
+                        {sauce.price > 0 && <span className="text-green-600 ml-1">+{formatPrice(sauce.price)}</span>}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Meal Options */}
-            {(item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip")) && (
+            {/* Meal Options - use database field */}
+            {item.hasMealOption && (
               <div className="space-y-3">
                 {/* Regular Meal Deal */}
                 <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">

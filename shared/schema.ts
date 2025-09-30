@@ -45,6 +45,8 @@ export const menuItems = sqliteTable("menu_items", {
   hasFlavorOptions: integer("has_flavor_options", { mode: "boolean" }).default(false),
   hasMealOption: integer("has_meal_option", { mode: "boolean" }).default(false),
   isSpicyOption: integer("is_spicy_option", { mode: "boolean" }).default(false),
+  hasToppingsOption: integer("has_toppings_option", { mode: "boolean" }).default(false),
+  hasSaucesOption: integer("has_sauces_option", { mode: "boolean" }).default(false),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   deletedAt: text("deleted_at"),
   contentHash: text("content_hash"),
@@ -61,6 +63,8 @@ export const insertMenuItemSchema = createInsertSchema(menuItems).pick({
   hasFlavorOptions: true,
   hasMealOption: true,
   isSpicyOption: true,
+  hasToppingsOption: true,
+  hasSaucesOption: true,
 });
 
 export const OrderStatus = {
