@@ -29,28 +29,41 @@ export default function MenuItem({
 }: MenuItemProps) {
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const [burgerToppings, setBurgerToppings] = useState<string[]>([]);
+  const [selectedSauces, setSelectedSauces] = useState<string[]>([]);
   const [selectedFlavor, setSelectedFlavor] = useState("Garlic & Herb");
   const [isMeal, setIsMeal] = useState(false);
   const [isPeriPeriChipsMeal, setIsPeriPeriChipsMeal] = useState(false);
   const [isSpicy, setIsSpicy] = useState(false);
 
-  // Meal prices: Regular meal (chips + drink) = £2.50 (250p), Peri peri chips meal = £2.80 (280p)
-  const regularMealPrice = 250;
-  const periPeriChipsMealPrice = 280;
+  // Sauce options
+  const SAUCES = [
+    { id: "mayo", label: "Mayonnaise", price: 0 },
+    { id: "ketchup", label: "Ketchup", price: 0 },
+    { id: "garlic-mayo", label: "Garlic Mayo", price: 20 },
+    { id: "peri-mayo", label: "Peri Peri Mayo", price: 20 },
+    { id: "chili-sauce", label: "Chili Sauce", price: 20 },
+    { id: "bbq-sauce", label: "BBQ Sauce", price: 20 }
+  ];
+
+  // Meal prices: Use mealPrice from database if available, fallback to defaults
+  const regularMealPrice = item.mealPrice || 250; // Default £2.50 (250p)
+  const periPeriChipsMealPrice = 280; // Peri peri chips meal = £2.80 (280p)
 
   // Get customization options based on item (removed chip types, simplified)
   const getCustomizationOptions = (itemName: string) => {
     const name = itemName.toLowerCase();
-    if (name.includes("burger") || name.includes("wrap") || name.includes("special") || name.includes("pounder")) {
+    if (name.includes("burger") || name.includes("wrap") || name.includes("special") || name.includes("pounder") || name.includes("pizza")) {
       return {
         type: "burger",
         options: [
-          { id: "cheese", label: "Cheese" },
-          { id: "lettuce", label: "Lettuce" },
-          { id: "mayo", label: "Mayo" },
-          { id: "burger_sauce", label: "Burger Sauce" },
-          { id: "tomato", label: "Tomato" },
-          { id: "onions", label: "Onions" }
+          { id: "cheese", label: "Cheese", price: 50 },
+          { id: "jalapenos", label: "Jalapeños", price: 30 },
+          { id: "bacon", label: "Bacon", price: 100 },
+          { id: "mushrooms", label: "Mushrooms", price: 40 },
+          { id: "lettuce", label: "Lettuce", price: 0 },
+          { id: "tomato", label: "Tomato", price: 0 },
+          { id: "onions", label: "Red Onions", price: 0 },
+          { id: "pickles", label: "Pickles", price: 0 }
         ]
       };
     }
@@ -60,10 +73,19 @@ export default function MenuItem({
   // Reset customizations to default values
   const resetCustomizations = () => {
     setBurgerToppings([]);
+    setSelectedSauces([]);
     setSelectedFlavor("Garlic & Herb");
     setIsMeal(false);
     setIsPeriPeriChipsMeal(false);
     setIsSpicy(false);
+  };
+
+  const handleSauceToggle = (sauceId: string, checked: boolean) => {
+    setSelectedSauces(prev =>
+      checked
+        ? [...prev, sauceId]
+        : prev.filter(id => id !== sauceId)
+    );
   };
 
   // Handle card click - always open customization modal
@@ -100,6 +122,11 @@ export default function MenuItem({
     // Handle burger toppings
     if (burgerToppings.length > 0 && getCustomizationOptions(item.name)?.type === "burger") {
       customizations.toppings = burgerToppings;
+    }
+
+    // Handle sauces
+    if (selectedSauces.length > 0) {
+      customizations.sauces = selectedSauces;
     }
 
     onAdd(customizations);
@@ -169,24 +196,45 @@ export default function MenuItem({
 
             {/* Burger Toppings */}
             {customizationOptions && customizationOptions.type === "burger" && (
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Toppings</Label>
+              <div className="space-y-3 p-3 bg-green-50 rounded-lg">
+                <Label className="text-sm font-medium">🥬 Add Toppings</Label>
                 <div className="grid grid-cols-2 gap-2">
                   {customizationOptions.options.map((option) => (
-                    <Button
-                      key={option.id}
-                      type="button"
-                      variant={burgerToppings.includes(option.id) ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => handleToppingsChange(option.id, !burgerToppings.includes(option.id))}
-                      className="h-10 text-xs"
-                    >
-                      {option.label}
-                    </Button>
+                    <div key={option.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={option.id}
+                        checked={burgerToppings.includes(option.id)}
+                        onCheckedChange={(checked) => handleToppingsChange(option.id, !!checked)}
+                      />
+                      <Label htmlFor={option.id} className="text-xs cursor-pointer flex-1">
+                        {option.label}
+                        {option.price > 0 && <span className="text-green-600 ml-1">+{formatPrice(option.price)}</span>}
+                      </Label>
+                    </div>
                   ))}
                 </div>
               </div>
             )}
+
+            {/* Sauces Selection */}
+            <div className="p-3 bg-orange-50 rounded-lg">
+              <Label className="text-sm font-medium">🧂 Choose Sauces</Label>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {SAUCES.map((sauce) => (
+                  <div key={sauce.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={sauce.id}
+                      checked={selectedSauces.includes(sauce.id)}
+                      onCheckedChange={(checked) => handleSauceToggle(sauce.id, !!checked)}
+                    />
+                    <Label htmlFor={sauce.id} className="text-xs cursor-pointer flex-1">
+                      {sauce.label}
+                      {sauce.price > 0 && <span className="text-green-600 ml-1">+{formatPrice(sauce.price)}</span>}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             {/* Meal Options */}
             {(item.name.includes("Burger") || item.name.includes("Wrap") || item.name.includes("Wings") || item.name.includes("Strip")) && (
@@ -228,9 +276,9 @@ export default function MenuItem({
             {/* Flavor Options - For all items with hasFlavorOptions */}
             {item.hasFlavorOptions && (
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Flavor</Label>
+                <Label className="text-sm font-medium">🍗 Choose Flavor</Label>
                 <RadioGroup value={selectedFlavor} onValueChange={setSelectedFlavor}>
-                  {["Lemon & Herb", "Garlic & Herb", "Medium", "Hot", "Extra Hot", "BBQ"].map((flavor) => (
+                  {["Plain", "Lemon & Herb", "Garlic & Herb", "Medium", "Hot", "Extra Hot", "BBQ", "Buffalo"].map((flavor) => (
                     <div key={flavor} className="flex items-center space-x-2">
                       <RadioGroupItem value={flavor} id={flavor} />
                       <Label htmlFor={flavor}>{flavor}</Label>
