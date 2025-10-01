@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface MenuItemProps {
   item: MenuItemType;
@@ -31,8 +32,7 @@ export default function MenuItem({
   const [burgerToppings, setBurgerToppings] = useState<string[]>([]);
   const [selectedSauces, setSelectedSauces] = useState<string[]>([]);
   const [selectedFlavor, setSelectedFlavor] = useState("Garlic & Herb");
-  const [isMeal, setIsMeal] = useState(false);
-  const [isPeriPeriChipsMeal, setIsPeriPeriChipsMeal] = useState(false);
+  const [selectedMealType, setSelectedMealType] = useState<string>("none");
   const [isSpicy, setIsSpicy] = useState(false);
 
   // Sauce options
@@ -75,8 +75,7 @@ export default function MenuItem({
     setBurgerToppings([]);
     setSelectedSauces([]);
     setSelectedFlavor("Garlic & Herb");
-    setIsMeal(false);
-    setIsPeriPeriChipsMeal(false);
+    setSelectedMealType("none");
     setIsSpicy(false);
   };
 
@@ -110,8 +109,8 @@ export default function MenuItem({
 
     // Handle meal upgrade options - use database field
     if (item.hasMealOption) {
-      customizations.isMeal = isMeal;
-      customizations.isPeriPeriChipsMeal = isPeriPeriChipsMeal;
+      customizations.isMeal = selectedMealType === 'regular';
+      customizations.isPeriPeriChipsMeal = selectedMealType === 'peri-peri';
     }
 
     // Handle spicy/normal option - use database field
@@ -241,40 +240,32 @@ export default function MenuItem({
               </div>
             )}
 
-            {/* Meal Options - use database field */}
+            {/* Meal Options - Dropdown */}
             {item.hasMealOption && (
-              <div className="space-y-3">
-                {/* Regular Meal Deal */}
-                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                  <div>
-                    <Label htmlFor="meal-option" className="font-medium text-blue-800">🍽️ Regular Meal Deal</Label>
-                    <p className="text-xs text-blue-600">+{formatPrice(regularMealPrice)} - Chips + Drink</p>
-                  </div>
-                  <Switch
-                    id="meal-option"
-                    checked={isMeal}
-                    onCheckedChange={(checked) => {
-                      setIsMeal(checked);
-                      if (checked) setIsPeriPeriChipsMeal(false);
-                    }}
-                  />
-                </div>
-
-                {/* Peri Peri Chips Meal Deal */}
-                <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                  <div>
-                    <Label htmlFor="peri-meal-option" className="font-medium text-orange-800">🌶️ Peri Peri Chips Meal</Label>
-                    <p className="text-xs text-orange-600">+{formatPrice(periPeriChipsMealPrice)} - Peri Peri Chips + Drink</p>
-                  </div>
-                  <Switch
-                    id="peri-meal-option"
-                    checked={isPeriPeriChipsMeal}
-                    onCheckedChange={(checked) => {
-                      setIsPeriPeriChipsMeal(checked);
-                      if (checked) setIsMeal(false);
-                    }}
-                  />
-                </div>
+              <div className="p-3 bg-blue-50 rounded-lg">
+                <Label className="text-sm font-medium text-blue-800 mb-2 block">🍽️ Meal Deal Options</Label>
+                <Select onValueChange={setSelectedMealType} value={selectedMealType}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select meal option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">
+                      <span>No Meal Deal</span>
+                    </SelectItem>
+                    <SelectItem value="regular">
+                      <div className="flex justify-between items-center w-full">
+                        <span>🍽️ Regular Meal - Chips + Drink</span>
+                        <span className="text-green-600 ml-2">+{formatPrice(regularMealPrice)}</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="peri-peri">
+                      <div className="flex justify-between items-center w-full">
+                        <span>🌶️ Peri Peri Chips Meal - Peri Peri Chips + Drink</span>
+                        <span className="text-green-600 ml-2">+{formatPrice(periPeriChipsMealPrice)}</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             )}
 
