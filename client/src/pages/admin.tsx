@@ -132,13 +132,10 @@ function MenuItemManager() {
   const [categoryId, setCategoryId] = useState<number>(0);
   const [name, setName] = useState("");
   const [price, setPrice] = useState<string>("");
-  const [mealPrice, setMealPrice] = useState<string>("");
   const [hasFlavorOptions, setHasFlavorOptions] = useState(false);
   const [hasMealOption, setHasMealOption] = useState(false);
   const [isSpicyOption, setIsSpicyOption] = useState(false);
   const [hasToppingsOption, setHasToppingsOption] = useState(false);
-  const [hasSaucesOption, setHasSaucesOption] = useState(false);
-  const [available, setAvailable] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
   const [items, setItems] = useState<any[]>([]);
   const [editingItem, setEditingItem] = useState<any>(null);
@@ -177,24 +174,22 @@ function MenuItemManager() {
         categoryId,
         name,
         price: pricePence,
-        mealPrice: mealPrice ? Math.round(parseFloat(mealPrice) * 100) : undefined,
-        available,
+        mealPrice: 250, // Default £2.50 for meal deals
+        available: true, // Always available
         hasFlavorOptions,
         hasMealOption,
         isSpicyOption,
         hasToppingsOption,
-        hasSaucesOption
+        hasSaucesOption: true // Sauces always available
       })
     });
     if (res.ok) {
       setName("");
       setPrice("");
-      setMealPrice("");
       setHasFlavorOptions(false);
       setHasMealOption(false);
       setIsSpicyOption(false);
       setHasToppingsOption(false);
-      setHasSaucesOption(false);
       const updated = await fetch(`/api/admin/menu-items?categoryId=${categoryId}`, {
         headers: { "Authorization": `Bearer ${token}` }
       }).then(r => r.json()).catch(() => []);
@@ -269,23 +264,14 @@ function MenuItemManager() {
         </select>
         <label className="text-sm font-medium">Name</label>
         <Input placeholder="e.g., Burger" value={name} onChange={(e) => setName(e.target.value)} />
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <label className="text-sm font-medium">Price (£)</label>
-            <Input placeholder="e.g., 5.00" type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Meal Price (£)</label>
-            <Input placeholder="e.g., 6.50" type="number" step="0.01" value={mealPrice} onChange={(e) => setMealPrice(e.target.value)} />
-          </div>
-        </div>
-        <div className="grid grid-cols-3 gap-4 text-sm">
-          <label className="flex items-center gap-2"><input type="checkbox" checked={available} onChange={(e) => setAvailable(e.target.checked)} /> Available</label>
+        <label className="text-sm font-medium">Price (£)</label>
+        <Input placeholder="e.g., 5.00" type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} />
+
+        <div className="grid grid-cols-2 gap-4 text-sm">
           <label className="flex items-center gap-2"><input type="checkbox" checked={hasFlavorOptions} onChange={(e) => setHasFlavorOptions(e.target.checked)} /> Has Flavors</label>
           <label className="flex items-center gap-2"><input type="checkbox" checked={hasMealOption} onChange={(e) => setHasMealOption(e.target.checked)} /> Has Meal Option</label>
           <label className="flex items-center gap-2"><input type="checkbox" checked={isSpicyOption} onChange={(e) => setIsSpicyOption(e.target.checked)} /> Is Spicy</label>
           <label className="flex items-center gap-2"><input type="checkbox" checked={hasToppingsOption} onChange={(e) => setHasToppingsOption(e.target.checked)} /> Has Toppings</label>
-          <label className="flex items-center gap-2"><input type="checkbox" checked={hasSaucesOption} onChange={(e) => setHasSaucesOption(e.target.checked)} /> Has Sauces</label>
         </div>
         <Button onClick={add} disabled={!categoryId || !name || !price}>Add Item</Button>
       </div>
@@ -349,26 +335,23 @@ function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates:
   const [formData, setFormData] = useState({
     name: item.name || "",
     price: item.price ? (item.price / 100).toFixed(2) : "",
-    mealPrice: item.mealPrice ? (item.mealPrice / 100).toFixed(2) : "",
-    available: item.available !== false,
     hasFlavorOptions: item.hasFlavorOptions || false,
     hasMealOption: item.hasMealOption || false,
     isSpicyOption: item.isSpicyOption || false,
-    hasToppingsOption: item.hasToppingsOption || false,
-    hasSaucesOption: item.hasSaucesOption || false
+    hasToppingsOption: item.hasToppingsOption || false
   });
 
   const handleSave = () => {
     const updates = {
       name: formData.name,
       price: Math.round(parseFloat(formData.price.toString()) * 100),
-      mealPrice: formData.mealPrice ? Math.round(parseFloat(formData.mealPrice.toString()) * 100) : undefined,
-      available: formData.available,
+      mealPrice: 250, // Default £2.50
+      available: true, // Always available
       hasFlavorOptions: formData.hasFlavorOptions,
       hasMealOption: formData.hasMealOption,
       isSpicyOption: formData.isSpicyOption,
       hasToppingsOption: formData.hasToppingsOption,
-      hasSaucesOption: formData.hasSaucesOption
+      hasSaucesOption: true // Sauces always available
     };
     onSave(updates);
   };
@@ -377,21 +360,10 @@ function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates:
     <div className="space-y-2 bg-neutral-50 p-3 rounded">
       <label className="text-sm font-medium">Name</label>
       <Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="text-sm font-medium">Price (£)</label>
-          <Input type="number" step="0.01" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} />
-        </div>
-        <div>
-          <label className="text-sm font-medium">Meal Price (£)</label>
-          <Input type="number" step="0.01" value={formData.mealPrice} onChange={(e) => setFormData({...formData, mealPrice: e.target.value})} />
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-4 text-sm">
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={formData.available} onChange={(e) => setFormData({...formData, available: e.target.checked})} />
-          Available
-        </label>
+      <label className="text-sm font-medium">Price (£)</label>
+      <Input type="number" step="0.01" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} />
+
+      <div className="grid grid-cols-2 gap-4 text-sm">
         <label className="flex items-center gap-2">
           <input type="checkbox" checked={formData.hasFlavorOptions} onChange={(e) => setFormData({...formData, hasFlavorOptions: e.target.checked})} />
           Has Flavors
@@ -407,10 +379,6 @@ function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates:
         <label className="flex items-center gap-2">
           <input type="checkbox" checked={formData.hasToppingsOption} onChange={(e) => setFormData({...formData, hasToppingsOption: e.target.checked})} />
           Has Toppings
-        </label>
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={formData.hasSaucesOption} onChange={(e) => setFormData({...formData, hasSaucesOption: e.target.checked})} />
-          Has Sauces
         </label>
       </div>
       <div className="flex gap-2">

@@ -218,27 +218,25 @@ export default function MenuItem({
               </div>
             )}
 
-            {/* Sauces Selection - use database field */}
-            {item.hasSaucesOption && (
-              <div className="p-3 bg-orange-50 rounded-lg">
-                <Label className="text-sm font-medium">🧂 Choose Sauces</Label>
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  {SAUCES.map((sauce) => (
-                    <div key={sauce.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={sauce.id}
-                        checked={selectedSauces.includes(sauce.id)}
-                        onCheckedChange={(checked) => handleSauceToggle(sauce.id, !!checked)}
-                      />
-                      <Label htmlFor={sauce.id} className="text-xs cursor-pointer flex-1">
-                        {sauce.label}
-                        {sauce.price > 0 && <span className="text-green-600 ml-1">+{formatPrice(sauce.price)}</span>}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
+            {/* Sauces Selection - Always Available */}
+            <div className="p-3 bg-orange-50 rounded-lg">
+              <Label className="text-sm font-medium">🧂 Choose Sauces</Label>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {SAUCES.map((sauce) => (
+                  <div key={sauce.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={sauce.id}
+                      checked={selectedSauces.includes(sauce.id)}
+                      onCheckedChange={(checked) => handleSauceToggle(sauce.id, !!checked)}
+                    />
+                    <Label htmlFor={sauce.id} className="text-xs cursor-pointer flex-1">
+                      {sauce.label}
+                      {sauce.price > 0 && <span className="text-green-600 ml-1">+{formatPrice(sauce.price)}</span>}
+                    </Label>
+                  </div>
+                ))}
               </div>
-            )}
+            </div>
 
             {/* Meal Options - Dropdown */}
             {item.hasMealOption && (
