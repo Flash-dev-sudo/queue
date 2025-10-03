@@ -2,17 +2,17 @@ import { createClient } from '@libsql/client';
 import { drizzle } from 'drizzle-orm/libsql';
 import * as schema from "@shared/schema";
 
-// Use local SQLite for development, remote Turso for production
+// Use remote Turso if available, otherwise local SQLite
 let client;
 
-if (process.env.NODE_ENV === 'production' && process.env.TURSO_DB_URL && process.env.TURSO_AUTH_TOKEN) {
-  // Production: Use remote Turso database
+if (process.env.TURSO_DB_URL && process.env.TURSO_AUTH_TOKEN) {
+  // Use remote Turso database (shared with Empareperiperi)
   client = createClient({
     url: process.env.TURSO_DB_URL,
     authToken: process.env.TURSO_AUTH_TOKEN,
   });
 } else {
-  // Development: Use local SQLite database
+  // Fallback: Use local SQLite database for development
   client = createClient({
     url: 'file:dev.db',
   });

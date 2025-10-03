@@ -742,5 +742,7 @@ export class DatabaseStorage implements IStorage {
 }
 
 // Initialize the appropriate storage implementation
-// Use MemStorage with full demo data for all environments (stable)
-export const storage = new MemStorage();
+// Use DatabaseStorage when Turso URL available to connect to shared database
+export const storage = process.env.TURSO_DB_URL
+  ? new DatabaseStorage()
+  : new MemStorage();
