@@ -309,6 +309,7 @@ function MenuItemManager() {
                           {item.hasFlavorOptions && <span className="bg-blue-100 text-blue-800 px-1 rounded">Flavors</span>}
                           {item.hasMealOption && <span className="bg-green-100 text-green-800 px-1 rounded">Meal Option</span>}
                           {item.isSpicyOption && <span className="bg-orange-100 text-orange-800 px-1 rounded">Spicy</span>}
+                          {item.hasToppingsOption && <span className="bg-emerald-100 text-emerald-800 px-1 rounded">Toppings</span>}
                         </div>
                       </div>
                       <div className="space-x-1">
