@@ -179,8 +179,7 @@ function MenuItemManager() {
         hasFlavorOptions,
         hasMealOption,
         isSpicyOption,
-        hasToppingsOption,
-        hasSaucesOption: true // Sauces always available
+        hasToppingsOption
       })
     });
     if (res.ok) {
@@ -351,8 +350,7 @@ function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates:
       hasFlavorOptions: formData.hasFlavorOptions,
       hasMealOption: formData.hasMealOption,
       isSpicyOption: formData.isSpicyOption,
-      hasToppingsOption: formData.hasToppingsOption,
-      hasSaucesOption: true // Sauces always available
+      hasToppingsOption: formData.hasToppingsOption
     };
     onSave(updates);
   };
