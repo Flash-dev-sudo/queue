@@ -30,7 +30,7 @@ export default function MenuItem({
 }: MenuItemProps) {
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const [burgerToppings, setBurgerToppings] = useState<string[]>([]);
-  const [selectedFlavor, setSelectedFlavor] = useState("Garlic & Herb");
+  const [selectedFlavor, setSelectedFlavor] = useState("");
   const [selectedMealType, setSelectedMealType] = useState<string>("none");
   const [isSpicy, setIsSpicy] = useState(false);
 
@@ -41,7 +41,7 @@ export default function MenuItem({
   // Reset customizations to default values
   const resetCustomizations = () => {
     setBurgerToppings([]);
-    setSelectedFlavor("Garlic & Herb");
+    setSelectedFlavor("");
     setSelectedMealType("none");
     setIsSpicy(false);
   };
@@ -213,10 +213,19 @@ export default function MenuItem({
               <div className="space-y-2">
                 <Label className="text-sm font-medium">🍗 Choose Flavor</Label>
                 <RadioGroup value={selectedFlavor} onValueChange={setSelectedFlavor}>
-                  {["Plain", "Lemon & Herb", "Garlic & Herb", "Medium", "Hot", "Extra Hot", "BBQ", "Buffalo"].map((flavor) => (
-                    <div key={flavor} className="flex items-center space-x-2">
-                      <RadioGroupItem value={flavor} id={flavor} />
-                      <Label htmlFor={flavor}>{flavor}</Label>
+                  {[
+                    { value: "plain", label: "Plain" },
+                    { value: "lemon-herb", label: "Lemon & Herb" },
+                    { value: "garlic-herb", label: "Garlic & Herb" },
+                    { value: "medium", label: "Medium Peri Peri" },
+                    { value: "hot", label: "Hot Peri Peri" },
+                    { value: "extra-hot", label: "Extra Hot Peri Peri" },
+                    { value: "bbq", label: "BBQ" },
+                    { value: "buffalo", label: "Buffalo" }
+                  ].map((flavor) => (
+                    <div key={flavor.value} className="flex items-center space-x-2">
+                      <RadioGroupItem value={flavor.value} id={flavor.value} />
+                      <Label htmlFor={flavor.value}>{flavor.label}</Label>
                     </div>
                   ))}
                 </RadioGroup>
