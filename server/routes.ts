@@ -186,6 +186,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         hasFlavorOptions: item.hasFlavorOptions,
         hasMealOption: item.hasMealOption,
         isSpicyOption: item.isSpicyOption,
+        hasToppingsOption: item.hasToppingsOption,
         updatedAt: item.updatedAt,
         deletedAt: item.deletedAt,
         contentHash: item.contentHash
@@ -234,6 +235,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             hasFlavorOptions: item.hasFlavorOptions,
             hasMealOption: item.hasMealOption,
             isSpicyOption: item.isSpicyOption,
+            hasToppingsOption: item.hasToppingsOption,
             updatedAt: item.updatedAt,
             deletedAt: item.deletedAt,
             contentHash: item.contentHash
@@ -294,6 +296,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           hasFlavorOptions: item.hasFlavorOptions,
           hasMealOption: item.hasMealOption,
           isSpicyOption: item.isSpicyOption,
+          hasToppingsOption: item.hasToppingsOption,
           updatedAt: item.updatedAt,
           deletedAt: item.deletedAt,
           contentHash: item.contentHash
@@ -387,7 +390,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/admin/menu-items', adminAuth, async (req, res) => {
     try {
-      const { categoryId, name, description, price, mealPrice, available, image, hasFlavorOptions, hasMealOption, isSpicyOption } = req.body || {};
+      const { categoryId, name, description, price, mealPrice, available, image, hasFlavorOptions, hasMealOption, isSpicyOption, hasToppingsOption } = req.body || {};
       if (!categoryId || !name || !price) return res.status(400).json({ message: 'categoryId, name and price required' });
       const item = await storage.createMenuItem({
         categoryId: Number(categoryId),
@@ -400,6 +403,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         hasFlavorOptions: !!hasFlavorOptions,
         hasMealOption: !!hasMealOption,
         isSpicyOption: !!isSpicyOption,
+        hasToppingsOption: !!hasToppingsOption,
       });
 
       // Trigger webhook to sync with website
@@ -442,7 +446,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Invalid menu item ID' });
       }
 
-      const { categoryId, name, description, price, mealPrice, available, image, hasFlavorOptions, hasMealOption, isSpicyOption } = req.body || {};
+      const { categoryId, name, description, price, mealPrice, available, image, hasFlavorOptions, hasMealOption, isSpicyOption, hasToppingsOption } = req.body || {};
 
       const updateData: Partial<InsertMenuItem> = {};
       if (categoryId !== undefined) updateData.categoryId = Number(categoryId);
@@ -455,6 +459,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (hasFlavorOptions !== undefined) updateData.hasFlavorOptions = !!hasFlavorOptions;
       if (hasMealOption !== undefined) updateData.hasMealOption = !!hasMealOption;
       if (isSpicyOption !== undefined) updateData.isSpicyOption = !!isSpicyOption;
+      if (hasToppingsOption !== undefined) updateData.hasToppingsOption = !!hasToppingsOption;
 
       const updatedItem = await storage.updateMenuItem(id, updateData);
 
