@@ -55,16 +55,23 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 p-4 md:p-6">
-      <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Admin</h1>
-          <div className="space-x-2">
-            <Button onClick={() => location.reload()}>Refresh</Button>
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 p-4 md:p-8">
+      <div className="max-w-6xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+              <p className="text-sm text-gray-500 mt-1">Manage your menu and categories</p>
+            </div>
+            <Button onClick={() => location.reload()} variant="outline" className="flex items-center gap-2">
+              <span>🔄</span> Refresh
+            </Button>
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        {/* Main Content - Single Column Layout */}
+        <div className="space-y-6">
           <CategoryManager />
           <MenuItemManager />
         </div>
@@ -105,24 +112,62 @@ function CategoryManager() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
-      <h2 className="font-semibold mb-3">Categories</h2>
-      <div className="space-y-2 mb-3">
-        <label className="text-sm font-medium">Name</label>
-        <Input placeholder="e.g., Desserts" value={name} onChange={(e) => setName(e.target.value)} />
-        <label className="text-sm font-medium">Icon</label>
-        <Input placeholder="material icon name (e.g., restaurant)" value={icon} onChange={(e) => setIcon(e.target.value)} />
-        <label className="text-sm font-medium">Display order</label>
-        <Input placeholder="e.g., 7" type="number" value={displayOrder} onChange={(e) => setDisplayOrder(e.target.value)} />
-        <Button onClick={add}>Add Category</Button>
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="bg-orange-100 p-3 rounded-lg">
+          <span className="text-2xl">📁</span>
+        </div>
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">Categories</h2>
+          <p className="text-sm text-gray-500">Organize your menu into categories</p>
+        </div>
       </div>
-      <ul className="text-sm space-y-1">
-        {categories.map((c) => (
-          <li key={c.id} className="flex items-center justify-between border-b py-1">
-            <span>#{c.displayOrder} {c.name}</span>
-          </li>
-        ))}
-      </ul>
+
+      {/* Add Category Form */}
+      <div className="space-y-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <h3 className="font-semibold text-gray-700 flex items-center gap-2">
+          <span>➕</span> Add New Category
+        </h3>
+        <div className="grid md:grid-cols-3 gap-4">
+          <div>
+            <label className="text-sm font-medium text-gray-700 block mb-2">Name</label>
+            <Input placeholder="e.g., Desserts" value={name} onChange={(e) => setName(e.target.value)} className="w-full" />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 block mb-2">Icon</label>
+            <Input placeholder="restaurant" value={icon} onChange={(e) => setIcon(e.target.value)} className="w-full" />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 block mb-2">Display order</label>
+            <Input placeholder="e.g., 7" type="number" value={displayOrder} onChange={(e) => setDisplayOrder(e.target.value)} className="w-full" />
+          </div>
+        </div>
+        <Button onClick={add} className="w-full md:w-auto bg-orange-500 hover:bg-orange-600">Add Category</Button>
+      </div>
+
+      {/* Categories List */}
+      <div>
+        <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+          <span>📋</span> Existing Categories ({categories.length})
+        </h3>
+        {categories.length === 0 ? (
+          <p className="text-sm text-gray-400 italic py-4 text-center">No categories yet. Add one above!</p>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {categories.map((c) => (
+              <div key={c.id} className="flex items-center justify-between border border-gray-200 rounded-lg p-3 hover:border-orange-300 hover:shadow-md transition-all">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">{c.icon}</span>
+                  <div>
+                    <span className="font-medium text-gray-800">{c.name}</span>
+                    <span className="text-xs text-gray-500 block">Order: #{c.displayOrder}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -131,7 +176,9 @@ function MenuItemManager() {
   const { toast } = useToast();
   const [categoryId, setCategoryId] = useState<number>(0);
   const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [price, setPrice] = useState<string>("");
+  const [mealPrice, setMealPrice] = useState<string>("2.50");
   const [hasFlavorOptions, setHasFlavorOptions] = useState(false);
   const [hasMealOption, setHasMealOption] = useState(false);
   const [isSpicyOption, setIsSpicyOption] = useState(false);
@@ -160,6 +207,7 @@ function MenuItemManager() {
     const pricePounds = parseFloat(price || "0");
     if (!pricePounds || pricePounds <= 0) return alert("Enter price in pounds (e.g., 5.00)");
     const pricePence = Math.round(pricePounds * 100);
+    const mealPricePence = Math.round(parseFloat(mealPrice || "0") * 100);
 
     const token = sessionStorage.getItem("admin_token");
     if (!token) return;
@@ -173,9 +221,10 @@ function MenuItemManager() {
       body: JSON.stringify({
         categoryId,
         name,
+        description: description.trim() || null,
         price: pricePence,
-        mealPrice: 250, // Default £2.50 for meal deals
-        available: true, // Always available
+        mealPrice: mealPricePence || 250,
+        available: true,
         hasFlavorOptions,
         hasMealOption,
         isSpicyOption,
@@ -184,7 +233,9 @@ function MenuItemManager() {
     });
     if (res.ok) {
       setName("");
+      setDescription("");
       setPrice("");
+      setMealPrice("2.50");
       setHasFlavorOptions(false);
       setHasMealOption(false);
       setIsSpicyOption(false);
@@ -250,43 +301,95 @@ function MenuItemManager() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
-      <h2 className="font-semibold mb-3">Menu Items</h2>
-
-      {/* Add New Item Form */}
-      <div className="grid gap-2 mb-4 p-3 bg-neutral-50 rounded">
-        <h3 className="font-medium text-sm">Add New Item</h3>
-        <label className="text-sm font-medium">Category</label>
-        <select className="border rounded p-2" value={categoryId} onChange={(e) => setCategoryId(parseInt(e.target.value))}>
-          <option value={0}>Select Category</option>
-          {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-        </select>
-        <label className="text-sm font-medium">Name</label>
-        <Input placeholder="e.g., Burger" value={name} onChange={(e) => setName(e.target.value)} />
-        <label className="text-sm font-medium">Price (£)</label>
-        <Input placeholder="e.g., 5.00" type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} />
-
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <label className="flex items-center gap-2"><input type="checkbox" checked={hasFlavorOptions} onChange={(e) => setHasFlavorOptions(e.target.checked)} /> Has Flavors</label>
-          <label className="flex items-center gap-2"><input type="checkbox" checked={hasMealOption} onChange={(e) => setHasMealOption(e.target.checked)} /> Has Meal Option</label>
-          <label className="flex items-center gap-2"><input type="checkbox" checked={isSpicyOption} onChange={(e) => setIsSpicyOption(e.target.checked)} /> Is Spicy</label>
-          <label className="flex items-center gap-2"><input type="checkbox" checked={hasToppingsOption} onChange={(e) => setHasToppingsOption(e.target.checked)} /> Has Toppings</label>
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="bg-orange-100 p-3 rounded-lg">
+          <span className="text-2xl">🍽️</span>
         </div>
-        <Button onClick={add} disabled={!categoryId || !name || !price}>Add Item</Button>
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">Menu Items</h2>
+          <p className="text-sm text-gray-500">Add and manage items in your menu</p>
+        </div>
       </div>
 
-      <p className="text-xs text-neutral-500 mb-3">Tip: Set Shakes to 5.00 (i.e., £5.00). Add Dessert category and items similarly.</p>
+      {/* Add New Item Form */}
+      <div className="space-y-4 mb-6 p-5 bg-gray-50 rounded-lg border border-gray-200">
+        <h3 className="font-semibold text-gray-700 flex items-center gap-2">
+          <span>➕</span> Add New Item
+        </h3>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm font-medium text-gray-700 block mb-2">Category *</label>
+            <select className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent" value={categoryId} onChange={(e) => setCategoryId(parseInt(e.target.value))}>
+              <option value={0}>Select Category</option>
+              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 block mb-2">Name *</label>
+            <Input placeholder="e.g., Burger" value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-gray-700 block mb-2">Description</label>
+          <Input placeholder="e.g., Juicy beef patty with lettuce and tomato" value={description} onChange={(e) => setDescription(e.target.value)} />
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm font-medium text-gray-700 block mb-2">Price (£) *</label>
+            <Input placeholder="e.g., 5.00" type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 block mb-2">Meal Deal Price (£)</label>
+            <Input placeholder="e.g., 2.50" type="number" step="0.01" value={mealPrice} onChange={(e) => setMealPrice(e.target.value)} />
+          </div>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-gray-700 block mb-3">Customization Options</label>
+          <div className="grid md:grid-cols-2 gap-3">
+            <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-white cursor-pointer transition-all">
+              <input type="checkbox" checked={hasFlavorOptions} onChange={(e) => setHasFlavorOptions(e.target.checked)} className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500" />
+              <span className="text-sm font-medium text-gray-700">Has Flavors</span>
+            </label>
+            <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-white cursor-pointer transition-all">
+              <input type="checkbox" checked={hasMealOption} onChange={(e) => setHasMealOption(e.target.checked)} className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500" />
+              <span className="text-sm font-medium text-gray-700">Has Meal Option</span>
+            </label>
+            <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-white cursor-pointer transition-all">
+              <input type="checkbox" checked={isSpicyOption} onChange={(e) => setIsSpicyOption(e.target.checked)} className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500" />
+              <span className="text-sm font-medium text-gray-700">Is Spicy</span>
+            </label>
+            <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-white cursor-pointer transition-all">
+              <input type="checkbox" checked={hasToppingsOption} onChange={(e) => setHasToppingsOption(e.target.checked)} className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500" />
+              <span className="text-sm font-medium text-gray-700">Has Toppings</span>
+            </label>
+          </div>
+        </div>
+
+        <Button onClick={add} disabled={!categoryId || !name || !price} className="w-full md:w-auto bg-orange-500 hover:bg-orange-600">
+          Add Item
+        </Button>
+      </div>
 
       {/* Items List */}
       {categoryId ? (
         <div>
-          <h3 className="text-sm font-semibold mb-2">Items in {categories.find(c => c.id === categoryId)?.name}</h3>
+          <h3 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+            <span>📋</span> Items in {categories.find(c => c.id === categoryId)?.name} ({items.length})
+          </h3>
           {items.length === 0 ? (
-            <p className="text-xs text-neutral-500">No items yet.</p>
+            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <span className="text-4xl mb-2 block">🍽️</span>
+              <p className="text-sm text-gray-500">No items yet. Add one above!</p>
+            </div>
           ) : (
-            <div className="space-y-2">
-              {items.map((item) => (
-                <div key={item.id} className="border rounded p-2">
+            <div className="grid gap-4">
+              {items.map((item, index) => (
+                <div key={item.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-all bg-white">
                   {editingItem?.id === item.id ? (
                     <EditItemForm
                       item={editingItem}
@@ -294,28 +397,62 @@ function MenuItemManager() {
                       onCancel={() => setEditingItem(null)}
                     />
                   ) : (
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{item.name}</span>
-                          <span className="text-sm text-neutral-500">
-                            £{(item.price / 100).toFixed(2)}
-                            {item.mealPrice && ` (meal: £${(item.mealPrice / 100).toFixed(2)})`}
-                          </span>
-                        </div>
-                        <div className="flex gap-2 text-xs text-neutral-500 mt-1">
-                          {!item.available && <span className="bg-red-100 text-red-800 px-1 rounded">Unavailable</span>}
-                          {item.hasFlavorOptions && <span className="bg-blue-100 text-blue-800 px-1 rounded">Flavors</span>}
-                          {item.hasMealOption && <span className="bg-green-100 text-green-800 px-1 rounded">Meal Option</span>}
-                          {item.isSpicyOption && <span className="bg-orange-100 text-orange-800 px-1 rounded">Spicy</span>}
-                          {item.hasToppingsOption && <span className="bg-emerald-100 text-emerald-800 px-1 rounded">Toppings</span>}
+                        <div className="flex items-start gap-3">
+                          <div className="bg-orange-100 text-orange-600 rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                            {index + 1}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-bold text-gray-900 text-lg">{item.name}</h4>
+                            {item.description && (
+                              <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+                            )}
+                            <div className="flex items-center gap-3 mt-2">
+                              <span className="text-lg font-bold text-orange-600">
+                                £{(item.price / 100).toFixed(2)}
+                              </span>
+                              {item.mealPrice && (
+                                <span className="text-sm text-gray-500 bg-blue-50 px-2 py-1 rounded">
+                                  Meal: +£{(item.mealPrice / 100).toFixed(2)}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap gap-2 mt-3">
+                              {!item.available && (
+                                <span className="bg-red-100 text-red-700 px-2 py-1 rounded-md text-xs font-medium">
+                                  ❌ Unavailable
+                                </span>
+                              )}
+                              {item.hasFlavorOptions && (
+                                <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-xs font-medium">
+                                  🍗 Flavors
+                                </span>
+                              )}
+                              {item.hasMealOption && (
+                                <span className="bg-green-100 text-green-700 px-2 py-1 rounded-md text-xs font-medium">
+                                  🍽️ Meal Option
+                                </span>
+                              )}
+                              {item.isSpicyOption && (
+                                <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded-md text-xs font-medium">
+                                  🌶️ Spicy
+                                </span>
+                              )}
+                              {item.hasToppingsOption && (
+                                <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md text-xs font-medium">
+                                  🥬 Toppings
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div className="space-x-1">
-                        <Button size="sm" variant="outline" onClick={() => setEditingItem({...item})}>
+                      <div className="flex gap-2 flex-shrink-0">
+                        <Button size="sm" variant="outline" onClick={() => setEditingItem({...item})} className="hover:bg-orange-50 hover:border-orange-300">
                           Edit
                         </Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item)}>
+                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item)} className="hover:bg-red-600">
                           Delete
                         </Button>
                       </div>
@@ -326,7 +463,12 @@ function MenuItemManager() {
             </div>
           )}
         </div>
-      ) : null}
+      ) : (
+        <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+          <span className="text-4xl mb-2 block">👆</span>
+          <p className="text-sm text-gray-500">Select a category above to view and manage its items</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -334,7 +476,9 @@ function MenuItemManager() {
 function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates: any) => void, onCancel: () => void }) {
   const [formData, setFormData] = useState({
     name: item.name || "",
+    description: item.description || "",
     price: item.price ? (item.price / 100).toFixed(2) : "",
+    mealPrice: item.mealPrice ? (item.mealPrice / 100).toFixed(2) : "2.50",
     hasFlavorOptions: item.hasFlavorOptions || false,
     hasMealOption: item.hasMealOption || false,
     isSpicyOption: item.isSpicyOption || false,
@@ -344,9 +488,10 @@ function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates:
   const handleSave = () => {
     const updates = {
       name: formData.name,
+      description: formData.description.trim() || null,
       price: Math.round(parseFloat(formData.price.toString()) * 100),
-      mealPrice: 250, // Default £2.50
-      available: true, // Always available
+      mealPrice: Math.round(parseFloat(formData.mealPrice.toString() || "0") * 100) || 250,
+      available: true,
       hasFlavorOptions: formData.hasFlavorOptions,
       hasMealOption: formData.hasMealOption,
       isSpicyOption: formData.isSpicyOption,
@@ -356,33 +501,57 @@ function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates:
   };
 
   return (
-    <div className="space-y-2 bg-neutral-50 p-3 rounded">
-      <label className="text-sm font-medium">Name</label>
-      <Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
-      <label className="text-sm font-medium">Price (£)</label>
-      <Input type="number" step="0.01" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} />
+    <div className="space-y-4 bg-blue-50 p-4 rounded-lg border-2 border-blue-300">
+      <h4 className="font-semibold text-gray-800 flex items-center gap-2">
+        <span>✏️</span> Editing: {item.name}
+      </h4>
 
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={formData.hasFlavorOptions} onChange={(e) => setFormData({...formData, hasFlavorOptions: e.target.checked})} />
-          Has Flavors
-        </label>
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={formData.hasMealOption} onChange={(e) => setFormData({...formData, hasMealOption: e.target.checked})} />
-          Has Meal Option
-        </label>
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={formData.isSpicyOption} onChange={(e) => setFormData({...formData, isSpicyOption: e.target.checked})} />
-          Is Spicy
-        </label>
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={formData.hasToppingsOption} onChange={(e) => setFormData({...formData, hasToppingsOption: e.target.checked})} />
-          Has Toppings
-        </label>
+      <div className="grid md:grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm font-medium text-gray-700 block mb-2">Name</label>
+          <Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700 block mb-2">Price (£)</label>
+          <Input type="number" step="0.01" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} />
+        </div>
       </div>
+
+      <div>
+        <label className="text-sm font-medium text-gray-700 block mb-2">Description</label>
+        <Input value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium text-gray-700 block mb-2">Meal Deal Price (£)</label>
+        <Input type="number" step="0.01" value={formData.mealPrice} onChange={(e) => setFormData({...formData, mealPrice: e.target.value})} />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium text-gray-700 block mb-3">Customization Options</label>
+        <div className="grid md:grid-cols-2 gap-3">
+          <label className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg cursor-pointer">
+            <input type="checkbox" checked={formData.hasFlavorOptions} onChange={(e) => setFormData({...formData, hasFlavorOptions: e.target.checked})} className="w-4 h-4 text-orange-500" />
+            <span className="text-sm font-medium">Has Flavors</span>
+          </label>
+          <label className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg cursor-pointer">
+            <input type="checkbox" checked={formData.hasMealOption} onChange={(e) => setFormData({...formData, hasMealOption: e.target.checked})} className="w-4 h-4 text-orange-500" />
+            <span className="text-sm font-medium">Has Meal Option</span>
+          </label>
+          <label className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg cursor-pointer">
+            <input type="checkbox" checked={formData.isSpicyOption} onChange={(e) => setFormData({...formData, isSpicyOption: e.target.checked})} className="w-4 h-4 text-orange-500" />
+            <span className="text-sm font-medium">Is Spicy</span>
+          </label>
+          <label className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg cursor-pointer">
+            <input type="checkbox" checked={formData.hasToppingsOption} onChange={(e) => setFormData({...formData, hasToppingsOption: e.target.checked})} className="w-4 h-4 text-orange-500" />
+            <span className="text-sm font-medium">Has Toppings</span>
+          </label>
+        </div>
+      </div>
+
       <div className="flex gap-2">
-        <Button size="sm" onClick={handleSave}>Save</Button>
-        <Button size="sm" variant="outline" onClick={onCancel}>Cancel</Button>
+        <Button onClick={handleSave} className="bg-blue-500 hover:bg-blue-600">💾 Save Changes</Button>
+        <Button variant="outline" onClick={onCancel}>Cancel</Button>
       </div>
     </div>
   );
