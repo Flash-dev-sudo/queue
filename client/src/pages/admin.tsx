@@ -204,10 +204,15 @@ function MenuItemManager() {
   const add = async () => {
     if (!categoryId) return alert("Please select a category");
     if (!name.trim()) return alert("Please enter an item name");
+
     const pricePounds = parseFloat(price || "0");
-    if (!pricePounds || pricePounds <= 0) return alert("Enter price in pounds (e.g., 5.00)");
+    if (isNaN(pricePounds) || pricePounds <= 0) return alert("Enter price in pounds (e.g., 5.00)");
+
+    const mealPricePounds = parseFloat(mealPrice || "0");
+    if (isNaN(mealPricePounds) || mealPricePounds < 0) return alert("Enter valid meal price (0 or greater)");
+
     const pricePence = Math.round(pricePounds * 100);
-    const mealPricePence = Math.round(parseFloat(mealPrice || "0") * 100);
+    const mealPricePence = Math.round(mealPricePounds * 100);
 
     const token = sessionStorage.getItem("admin_token");
     if (!token) return;
@@ -486,12 +491,26 @@ function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates:
   });
 
   const handleSave = () => {
+    // Validate price
+    const priceNum = parseFloat(formData.price.toString());
+    if (isNaN(priceNum) || priceNum <= 0) {
+      alert("Please enter a valid price greater than 0");
+      return;
+    }
+
+    // Validate meal price
+    const mealPriceNum = parseFloat(formData.mealPrice.toString() || "0");
+    if (isNaN(mealPriceNum) || mealPriceNum < 0) {
+      alert("Please enter a valid meal price (0 or greater)");
+      return;
+    }
+
     const updates = {
       name: formData.name,
       description: formData.description.trim() || null,
-      price: Math.round(parseFloat(formData.price.toString()) * 100),
-      mealPrice: Math.round(parseFloat(formData.mealPrice.toString() || "0") * 100) || 250,
-      available: true,
+      price: Math.round(priceNum * 100),
+      mealPrice: Math.round(mealPriceNum * 100) || 250,
+      available: item.available ?? true, // Preserve existing availability
       hasFlavorOptions: formData.hasFlavorOptions,
       hasMealOption: formData.hasMealOption,
       isSpicyOption: formData.isSpicyOption,

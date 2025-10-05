@@ -62,10 +62,17 @@ export default function OrderItem({ item, onRemove, onUpgradeToMeal, onEdit, onS
             {/* Display customizations */}
             {item.customizations && (
               <div className="mt-2 space-y-1">
-                {item.customizations.chipType && (
+                {item.customizations.isPeriPeriChipsMeal && (
+                  <div className="flex items-center">
+                    <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded font-medium">
+                      🌶️ Peri Peri Chips Meal
+                    </span>
+                  </div>
+                )}
+                {item.customizations.isMeal && !item.customizations.isPeriPeriChipsMeal && (
                   <div className="flex items-center">
                     <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded font-medium">
-                      {item.customizations.chipType === 'spicy' ? '🌶️ Spicy' : '😋 Normal'}
+                      🍽️ Regular Meal
                     </span>
                   </div>
                 )}

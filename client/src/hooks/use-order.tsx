@@ -128,9 +128,16 @@ export function useOrder() {
             notesParts.push(`🥬 Toppings: ${customizations.toppings.join(", ")}`);
           }
 
-          // Add chip type
-          if (customizations.chipType && customizations.chipType !== "normal") {
-            notesParts.push(`🍟 ${customizations.chipType} chips`);
+          // Add meal deal type
+          if (customizations.isPeriPeriChipsMeal) {
+            notesParts.push(`🌶️ Peri Peri Chips Meal`);
+          } else if (customizations.isMeal) {
+            notesParts.push(`🍽️ Regular Meal`);
+          }
+
+          // Add drink choice
+          if (customizations.drinkChoice) {
+            notesParts.push(`🥤 ${customizations.drinkChoice}`);
           }
 
           notes = notesParts.join(" • ");

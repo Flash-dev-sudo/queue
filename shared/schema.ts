@@ -156,11 +156,12 @@ export type CartItem = {
   quantity: number;
   notes?: string;
   customizations?: {
-    flavor?: string; // Garlic & Hector, Medium, Hot, Extra Hot, BBQ
-    chipType?: string;
+    flavor?: string; // Garlic & Herb, Medium, Hot, Extra Hot, BBQ
     toppings?: string[];
     isMeal?: boolean;
+    isPeriPeriChipsMeal?: boolean;
     isSpicy?: boolean; // For spicy/normal options
+    drinkChoice?: string; // For meal deals
   };
 };
 
