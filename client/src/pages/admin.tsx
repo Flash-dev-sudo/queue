@@ -211,7 +211,6 @@ function MenuItemManager({ refreshTrigger }: { refreshTrigger: number }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<string>("");
-  const [mealPrice, setMealPrice] = useState<string>("2.50");
   const [hasFlavorOptions, setHasFlavorOptions] = useState(false);
   const [hasMealOption, setHasMealOption] = useState(false);
   const [isSpicyOption, setIsSpicyOption] = useState(false);
@@ -242,11 +241,7 @@ function MenuItemManager({ refreshTrigger }: { refreshTrigger: number }) {
     const pricePounds = parseFloat(price || "0");
     if (isNaN(pricePounds) || pricePounds <= 0) return alert("Enter price in pounds (e.g., 5.00)");
 
-    const mealPricePounds = parseFloat(mealPrice || "0");
-    if (isNaN(mealPricePounds) || mealPricePounds < 0) return alert("Enter valid meal price (0 or greater)");
-
     const pricePence = Math.round(pricePounds * 100);
-    const mealPricePence = Math.round(mealPricePounds * 100);
 
     const token = sessionStorage.getItem("admin_token");
     if (!token) return;
@@ -262,7 +257,7 @@ function MenuItemManager({ refreshTrigger }: { refreshTrigger: number }) {
         name,
         description: description.trim() || null,
         price: pricePence,
-        mealPrice: mealPricePence || 250,
+        mealPrice: 250, // Default meal price of £2.50
         available: true,
         hasFlavorOptions,
         hasMealOption,
@@ -274,7 +269,6 @@ function MenuItemManager({ refreshTrigger }: { refreshTrigger: number }) {
       setName("");
       setDescription("");
       setPrice("");
-      setMealPrice("2.50");
       setHasFlavorOptions(false);
       setHasMealOption(false);
       setIsSpicyOption(false);
@@ -376,15 +370,9 @@ function MenuItemManager({ refreshTrigger }: { refreshTrigger: number }) {
           <Input placeholder="e.g., Juicy beef patty with lettuce and tomato" value={description} onChange={(e) => setDescription(e.target.value)} />
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2">Price (£) *</label>
-            <Input placeholder="e.g., 5.00" type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} />
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2">Meal Deal Price (£)</label>
-            <Input placeholder="e.g., 2.50" type="number" step="0.01" value={mealPrice} onChange={(e) => setMealPrice(e.target.value)} />
-          </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700 block mb-2">Price (£) *</label>
+          <Input placeholder="e.g., 5.00" type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} />
         </div>
 
         <div>
