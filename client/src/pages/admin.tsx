@@ -8,6 +8,7 @@ export default function Admin() {
   const { toast } = useToast();
   const [isAuthed, setIsAuthed] = useState(false);
   const [password, setPassword] = useState("");
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // State to trigger re-fetch
 
   useEffect(() => {
     const ok = sessionStorage.getItem("admin_ok") === "true";
@@ -54,6 +55,10 @@ export default function Admin() {
     );
   }
 
+  const triggerRefresh = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -70,20 +75,20 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* Main Content - Single Column Layout */}
+        {/* Main Content - Menu Items FIRST, Categories SECOND */}
         <div className="space-y-6">
-          <CategoryManager />
-          <MenuItemManager />
+          <MenuItemManager key={refreshTrigger} refreshTrigger={refreshTrigger} />
+          <CategoryManager onCategoryAdded={triggerRefresh} />
         </div>
       </div>
     </div>
   );
 }
 
-function CategoryManager() {
+function CategoryManager({ onCategoryAdded }: { onCategoryAdded: () => void }) {
+  const { toast } = useToast();
   const [name, setName] = useState("");
-  const [icon, setIcon] = useState("restaurant");
-  const [displayOrder, setDisplayOrder] = useState<string>("");
+  const [icon, setIcon] = useState(""); // Optional icon
   const [categories, setCategories] = useState<any[]>([]);
 
   useEffect(() => {
@@ -91,8 +96,21 @@ function CategoryManager() {
   }, []);
 
   const add = async () => {
+    if (!name.trim()) {
+      toast({ title: "Please enter a category name", variant: "destructive" });
+      return;
+    }
+
     const token = sessionStorage.getItem("admin_token");
     if (!token) return;
+
+    // Use provided icon or default to 🍽️
+    const finalIcon = icon.trim() || "🍽️";
+
+    // Auto-calculate next display order
+    const nextOrder = categories.length > 0
+      ? Math.max(...categories.map(c => c.displayOrder || 0)) + 1
+      : 1;
 
     const res = await fetch("/api/admin/categories", {
       method: "POST",
@@ -100,14 +118,18 @@ function CategoryManager() {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
       },
-      body: JSON.stringify({ name, icon, displayOrder: Number(displayOrder) || 0 })
+      body: JSON.stringify({ name, icon: finalIcon, displayOrder: nextOrder })
     });
+
     if (res.ok) {
       setName("");
-      setIcon("restaurant");
-      setDisplayOrder("");
+      setIcon("");
       const updated = await fetch("/api/categories").then(r => r.json());
       setCategories(updated);
+      toast({ title: "Category added successfully" });
+      onCategoryAdded(); // Trigger refresh in parent to update MenuItemManager
+    } else {
+      toast({ title: "Failed to add category", variant: "destructive" });
     }
   };
 
@@ -123,26 +145,37 @@ function CategoryManager() {
         </div>
       </div>
 
-      {/* Add Category Form */}
+      {/* Add Category Form - Simplified */}
       <div className="space-y-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
         <h3 className="font-semibold text-gray-700 flex items-center gap-2">
           <span>➕</span> Add New Category
         </h3>
-        <div className="grid md:grid-cols-3 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2">Name</label>
-            <Input placeholder="e.g., Desserts" value={name} onChange={(e) => setName(e.target.value)} className="w-full" />
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <label className="text-sm font-medium text-gray-700 block mb-2">Name *</label>
+            <Input
+              placeholder="e.g., Desserts, Mains, Drinks"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && add()}
+              className="w-full"
+            />
           </div>
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2">Icon</label>
-            <Input placeholder="restaurant" value={icon} onChange={(e) => setIcon(e.target.value)} className="w-full" />
+          <div className="w-32">
+            <label className="text-sm font-medium text-gray-700 block mb-2">Icon (optional)</label>
+            <Input
+              placeholder="🍽️"
+              value={icon}
+              onChange={(e) => setIcon(e.target.value)}
+              className="w-full text-center text-lg"
+              maxLength={2}
+            />
           </div>
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2">Display order</label>
-            <Input placeholder="e.g., 7" type="number" value={displayOrder} onChange={(e) => setDisplayOrder(e.target.value)} className="w-full" />
+          <div className="flex items-end">
+            <Button onClick={add} className="bg-orange-500 hover:bg-orange-600">Add Category</Button>
           </div>
         </div>
-        <Button onClick={add} className="w-full md:w-auto bg-orange-500 hover:bg-orange-600">Add Category</Button>
+        <p className="text-xs text-gray-500">If no icon is provided, 🍽️ will be used as default</p>
       </div>
 
       {/* Categories List */}
@@ -172,7 +205,7 @@ function CategoryManager() {
   );
 }
 
-function MenuItemManager() {
+function MenuItemManager({ refreshTrigger }: { refreshTrigger: number }) {
   const { toast } = useToast();
   const [categoryId, setCategoryId] = useState<number>(0);
   const [name, setName] = useState("");
@@ -187,9 +220,10 @@ function MenuItemManager() {
   const [items, setItems] = useState<any[]>([]);
   const [editingItem, setEditingItem] = useState<any>(null);
 
+  // Re-fetch categories when refreshTrigger changes
   useEffect(() => {
     fetch("/api/categories").then(r => r.json()).then(setCategories).catch(() => {});
-  }, []);
+  }, [refreshTrigger]);
 
   useEffect(() => {
     if (!categoryId) { setItems([]); return; }
@@ -575,5 +609,3 @@ function EditItemForm({ item, onSave, onCancel }: { item: any, onSave: (updates:
     </div>
   );
 }
-
-
