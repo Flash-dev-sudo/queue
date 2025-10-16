@@ -418,33 +418,49 @@ export class MemStorage implements IStorage {
 
 // Database Storage Implementation
 export class DatabaseStorage implements IStorage {
+  private initialized = false;
+
   constructor() {
-    this.initializeData();
+    // Don't auto-initialize on construction
+    // Let the first API call trigger initialization if needed
   }
 
-  // Initialize only the 6 main categories - no menu items
-  private async initializeData() {
-    // Check if categories already exist
-    const existingCategories = await db.select().from(categories);
-    if (existingCategories.length > 0) {
-      return; // Data already initialized
-    }
+  // Initialize only the 6 main categories if database is completely empty
+  private async ensureInitialized() {
+    if (this.initialized) return;
 
-    // Create only the 6 main categories - completely empty
-    const categoryData: InsertCategory[] = [
-      { name: "Starters", icon: "restaurant", displayOrder: 1 },
-      { name: "Platters", icon: "dinner_dining", displayOrder: 2 },
-      { name: "Mains", icon: "lunch_dining", displayOrder: 3 },
-      { name: "Pizza", icon: "local_pizza", displayOrder: 4 },
-      { name: "Chicken", icon: "set_meal", displayOrder: 5 },
-      { name: "Milkshakes", icon: "local_bar", displayOrder: 6 }
-    ];
-    
-    for (const category of categoryData) {
-      await db.insert(categories).values(category);
+    try {
+      // Check if ANY categories exist
+      const existingCategories = await db.select().from(categories).limit(1);
+
+      // Only initialize if database is completely empty
+      if (existingCategories.length === 0) {
+        console.log('Initializing empty database with default categories...');
+
+        // Create only the 6 main categories - completely empty
+        const categoryData: InsertCategory[] = [
+          { name: "Starters", icon: "🍽️", displayOrder: 1 },
+          { name: "Platters", icon: "🍽️", displayOrder: 2 },
+          { name: "Mains", icon: "🍽️", displayOrder: 3 },
+          { name: "Pizzas", icon: "🍽️", displayOrder: 4 },
+          { name: "Fried Chicken", icon: "🍽️", displayOrder: 5 },
+          { name: "Dessert", icon: "🍽️", displayOrder: 6 }
+        ];
+
+        for (const category of categoryData) {
+          await db.insert(categories).values(category);
+        }
+
+        console.log('Database initialized with 6 empty categories');
+      } else {
+        console.log(`Database already has ${existingCategories.length} categories, skipping initialization`);
+      }
+
+      this.initialized = true;
+    } catch (error) {
+      console.error('Error initializing database:', error);
+      // Don't throw - allow app to continue
     }
-    
-    // No menu items added - categories are completely empty
   }
 
   // User operations
@@ -465,6 +481,7 @@ export class DatabaseStorage implements IStorage {
 
   // Category operations
   async getCategories(): Promise<Category[]> {
+    await this.ensureInitialized();
     return await db.select().from(categories).orderBy(categories.displayOrder);
   }
 
@@ -474,6 +491,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createCategory(insertCategory: InsertCategory): Promise<Category> {
+    await this.ensureInitialized();
     const [category] = await db.insert(categories).values(insertCategory).returning();
     return category;
   }
